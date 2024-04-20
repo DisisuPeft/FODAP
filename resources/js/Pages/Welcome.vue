@@ -56,7 +56,7 @@ onMounted(() => {});
                     'flex-col',
                     'justify-center',
                     'w-64',
-
+                    'ml-10'
                 ]"
                 @mouseover="selectCard(index)"
                 @mouseleave="mouseLeave"
