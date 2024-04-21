@@ -29,18 +29,17 @@ class ExcelExportsController extends Controller
     public function export_total_docentes()
     {
         return EstadisticasController::docente_carrera();
-//        return Excel::store(new DocenteCapacitadosExports, '/public/capacitado.xlsx');
+        //        return Excel::store(new DocenteCapacitadosExports, '/public/capacitado.xlsx');
     }
     public function export_formato_constancia(Request $request)
     {
         $result = DesarrolloController::formato($request);
         return Excel::store(new ConstanciaExcelExport($result), '/public/formato_constacia.xlsx');
-//        return $result;
     }
     public function export_formato_constancia_reconocimiento(Request $request)
     {
         $result = DesarrolloController::formato_reconocimiento($request);
         return Excel::store(new ReconocimientoExport($result), '/public/formato_constacia_reconocimiento.xlsx');
-//        return $result;
+        //        return $result;
     }
 }

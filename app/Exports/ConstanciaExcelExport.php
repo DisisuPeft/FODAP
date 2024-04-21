@@ -7,7 +7,7 @@ use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromView;
 
-class ConstanciaExcelExport implements FromCollection
+class ConstanciaExcelExport implements FromView
 {
     public $query;
 
@@ -16,15 +16,15 @@ class ConstanciaExcelExport implements FromCollection
         $this->query = $query;
     }
 
-//    public function view(): View
-//    {
-//        return view('exports.constanciaExport', [
-//            'data' => $this->query
-//        ]);
-//    }
-
-    public function collection(): \Illuminate\Support\Collection
+    public function view(): View
     {
-        return collect($this->query);
+        return view('exports.constanciaExport', [
+            'data' => $this->query
+        ]);
     }
+
+    // public function collection(): \Illuminate\Support\Collection
+    // {
+    //     return collect($this->query);
+    // }
 }
