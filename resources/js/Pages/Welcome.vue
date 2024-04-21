@@ -67,7 +67,7 @@ onMounted(() => {});
                         <h2
                             class="text-xl font-semibold mb-2 text-center lg:text-center"
                         >
-                            {{ card.name }}
+                            {{}} hola
                         </h2>
                     </div>
                 </Link>
