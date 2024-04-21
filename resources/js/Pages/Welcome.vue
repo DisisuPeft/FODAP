@@ -40,37 +40,45 @@ onMounted(() => {});
 
 <template>
     <WelcomeLayout>
-        <div
-            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 mb-4 mt-16 pt-10"
-        >
+        <div class="flex justify-center">
             <div
-                v-for="(card, index) in nameCards"
-                :key="index"
-                :class="[
-                    'p-8',
-                    isSelected(index) ? 'bg-blue-900 text-white' : 'bg-white',
-                    'rounded-full',
-                    'shadow-2xl',
-                    'lg:h-64',
-                    'flex',
-                    'flex-col',
-                    'justify-center',
-                    'w-64',
-                    'ml-16',
-                    'mt-10',
-                ]"
-                @mouseover="selectCard(index)"
-                @mouseleave="mouseLeave"
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 lg:gap-8 mb-4 mt-16 pt-10"
             >
-                <Link href="/login" as="button" :data="{ role: card.user_rol }">
-                    <div class="flex items-center justify-center">
-                        <h2
-                            class="text-xl font-semibold mb-2 text-center lg:text-center"
-                        >
-                            {{}} hola
-                        </h2>
-                    </div>
-                </Link>
+                <div
+                    v-for="(card, index) in nameCards"
+                    :key="index"
+                    :class="[
+                        'p-8',
+                        isSelected(index)
+                            ? 'bg-blue-900 text-white'
+                            : 'bg-white',
+                        'rounded-full',
+                        'shadow-2xl',
+                        'lg:h-64',
+                        'flex',
+                        'flex-col',
+                        'justify-center',
+                        'w-64',
+                        'h-64',
+                        'mt-16',
+                    ]"
+                    @mouseover="selectCard(index)"
+                    @mouseleave="mouseLeave"
+                >
+                    <Link
+                        href="/login"
+                        as="button"
+                        :data="{ role: card.user_rol }"
+                    >
+                        <div class="flex items-center justify-center">
+                            <h2
+                                class="text-xl font-semibold mb-2 text-center lg:text-center"
+                            >
+                                {{ card.name }}
+                            </h2>
+                        </div>
+                    </Link>
+                </div>
             </div>
         </div>
     </WelcomeLayout>
