@@ -313,7 +313,10 @@ function descargar_formato_constancia_reconocimiento() {
             const url = "/storage/formato_constacia_reconocimiento.xlsx";
             const link = document.createElement("a");
             link.href = url;
-            link.setAttribute("download", "formato_constacia_reconocimiento.xlsx");
+            link.setAttribute(
+                "download",
+                "formato_constacia_reconocimiento.xlsx"
+            );
             document.body.appendChild(link);
             link.click();
             loading.value = false;
@@ -421,7 +424,7 @@ function descargar_formato_constancia_reconocimiento() {
                 </div>
             </div>
         </template>
-        <div class="grid grid-cols-1 mt-10 ma-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 mt-10 ma-4">
             <div class="flex justify-center">
                 <v-tooltip location="right">
                     <template v-slot:activator="{ props }">
