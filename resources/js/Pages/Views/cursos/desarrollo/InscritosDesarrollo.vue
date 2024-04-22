@@ -292,7 +292,10 @@ function descargar_formato_constancia() {
             const url = "/storage/formato_constacia.xlsx";
             const link = document.createElement("a");
             link.href = url;
-            link.setAttribute("download", "formato_constacia.xlsx");
+            link.setAttribute(
+                "download",
+                `formato_constacia_${props.curso.nombreCurso}.xlsx`
+            );
             document.body.appendChild(link);
             link.click();
             loading.value = false;
@@ -315,7 +318,7 @@ function descargar_formato_constancia_reconocimiento() {
             link.href = url;
             link.setAttribute(
                 "download",
-                "formato_constacia_reconocimiento.xlsx"
+                `formato_constacia_reconocimiento_${props.curso.nombreCurso}.xlsx`
             );
             document.body.appendChild(link);
             link.click();
