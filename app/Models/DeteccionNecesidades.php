@@ -112,9 +112,9 @@ class DeteccionNecesidades extends Model
         $coordinacion = User::with('docente')->where('email', 'cformacion@tuxtla.tecnm.mx')->first();
         $ficha = FichaTecnica::where('id_curso', $payload->id)->first();
         $curso_id = $payload->input('id');
-//        $facilitadores = DeteccionNecesidades::constancia_reconocimiento($curso);
+        //        $facilitadores = DeteccionNecesidades::constancia_reconocimiento($curso);
         $c = "CONSTANCIA";
-//        $r = "Reconocimiento";
+        //        $r = "Reconocimiento";
 
         $fecha = $curso->fecha_I;
         $fecha2 = $curso->fecha_F;
@@ -145,101 +145,104 @@ class DeteccionNecesidades extends Model
                 'deteccion_necesidades.nombreCurso'
             )
             ->get();
-//        $query->push($facilitadores);
-        for ($i = 0; $i <= count($query) - 1; $i++){
+        //        $query->push($facilitadores);
+        for ($i = 0; $i <= count($query) - 1; $i++) {
             $query[$i]->tipo = $c;
 
-            if ($curso->periodo == 1){
-                $query[$i]->periodo = "enero-junio ".$formatFechasF[0];
-            }else{
-                $query[$i]->periodo = "agosto-diciembre ". $formatFechasF[0];
+            if ($curso->periodo == 1) {
+                $query[$i]->periodo = "enero-junio " . $formatFechasF[0];
+            } else {
+                $query[$i]->periodo = "agosto-diciembre " . $formatFechasF[0];
             }
 
-            $query[$i]->fecha_imparticion = $formatFechasI[2]." al ".$formatFechasF[2]." de ".$month[0]." de ".$formatFechasF[0];
+            $query[$i]->fecha_imparticion = $formatFechasI[2] . " al " . $formatFechasF[2] . " de " . $month[0] . " de " . $formatFechasF[0];
 
-            $query[$i]->lugar_registro = "Tuxtla Gutierrez, Chiapas; ".$month[2]." ".$month[1]." de ".$formatFechasF[0];
+            $query[$i]->lugar_registro = "Tuxtla Gutierrez, Chiapas; " . $month[2] . " " . $month[1] . " de " . $formatFechasF[0];
 
-            if (count($curso->deteccion_facilitador) == 1){
+            if (count($curso->deteccion_facilitador) == 1) {
 
                 $query[$i]->facilitador_1 = $curso->deteccion_facilitador[0]->nombre_completo;
 
-                if ($curso->deteccion_facilitador[0]->sexo == 1){
+                if ($curso->deteccion_facilitador[0]->sexo == 1) {
                     $query[$i]->genero_1 = "FACILITADOR";
-                }else{
+                } else {
                     $query[$i]->genero_1 = "FACILITADORA";
                 }
-
-            }elseif (count($curso->deteccion_facilitador) == 2){
+            } elseif (count($curso->deteccion_facilitador) == 2) {
                 $query[$i]->facilitador_1 = $curso->deteccion_facilitador[0]->nombre_completo;
 
-                if ($curso->deteccion_facilitador[0]->sexo == 1){
+                if ($curso->deteccion_facilitador[0]->sexo == 1) {
                     $query[$i]->genero_1 = "FACILITADOR";
-                }else{
+                } else {
                     $query[$i]->genero_1 = "FACILITADORA";
                 }
 
                 $query[$i]->facilitador_2 = $curso->deteccion_facilitador[1]->nombre_completo;
 
-                if ($curso->deteccion_facilitador[1]->sexo == 1){
+                if ($curso->deteccion_facilitador[1]->sexo == 1) {
                     $query[$i]->genero_2 = "FACILITADOR";
-                }else{
+                } else {
                     $query[$i]->genero_2 = "FACILITADORA";
                 }
-            }
-            elseif (count($curso->deteccion_facilitador) == 3){
+            } elseif (count($curso->deteccion_facilitador) == 3) {
                 $query[$i]->facilitador_1 = $curso->deteccion_facilitador[0]->nombre_completo;
 
-                if ($curso->deteccion_facilitador[0]->sexo == 1){
+                if ($curso->deteccion_facilitador[0]->sexo == 1) {
                     $query[$i]->genero_1 = "FACILITADOR";
-                }else{
+                } else {
                     $query[$i]->genero_1 = "FACILITADORA";
                 }
 
                 $query[$i]->facilitador_2 = $curso->deteccion_facilitador[1]->nombre_completo;
 
-                if ($curso->deteccion_facilitador[1]->sexo == 1){
+                if ($curso->deteccion_facilitador[1]->sexo == 1) {
                     $query[$i]->genero_2 = "FACILITADOR";
-                }else{
+                } else {
                     $query[$i]->genero_2 = "FACILITADORA";
                 }
 
                 $query[$i]->facilitador_3 = $curso->deteccion_facilitador[2]->nombre_completo;
-                if ($curso->deteccion_facilitador[2]->sexo == 1){
+                if ($curso->deteccion_facilitador[2]->sexo == 1) {
                     $query[$i]->genero_3 = "FACILITADOR";
-                }else{
+                } else {
                     $query[$i]->genero_3 = "FACILITADORA";
                 }
             }
 
             $query[$i]->nivel_educativo = "Superior";
-            switch ($curso->modalidad){
-                case 1: $query[$i]->modalidad = "Virtual"; break;
-                case 2: $query[$i]->modalidad = "Presencial"; break;
-                case 3: $query[$i]->modalidad = "Híbrido"; break;
-
+            switch ($curso->modalidad) {
+                case 1:
+                    $query[$i]->modalidad = "Virtual";
+                    break;
+                case 2:
+                    $query[$i]->modalidad = "Presencial";
+                    break;
+                case 3:
+                    $query[$i]->modalidad = "Híbrido";
+                    break;
             }
-            $query[$i]->duracion = $curso->total_horas." horas";
+            $query[$i]->duracion = $curso->total_horas . " horas";
 
             $query[$i]->clave_registro = $curso->clave_curso->clave;
 
-            for ($j = 0; $j <= count($ficha->temas) - 1; $j++){
+            for ($j = 0; $j <= count($ficha->temas) - 1; $j++) {
                 $numero = $j + 1;
                 $name_tema = $ficha->temas[$j]->name_tema;
 
-                $query[$i]->{"numero_tema_$numero"} = $numero;
-                $query[$i]->{"nombre_$name_tema"} = $name_tema;
+                $query[$i]->{"numero_tema"} = $numero;
+                $query[$i]->{"nombre_tema"} = $name_tema;
             }
-
         }
         return $query;
-//        return $facilitador;
+        //        return $facilitador;
     }
 
-    public static function constancia_reconocimiento($payload){
+    public static function constancia_reconocimiento($payload)
+    {
         $curso = DeteccionNecesidades::with('deteccion_facilitador')->find($payload->f);
         $ficha = FichaTecnica::where('id_curso', $payload->f)->first();
         $r = "Reconocimiento";
-//        $year = date('Y');
+        //        $year = date('Y');
         $fecha = $curso->fecha_I;
         $fecha2 = $curso->fecha_F;
         $formatFechasI = explode("-", $fecha);
@@ -247,7 +250,7 @@ class DeteccionNecesidades extends Model
         $month = PDFController::parse_date($fecha);
         $ids = [];
 
-        foreach ($curso->deteccion_facilitador as $facilitador){
+        foreach ($curso->deteccion_facilitador as $facilitador) {
             $ids[] = $facilitador->id;
         }
 
@@ -273,39 +276,42 @@ class DeteccionNecesidades extends Model
             )
             ->get();
 
-        for($i = 0; $i<= count($facilitadores) - 1 ;$i++)
-        {
+        for ($i = 0; $i <= count($facilitadores) - 1; $i++) {
             $facilitadores[$i]->tipo = $r;
 
-            if ($curso->periodo == 1){
-                $facilitadores[$i]->periodo = "enero-junio ".$formatFechasF[0];
-            }else{
-                $facilitadores[$i]->periodo = "agosto-diciembre ". $formatFechasF[0];
+            if ($curso->periodo == 1) {
+                $facilitadores[$i]->periodo = "enero-junio " . $formatFechasF[0];
+            } else {
+                $facilitadores[$i]->periodo = "agosto-diciembre " . $formatFechasF[0];
             }
 
-            $facilitadores[$i]->fecha_imparticion = $formatFechasI[2]." al ".$formatFechasF[2]." de ".$month[0]." de ".$formatFechasF[0];
+            $facilitadores[$i]->fecha_imparticion = $formatFechasI[2] . " al " . $formatFechasF[2] . " de " . $month[0] . " de " . $formatFechasF[0];
 
-            $facilitadores[$i]->lugar_registro = "Tuxtla Gutierrez, Chiapas; ".$month[2]." ".$month[1]." de ".$formatFechasF[0];
+            $facilitadores[$i]->lugar_registro = "Tuxtla Gutierrez, Chiapas; " . $month[2] . " " . $month[1] . " de " . $formatFechasF[0];
 
             $facilitadores[$i]->nivel_educativo = "Superior";
-            switch ($curso->modalidad){
-                case 1: $facilitadores[$i]->modalidad = "Virtual"; break;
-                case 2: $facilitadores[$i]->modalidad = "Presencial"; break;
-                case 3: $facilitadores[$i]->modalidad = "Híbrido"; break;
-
+            switch ($curso->modalidad) {
+                case 1:
+                    $facilitadores[$i]->modalidad = "Virtual";
+                    break;
+                case 2:
+                    $facilitadores[$i]->modalidad = "Presencial";
+                    break;
+                case 3:
+                    $facilitadores[$i]->modalidad = "Híbrido";
+                    break;
             }
-            $facilitadores[$i]->duracion = $curso->total_horas." horas";
+            $facilitadores[$i]->duracion = $curso->total_horas . " horas";
 
             $facilitadores[$i]->clave_registro = $curso->clave_curso->clave;
 
-            for ($j = 0; $j <= count($ficha->temas) - 1; $j++){
+            for ($j = 0; $j <= count($ficha->temas) - 1; $j++) {
                 $numero = $j + 1;
                 $name_tema = $ficha->temas[$j]->name_tema;
 
                 $facilitadores[$i]->{"numero_tema_$numero"} = $numero;
                 $facilitadores[$i]->{"nombre_$name_tema"} = $name_tema;
             }
-
         }
         return $facilitadores;
     }
