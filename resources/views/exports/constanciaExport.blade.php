@@ -20,22 +20,20 @@
         <th>Área de adscripción</th>
         <th>Puesto</th>
         <th>Clave de registro tecnm</th>
-        <th>número</th>
-        <th>tema</th>
+        @php
+            $i = 0;
+        @endphp
+        @foreach($data[0] as $clave => $valor)
+            @if(strpos($clave, 'nombre_tema_') === 0 || strpos($clave, 'numero_tema_') === 0)
+                <th>numero {{$i++}}</th>
+                <th>tema</th>
+            @endif
+        @endforeach
     </tr>
     </thead>
     <tbody>
-    @foreach($data as $curso)
-        @foreach($curso as $clave => $valor)
-            <tr>
-                <td>{{ $clave }}</td>
-                <td>{{ $valor }}</td>
-            </tr>
-        @endforeach
-    @endforeach
-    </tbody>
-</table>
-{{--         <tr>
+     @foreach($data as $curso)
+        <tr>
             <td>{{ $curso->tipo }}</td>
             <td>{{ $curso->nombre_completo }}</td>
             <td>{{ $curso->nombreCurso }}</td>
@@ -71,4 +69,9 @@
             <td>{{ $curso->carrera }}</td>
             <td>{{ $curso->puesto }}</td>
             <td>{{ $curso->clave_registro }}</td>
-        </tr> --}}
+            
+        </tr>
+    @endforeach
+    </tbody>
+</table>
+{{--  --}}
