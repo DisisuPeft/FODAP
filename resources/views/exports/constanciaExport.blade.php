@@ -69,7 +69,7 @@
             <td>{{ $curso->carrera }}</td>
             <td>{{ $curso->puesto }}</td>
             <td>{{ $curso->clave_registro }}</td>
-            @foreach($data[0] as $clave => $valor)
+            @foreach($curso as $clave => $valor)
                 @if(strpos($clave, 'nombre_tema_') === 0)
                     <td></td>
                     <td>{{ $valor }}</td>
