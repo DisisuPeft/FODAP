@@ -25,7 +25,7 @@
         @endphp
         @foreach($data[0] as $clave => $valor)
             @if(strpos($clave, 'nombre_tema_') === 0 || strpos($clave, 'numero_tema_') === 0)
-                <th></th>
+                <th>numero de tema</th>
                 <th>tema</th>
             @endif
         @endforeach
@@ -71,7 +71,7 @@
             <td>{{ $curso->clave_registro }}</td>
             @foreach($data[0] as $clave => $valor)
             @if(strpos($clave, 'nombre_tema_') === 0 || strpos($clave, 'numero_tema_') === 0)
-                <th>{{$i++}}</th>
+                <th>{{$clave}}</th>
                 <th>{{$valor}}</th>
             @endif
         @endforeach
