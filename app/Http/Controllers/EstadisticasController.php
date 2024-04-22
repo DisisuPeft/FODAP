@@ -101,10 +101,10 @@ class EstadisticasController extends Controller
         $mecanica = DeteccionNecesidades::with('docente_inscrito')
             ->where('carrera_dirigido', '=', 1)->get();
 
-        $docente_mecanica = DB::table('docente')->where(function ($query) {
-            $query->where('sexo', '=', 1)
-                ->where('carrera_id', '=', 1);
-        })->get();
+        // $docente_mecanica = DB::table('docente')->where(function ($query) {
+        //     $query->where('sexo', '=', 1)
+        //         ->where('carrera_id', '=', 1);
+        // })->get();
 
         $sistemas = DeteccionNecesidades::with('docente_inscrito')
             ->where('carrera_dirigido', '=', 2)->get();
@@ -251,7 +251,7 @@ class EstadisticasController extends Controller
         //            array("carrera" => "Ciencias Económico Administrativo", "total" => $total_ciencias_ea,  "Total_de_hombres_capacitados" => $total_m_ciencias_ea, "Total_de_mujeres_capacitadas" => $total_f_ciencias_ea),
         //            array("carrera" => "Todas las carreras", "total" => $total_carreras,  "Total_de_hombres_capacitados" => $total_m_carreras, "Total_de_mujeres_capacitadas" => $total_f_carreras),
         //        );
-        return $docente_mecanica;
+        return $mecanica;
     }
 
     public static function fd_ap_cursos()
