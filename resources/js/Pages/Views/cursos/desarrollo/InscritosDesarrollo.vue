@@ -424,7 +424,7 @@ function descargar_formato_constancia_reconocimiento() {
                 </div>
             </div>
         </template>
-        <div class="grid grid-cols-1 lg:grid-cols-2 mt-10 ma-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 mt-10 ma-4 gap-5">
             <div class="flex justify-center">
                 <v-tooltip location="right">
                     <template v-slot:activator="{ props }">
