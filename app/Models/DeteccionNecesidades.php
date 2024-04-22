@@ -229,8 +229,8 @@ class DeteccionNecesidades extends Model
                 $numero = $j + 1;
                 $name_tema = $ficha->temas[$j]->name_tema;
 
-                $query[$i]->{"numero_tema"} = $numero;
-                $query[$i]->{"nombre_tema"} = $name_tema;
+                $query[$i]->{"numero_tema_$numero"} = $numero;
+                $query[$i]->{"nombre_$name_tema"} = $name_tema;
             }
         }
         return $query;
