@@ -25,8 +25,17 @@
     </tr>
     </thead>
     <tbody>
-     @foreach($data as $curso)
-        <tr>
+    @foreach($data as $curso)
+        @foreach($curso as $clave => $valor)
+            <tr>
+                <td>{{ $clave }}</td>
+                <td>{{ $valor }}</td>
+            </tr>
+        @endforeach
+    @endforeach
+    </tbody>
+</table>
+{{--         <tr>
             <td>{{ $curso->tipo }}</td>
             <td>{{ $curso->nombre_completo }}</td>
             <td>{{ $curso->nombreCurso }}</td>
@@ -62,7 +71,4 @@
             <td>{{ $curso->carrera }}</td>
             <td>{{ $curso->puesto }}</td>
             <td>{{ $curso->clave_registro }}</td>
-        </tr>
-    @endforeach
-    </tbody>
-</table>
+        </tr> --}}
