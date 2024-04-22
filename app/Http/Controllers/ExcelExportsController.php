@@ -34,8 +34,8 @@ class ExcelExportsController extends Controller
     public function export_formato_constancia(Request $request)
     {
         $result = DesarrolloController::formato($request);
-        return Excel::store(new ConstanciaExcelExport($result), '/public/formato_constacia.xlsx');
-        // return $result;
+        // return Excel::store(new ConstanciaExcelExport($result), '/public/formato_constacia.xlsx');
+        return $result;
     }
     public function export_formato_constancia_reconocimiento(Request $request)
     {
