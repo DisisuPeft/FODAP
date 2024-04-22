@@ -440,7 +440,7 @@ function descargar_formato_constancia_reconocimiento() {
                     <span>Descargar formato de constancia</span>
                 </v-tooltip>
             </div>
-            <div class="flex justify-center mt-5">
+            <div class="flex justify-center">
                 <v-tooltip location="right">
                     <template v-slot:activator="{ props }">
                         <v-btn
