@@ -72,7 +72,7 @@
             @foreach($data[0] as $clave => $valor)
             @if(strpos($clave, 'nombre_tema_') === 0 || strpos($clave, 'numero_tema_') === 0)
                 <th>{{$i++}}</th>
-                <th>tema</th>
+                <th>{{$valor}}</th>
             @endif
         @endforeach
         </tr>
