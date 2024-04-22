@@ -21,11 +21,11 @@
         <th>Puesto</th>
         <th>Clave de registro tecnm</th>
         @php
-            $i = 0;
+            $i = 1;
         @endphp
         @foreach($data[0] as $clave => $valor)
             @if(strpos($clave, 'nombre_tema_') === 0 || strpos($clave, 'numero_tema_') === 0)
-                <th>numero {{$i++}}</th>
+                <th>{{$i++}}</th>
                 <th>tema</th>
             @endif
         @endforeach
@@ -69,7 +69,11 @@
             <td>{{ $curso->carrera }}</td>
             <td>{{ $curso->puesto }}</td>
             <td>{{ $curso->clave_registro }}</td>
-            
+            @foreach($data as $clave => $valor)
+                @if(strpos($clave, 'nombre_tema_') === 0 || strpos($clave, 'numero_tema_') === 0)
+                    <td>{{ $valor }}</td>
+                @endif
+            @endforeach
         </tr>
     @endforeach
     </tbody>
