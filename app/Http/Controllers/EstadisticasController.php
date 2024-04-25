@@ -133,11 +133,11 @@ class EstadisticasController extends Controller
 
         //Cuantps dpcentes por carrera, cuantos fueron mujeres y cuantos fueron hombres
                 $total_mecanica = 0;
-                $total_m_mecanica = $mecanica[0]->docente_inscrito->where('sexo', 1)->count();
+                $total_m_mecanica = 0;
                 $total_f_mecanica = $mecanica[0]->docente_inscrito->where('sexo', 2)->count();
                 for ($i = 0; $i < count($mecanica) - 1; $i++) {
                     $total_mecanica = $mecanica[$i]->docente_inscrito->count() + $mecanica[$i + 1]->docente_inscrito->count();
-//                    $total_m_mecanica = $mecanica[$i]->docente_inscrito->where('sexo', 1)->count() +  $mecanica[$i + 1]->docente_inscrito->where('sexo', 1)->count();
+                    $total_m_mecanica = $mecanica[$i]->docente_inscrito->where('sexo', 1)->count() +  $mecanica[$i + 1]->docente_inscrito->where('sexo', 1)->count();
 //                    $total_f_mecanica = $mecanica[$i]->docente_inscrito->where('sexo', 2)->count() +  $mecanica[$i + 1]->docente_inscrito->where('sexo', 2)->count();
                 }
 //                $total_m_mecanica = $mecanica[0]->docente_inscrito->where('sexo', 1)->count();
