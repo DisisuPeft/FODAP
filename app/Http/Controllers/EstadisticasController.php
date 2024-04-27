@@ -241,8 +241,8 @@ class EstadisticasController extends Controller
         //        }
         return array(
             array("carrera" => "Mecánica", "total" => $total_mecanica, "Total_de_hombres_capacitados" => $total_m_mecanica, "Total_de_mujeres_capacitadas" => $total_f_mecanica),
-            //                    array("carrera" => "Sistemas Computacionales", "total" => $total_sistemas,  "Total_de_hombres_capacitados" => $total_m_sistemas, "Total_de_mujeres_capacitadas" => $total_f_sistemas),
-            //                    array("carrera" => "Industrial", "total" => $total_industrial,  "Total_de_hombres_capacitados" => $total_m_industrial, "Total_de_mujeres_capacitadas" => $total_f_industrial),
+            array("carrera" => "Sistemas Computacionales", "total" => $total_sistemas,  "Total_de_hombres_capacitados" => $total_m_sistemas, "Total_de_mujeres_capacitadas" => $total_f_sistemas),
+            array("carrera" => "Industrial", "total" => $total_industrial,  "Total_de_hombres_capacitados" => $total_m_industrial, "Total_de_mujeres_capacitadas" => $total_f_industrial),
             //                    array("carrera" => "Electrónica", "total" => $total_electronica,  "Total_de_hombres_capacitados" => $total_m_electronica, "Total_de_mujeres_capacitadas" => $total_f_electronica),
             //                    array("carrera" => "Electrica", "total" => $total_electrica,  "Total_de_hombres_capacitados" => $total_m_electrica, "Total_de_mujeres_capacitadas" => $total_f_electrica),
             //                    array("carrera" => "Bioquimica", "total" => $total_bio,  "Total_de_hombres_capacitados" => $total_m_bio, "Total_de_mujeres_capacitadas" => $total_f_bio),
