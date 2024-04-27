@@ -324,7 +324,9 @@ class DesarrolloController extends Controller
 
         event(new DeleteDeteccionEvent($deteccion));
 
-        $deteccion->delete();
+        $deteccion->update([
+            'status' => 99,
+        ]);
 
         if ($deteccion->aceptado == 1) {
             return Redirect::route('index.desarrollo.cursos');
