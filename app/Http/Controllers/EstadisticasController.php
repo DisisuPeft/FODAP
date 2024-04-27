@@ -141,17 +141,17 @@ class EstadisticasController extends Controller
         for ($i = 0; $i < count($mecanica) - 1; $i++) {
             $total_mecanica = $mecanica[$i]->docente_inscrito->count() + $mecanica[$i + 1]->docente_inscrito->count();
             $total_m_mecanica = $mecanica[$i]->docente_inscrito->where('sexo', 1)->count() +  $mecanica[$i + 1]->docente_inscrito->where('sexo', 1)->count();
-            //                    $total_f_mecanica = $mecanica[$i]->docente_inscrito->where('sexo', 2)->count() +  $mecanica[$i + 1]->docente_inscrito->where('sexo', 2)->count();
+            $total_f_mecanica = $mecanica[$i]->docente_inscrito->where('sexo', 2)->count() +  $mecanica[$i + 1]->docente_inscrito->where('sexo', 2)->count();
         }
-        //                $total_m_mecanica = $mecanica[0]->docente_inscrito->where('sexo', 1)->count();
-        //        $total_sistemas = 0;
-        //        $total_m_sistemas = 0;
-        //        $total_f_sistemas = 0;
-        //        for ($i = 0; $i < count($sistemas) - 1; $i++) {
-        //            $total_sistemas = $sistemas[$i]->docente_inscrito->count() + $sistemas[$i + 1]->docente_inscrito->count();
-        //            $total_m_sistemas = $sistemas[$i]->docente_inscrito->where('sexo', 1)->count();
-        //            $total_f_sistemas = $sistemas[$i]->docente_inscrito->where('sexo', 2)->count();
-        //        }
+        $total_m_mecanica = $mecanica[0]->docente_inscrito->where('sexo', 1)->count();
+        $total_sistemas = 0;
+        $total_m_sistemas = 0;
+        $total_f_sistemas = 0;
+        for ($i = 0; $i < count($sistemas) - 1; $i++) {
+            $total_sistemas = $sistemas[$i]->docente_inscrito->count() + $sistemas[$i + 1]->docente_inscrito->count();
+            $total_m_sistemas = $sistemas[$i]->docente_inscrito->where('sexo', 1)->count();
+            $total_f_sistemas = $sistemas[$i]->docente_inscrito->where('sexo', 2)->count();
+        }
         //        $total_industrial = 0;
         //        $total_m_industrial = 0;
         //        $total_f_industrial = 0;

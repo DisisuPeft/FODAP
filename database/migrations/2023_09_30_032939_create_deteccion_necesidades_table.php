@@ -39,6 +39,7 @@ class CreateDeteccionNecesidadesTable extends Migration
             $table->integer('aceptado')->nullable();
             $table->bigInteger('estado')->nullable();
             $table->date('anio_realizacion')->nullable();
+            $table->bigInteger('status')->default(0);
             $table->timestamps();
         });
     }
