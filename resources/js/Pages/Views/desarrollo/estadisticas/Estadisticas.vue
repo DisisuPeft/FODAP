@@ -113,14 +113,14 @@ const fullYears = computed(() => {
     return years;
 });
 
-console.log("Hola");
+console.log(props.docente_carrera);
 </script>
 
 <template>
     <AuthenticatedLayout>
-        <!-- <template #header>
+        <template #header>
             <h2 class="text-xl font-medium text-gray-900">Estadisticas</h2>
-        </template> -->
+        </template>
 
         <div class="">
             <CustomSnackBar
