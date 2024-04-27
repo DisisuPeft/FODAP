@@ -132,15 +132,15 @@ class EstadisticasController extends Controller
             ->where('carrera_dirigido', '=', 13)->get();
 
         //Cuantps dpcentes por carrera, cuantos fueron mujeres y cuantos fueron hombres
-                $total_mecanica = 0;
-                $total_m_mecanica = 0;
-                $total_f_mecanica = $mecanica[0]->docente_inscrito->where('carrera_id', 1)->count();
-                for ($i = 0; $i < count($mecanica) - 1; $i++) {
-                    $total_mecanica = $mecanica[$i]->docente_inscrito->count() + $mecanica[$i + 1]->docente_inscrito->count();
-                    $total_m_mecanica = $mecanica[$i]->docente_inscrito->where('sexo', 1)->count() +  $mecanica[$i + 1]->docente_inscrito->where('sexo', 1)->count();
-//                    $total_f_mecanica = $mecanica[$i]->docente_inscrito->where('sexo', 2)->count() +  $mecanica[$i + 1]->docente_inscrito->where('sexo', 2)->count();
-                }
-//                $total_m_mecanica = $mecanica[0]->docente_inscrito->where('sexo', 1)->count();
+        $total_mecanica = 0;
+        $total_m_mecanica = 0;
+        $total_f_mecanica = $mecanica[0]->docente_inscrito->where('sexo', 2)->count();
+        for ($i = 0; $i < count($mecanica) - 1; $i++) {
+            $total_mecanica = $mecanica[$i]->docente_inscrito->count() + $mecanica[$i + 1]->docente_inscrito->count();
+            $total_m_mecanica = $mecanica[$i]->docente_inscrito->where('sexo', 1)->count() +  $mecanica[$i + 1]->docente_inscrito->where('sexo', 1)->count();
+            //                    $total_f_mecanica = $mecanica[$i]->docente_inscrito->where('sexo', 2)->count() +  $mecanica[$i + 1]->docente_inscrito->where('sexo', 2)->count();
+        }
+        //                $total_m_mecanica = $mecanica[0]->docente_inscrito->where('sexo', 1)->count();
         //        $total_sistemas = 0;
         //        $total_m_sistemas = 0;
         //        $total_f_sistemas = 0;
@@ -237,22 +237,22 @@ class EstadisticasController extends Controller
         //            $total_m_carreras = $todas_carreras[$i]->docente_inscrito->where('sexo', 1)->count();
         //            $total_f_carreras = $todas_carreras[$i]->docente_inscrito->where('sexo', 2)->count();
         //        }
-                return array(
-                    array("carrera" => "Mecánica", "total" => $total_mecanica, "Total_de_hombres_capacitados" => $total_m_mecanica, "Total_de_mujeres_capacitadas" => $total_f_mecanica),
-//                    array("carrera" => "Sistemas Computacionales", "total" => $total_sistemas,  "Total_de_hombres_capacitados" => $total_m_sistemas, "Total_de_mujeres_capacitadas" => $total_f_sistemas),
-//                    array("carrera" => "Industrial", "total" => $total_industrial,  "Total_de_hombres_capacitados" => $total_m_industrial, "Total_de_mujeres_capacitadas" => $total_f_industrial),
-//                    array("carrera" => "Electrónica", "total" => $total_electronica,  "Total_de_hombres_capacitados" => $total_m_electronica, "Total_de_mujeres_capacitadas" => $total_f_electronica),
-//                    array("carrera" => "Electrica", "total" => $total_electrica,  "Total_de_hombres_capacitados" => $total_m_electrica, "Total_de_mujeres_capacitadas" => $total_f_electrica),
-//                    array("carrera" => "Bioquimica", "total" => $total_bio,  "Total_de_hombres_capacitados" => $total_m_bio, "Total_de_mujeres_capacitadas" => $total_f_bio),
-//                    array("carrera" => "Quimica", "total" => $total_quimica,  "Total_de_hombres_capacitados" => $total_m_quimica, "Total_de_mujeres_capacitadas" => $total_f_quimica),
-//                    array("carrera" => "Gestión Empresarial", "total" => $total_gestion,  "Total_de_hombres_capacitados" => $total_m_gestion, "Total_de_mujeres_capacitadas" => $total_f_gestion),
-//                    array("carrera" => "Logística", "total" => $total_logistica,  "Total_de_hombres_capacitados" => $total_m_logistica, "Total_de_mujeres_capacitadas" => $total_f_logistica),
-//                    array("carrera" => "Mecatrónica", "total" => $total_mecatronica,  "Total_de_hombres_capacitados" => $total_m_mecatronica, "Total_de_mujeres_capacitadas" => $total_f_mecatronica),
-//                    array("carrera" => "Ciencias Basicas", "total" => $total_cb,  "Total_de_hombres_capacitados" => $total_m_cb, "Total_de_mujeres_capacitadas" => $total_f_cb),
-//                    array("carrera" => "Ciencias Económico Administrativo", "total" => $total_ciencias_ea,  "Total_de_hombres_capacitados" => $total_m_ciencias_ea, "Total_de_mujeres_capacitadas" => $total_f_ciencias_ea),
-//                    array("carrera" => "Todas las carreras", "total" => $total_carreras,  "Total_de_hombres_capacitados" => $total_m_carreras, "Total_de_mujeres_capacitadas" => $total_f_carreras),
-                );
-//        return $mecanica;
+        return array(
+            array("carrera" => "Mecánica", "total" => $total_mecanica, "Total_de_hombres_capacitados" => $total_m_mecanica, "Total_de_mujeres_capacitadas" => $total_f_mecanica),
+            //                    array("carrera" => "Sistemas Computacionales", "total" => $total_sistemas,  "Total_de_hombres_capacitados" => $total_m_sistemas, "Total_de_mujeres_capacitadas" => $total_f_sistemas),
+            //                    array("carrera" => "Industrial", "total" => $total_industrial,  "Total_de_hombres_capacitados" => $total_m_industrial, "Total_de_mujeres_capacitadas" => $total_f_industrial),
+            //                    array("carrera" => "Electrónica", "total" => $total_electronica,  "Total_de_hombres_capacitados" => $total_m_electronica, "Total_de_mujeres_capacitadas" => $total_f_electronica),
+            //                    array("carrera" => "Electrica", "total" => $total_electrica,  "Total_de_hombres_capacitados" => $total_m_electrica, "Total_de_mujeres_capacitadas" => $total_f_electrica),
+            //                    array("carrera" => "Bioquimica", "total" => $total_bio,  "Total_de_hombres_capacitados" => $total_m_bio, "Total_de_mujeres_capacitadas" => $total_f_bio),
+            //                    array("carrera" => "Quimica", "total" => $total_quimica,  "Total_de_hombres_capacitados" => $total_m_quimica, "Total_de_mujeres_capacitadas" => $total_f_quimica),
+            //                    array("carrera" => "Gestión Empresarial", "total" => $total_gestion,  "Total_de_hombres_capacitados" => $total_m_gestion, "Total_de_mujeres_capacitadas" => $total_f_gestion),
+            //                    array("carrera" => "Logística", "total" => $total_logistica,  "Total_de_hombres_capacitados" => $total_m_logistica, "Total_de_mujeres_capacitadas" => $total_f_logistica),
+            //                    array("carrera" => "Mecatrónica", "total" => $total_mecatronica,  "Total_de_hombres_capacitados" => $total_m_mecatronica, "Total_de_mujeres_capacitadas" => $total_f_mecatronica),
+            //                    array("carrera" => "Ciencias Basicas", "total" => $total_cb,  "Total_de_hombres_capacitados" => $total_m_cb, "Total_de_mujeres_capacitadas" => $total_f_cb),
+            //                    array("carrera" => "Ciencias Económico Administrativo", "total" => $total_ciencias_ea,  "Total_de_hombres_capacitados" => $total_m_ciencias_ea, "Total_de_mujeres_capacitadas" => $total_f_ciencias_ea),
+            //                    array("carrera" => "Todas las carreras", "total" => $total_carreras,  "Total_de_hombres_capacitados" => $total_m_carreras, "Total_de_mujeres_capacitadas" => $total_f_carreras),
+        );
+        //        return $mecanica;
     }
 
     public static function fd_ap_cursos()
