@@ -118,9 +118,9 @@ console.log("Hola");
 
 <template>
     <AuthenticatedLayout>
-        <template #header>
+        <!-- <template #header>
             <h2 class="text-xl font-medium text-gray-900">Estadisticas</h2>
-        </template>
+        </template> -->
 
         <div class="">
             <CustomSnackBar
