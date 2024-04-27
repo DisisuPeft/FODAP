@@ -113,7 +113,7 @@ const fullYears = computed(() => {
     return years;
 });
 
-console.log(props.docente_carrera);
+console.log("Hola");
 </script>
 
 <template>
