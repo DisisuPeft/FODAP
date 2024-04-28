@@ -141,7 +141,7 @@ onMounted(() => {
         }
     );
 });
-console.log(totales);
+console.log(props.totales);
 </script>
 
 <template>
