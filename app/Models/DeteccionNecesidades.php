@@ -317,6 +317,7 @@ class DeteccionNecesidades extends Model
     }
     public static function docente_carrera_consult()
     {
+        // Mecanica
         $totales_mecanica = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
@@ -344,20 +345,354 @@ class DeteccionNecesidades extends Model
             ->select('docente.id')
             ->distinct()
             ->count();
+        //Sistemas 
+        $totales_sistemas = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 2)
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_sistemas_masculinos = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 2)
+                    ->where('docente.sexo', '=', 1);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_sistemas_femenino = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 2)
+                    ->where('docente.sexo', '=', 2);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        //Industrial
+        $totales_industrial = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 3)
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_industrial_masculinos = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 3)
+                    ->where('docente.sexo', '=', 1);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_industrial_femenino = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 3)
+                    ->where('docente.sexo', '=', 2);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        //Electronica
+        $totales_electronica = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 4)
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_electronica_masculinos = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 4)
+                    ->where('docente.sexo', '=', 1);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_electronica_femenino = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 4)
+                    ->where('docente.sexo', '=', 2);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        //electrica
+        $totales_electrica = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 5)
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_electrica_masculinos = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 5)
+                    ->where('docente.sexo', '=', 1);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_electrica_femenino = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 5)
+                    ->where('docente.sexo', '=', 2);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        //bioquimica
+        $totales_bioquimica = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 6)
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_bioquimica_masculinos = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 6)
+                    ->where('docente.sexo', '=', 1);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_bioquimica_femenino = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 6)
+                    ->where('docente.sexo', '=', 2);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        //quimica
+        $totales_quimica = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 7)
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_quimica_masculinos = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 7)
+                    ->where('docente.sexo', '=', 1);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_quimica_femenino = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 7)
+                    ->where('docente.sexo', '=', 2);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        //IGE
+        $totales_ige = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 8)
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_ige_masculinos = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 8)
+                    ->where('docente.sexo', '=', 1);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_ige_femenino = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 8)
+                    ->where('docente.sexo', '=', 2);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        //logistica
+        $totales_logistica = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 9)
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_logistica_masculinos = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 9)
+                    ->where('docente.sexo', '=', 1);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_logistica_femenino = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 9)
+                    ->where('docente.sexo', '=', 2);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        //mecatronica
+        $totales_mecatronica = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 10)
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_mecatronica_masculinos = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 10)
+                    ->where('docente.sexo', '=', 1);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_mecatronica_femenino = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 10)
+                    ->where('docente.sexo', '=', 2);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        //ciencias basicas
+        $totales_cb = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 11)
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_cb_masculinos = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 11)
+                    ->where('docente.sexo', '=', 1);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_cb_femenino = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 11)
+                    ->where('docente.sexo', '=', 2);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        //Economico administrativo
+        $totales_cea = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 12)
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_cea_masculinos = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 12)
+                    ->where('docente.sexo', '=', 1);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_cea_femenino = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 12)
+                    ->where('docente.sexo', '=', 2);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+
+        //TOTALES
+        $totales_todos = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_masculinos = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('docente.sexo', '=', 1);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
+        $totales_femenino = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where(function ($query) {
+                $query->where('docente.sexo', '=', 2);
+            })
+            ->select('docente.id')
+            ->distinct()
+            ->count();
         return array(
             array("carrera" => "Mecánica", "total" => $totales_mecanica, "Total_de_hombres_capacitados" => $totales_mecanica_masculinos, "Total_de_mujeres_capacitadas" => $totales_mecanica_femenino),
-            // array("carrera" => "Sistemas Computacionales", "total" => $total_sistemas,  "Total_de_hombres_capacitados" => $total_m_sistemas, "Total_de_mujeres_capacitadas" => $total_f_sistemas),
-            // array("carrera" => "Industrial", "total" => $total_industrial,  "Total_de_hombres_capacitados" => $total_m_industrial, "Total_de_mujeres_capacitadas" => $total_f_industrial),
-            // array("carrera" => "Electrónica", "total" => $total_electronica,  "Total_de_hombres_capacitados" => $total_m_electronica, "Total_de_mujeres_capacitadas" => $total_f_electronica),
-            // array("carrera" => "Electrica", "total" => $total_electrica,  "Total_de_hombres_capacitados" => $total_m_electrica, "Total_de_mujeres_capacitadas" => $total_f_electrica),
-            // array("carrera" => "Bioquimica", "total" => $total_bio,  "Total_de_hombres_capacitados" => $total_m_bio, "Total_de_mujeres_capacitadas" => $total_f_bio),
-            // array("carrera" => "Quimica", "total" => $total_quimica,  "Total_de_hombres_capacitados" => $total_m_quimica, "Total_de_mujeres_capacitadas" => $total_f_quimica),
-            // array("carrera" => "Gestión Empresarial", "total" => $total_gestion,  "Total_de_hombres_capacitados" => $total_m_gestion, "Total_de_mujeres_capacitadas" => $total_f_gestion),
-            // array("carrera" => "Logística", "total" => $total_logistica,  "Total_de_hombres_capacitados" => $total_m_logistica, "Total_de_mujeres_capacitadas" => $total_f_logistica),
-            // array("carrera" => "Mecatrónica", "total" => $total_mecatronica,  "Total_de_hombres_capacitados" => $total_m_mecatronica, "Total_de_mujeres_capacitadas" => $total_f_mecatronica),
-            // array("carrera" => "Ciencias Basicas", "total" => $total_cb,  "Total_de_hombres_capacitados" => $total_m_cb, "Total_de_mujeres_capacitadas" => $total_f_cb),
-            // array("carrera" => "Ciencias Económico Administrativo", "total" => $total_ciencias_ea,  "Total_de_hombres_capacitados" => $total_m_ciencias_ea, "Total_de_mujeres_capacitadas" => $total_f_ciencias_ea),
-            // array("carrera" => "Todas las carreras", "total" => $total_carreras->unique('id')->count(),  "Total_de_hombres_capacitados" => $total_m_carreras->unique('id')->count(), "Total_de_mujeres_capacitadas" => $total_f_carreras->unique('id')->count())
+            array("carrera" => "Sistemas Computacionales", "total" => $totales_sistemas,  "Total_de_hombres_capacitados" => $totales_sistemas_masculinos, "Total_de_mujeres_capacitadas" => $totales_sistemas_femenino),
+            array("carrera" => "Industrial", "total" => $totales_industrial,  "Total_de_hombres_capacitados" => $totales_industrial_masculinos, "Total_de_mujeres_capacitadas" => $totales_industrial_femenino),
+            array("carrera" => "Electrónica", "total" => $totales_electronica,  "Total_de_hombres_capacitados" => $totales_electronica_masculinos, "Total_de_mujeres_capacitadas" => $totales_electronica_femenino),
+            array("carrera" => "Electrica", "total" => $totales_electrica,  "Total_de_hombres_capacitados" => $totales_electrica_masculinos, "Total_de_mujeres_capacitadas" => $totales_electrica_femenino),
+            array("carrera" => "Bioquimica", "total" => $totales_bioquimica,  "Total_de_hombres_capacitados" => $totales_bioquimica_masculinos, "Total_de_mujeres_capacitadas" => $totales_bioquimica_femenino),
+            array("carrera" => "Quimica", "total" => $totales_quimica,  "Total_de_hombres_capacitados" => $totales_quimica_masculinos, "Total_de_mujeres_capacitadas" => $totales_quimica_femenino),
+            array("carrera" => "Gestión Empresarial", "total" => $totales_ige,  "Total_de_hombres_capacitados" => $totales_ige_masculinos, "Total_de_mujeres_capacitadas" => $totales_ige_femenino),
+            array("carrera" => "Logística", "total" => $totales_logistica,  "Total_de_hombres_capacitados" => $totales_logistica_masculinos, "Total_de_mujeres_capacitadas" => $totales_logistica_femenino),
+            array("carrera" => "Mecatrónica", "total" => $totales_mecatronica,  "Total_de_hombres_capacitados" => $totales_mecatronica_masculinos, "Total_de_mujeres_capacitadas" => $totales_mecatronica_masculinos),
+            array("carrera" => "Ciencias Basicas", "total" => $totales_cb,  "Total_de_hombres_capacitados" => $totales_cb_masculinos, "Total_de_mujeres_capacitadas" => $totales_cb_femenino),
+            array("carrera" => "Ciencias Económico Administrativo", "total" => $totales_cea,  "Total_de_hombres_capacitados" => $totales_cea_masculinos, "Total_de_mujeres_capacitadas" => $totales_cea_femenino),
+            array("carrera" => "Todas las carreras", "total" => $totales_todos,  "Total_de_hombres_capacitados" => $totales_masculinos, "Total_de_mujeres_capacitadas" => $totales_femenino)
         );
     }
 }

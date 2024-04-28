@@ -364,7 +364,8 @@ console.log(props.docente_carrera);
                                 "
                             >
                                 <p class="ma-10 text-center text-2xl">
-                                    Total de docentes capacitados por carrera en
+                                    Total de docentes capacitados por curso
+                                    impartido en
                                     {{ date }}
                                 </p>
                                 <div
