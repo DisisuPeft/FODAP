@@ -388,7 +388,8 @@ class DesarrolloController extends Controller
             ->leftjoin('inscripcion', 'inscripcion.docente_id', '=', 'docente.id')
             ->where('inscripcion.docente_id', '=', 'docente.id')
             ->distinct()
-            ->count();
+            ->get();
+        // ->count();
 
         return Inertia::render('Views/desarrollo/Docentes', [
             'docentes' => $docentes,
