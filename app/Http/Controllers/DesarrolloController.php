@@ -387,7 +387,7 @@ class DesarrolloController extends Controller
         $totales = DB::table('docente')
             ->leftjoin('inscripcion', 'inscripcion.docente_id', '=', 'docente.id')
             ->where('inscripcion.docente_id', '=', 'docente.id')
-            ->uniqid()
+            ->distinct()
             ->count();
 
         return Inertia::render('Views/desarrollo/Docentes', [
