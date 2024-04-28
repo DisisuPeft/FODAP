@@ -27,6 +27,7 @@ const props = defineProps({
     departamento: Array,
     errors: null,
     data: Number,
+    totales: Array,
 });
 
 console.log(props.data);
@@ -140,6 +141,7 @@ onMounted(() => {
         }
     );
 });
+console.log(totales);
 </script>
 
 <template>
