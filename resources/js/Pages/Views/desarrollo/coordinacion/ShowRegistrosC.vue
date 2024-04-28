@@ -134,7 +134,7 @@ onMounted(() => {
     store.get_curso_desarrollo();
 });
 
-console.log(todas);
+console.log(props.todas);
 </script>
 
 <template>
