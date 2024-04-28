@@ -206,7 +206,7 @@ onMounted(() => {
                             <p>FEMENINO</p>
                         </template>
                         <template v-else>
-                            <p></p>
+                            <p>SIN GENERO SELECCIONADO</p>
                         </template>
                     </template>
                     <template v-slot:item.departamento="{ item }">

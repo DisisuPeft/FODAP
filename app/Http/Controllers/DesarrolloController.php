@@ -384,6 +384,12 @@ class DesarrolloController extends Controller
         $puesto = DB::table('puesto')->select('id', 'nombre')->get();
         $posgrado = DB::table('posgrado')->select('id', 'nombre')->get();
 
+        $totales = DB::table('docente')
+            ->leftjoin('inscripcion', 'inscripcion.docente_id', '=', 'docente.id')
+            ->where('inscripcion.docente_id', '=', 'docente.id')
+            ->uniqid()
+            ->count();
+
         return Inertia::render('Views/desarrollo/Docentes', [
             'docentes' => $docentes,
             'user' => $user,
@@ -392,6 +398,7 @@ class DesarrolloController extends Controller
             'tipo_plaza' => $tipoPlaza,
             'puesto' => $puesto,
             'posgrado' => $posgrado,
+            'totales' => $totales
         ]);
     }
     public function create_docentes()
