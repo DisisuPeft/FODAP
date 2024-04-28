@@ -354,7 +354,7 @@ class DeteccionNecesidades extends Model
         $total_mecanica = 0;
         $total_m_mecanica = 0;
         $total_f_mecanica = 0;
-        for ($i = 0; $i < count($mecanica) - 1; $i++) {
+        for ($i = 0; $i < count($mecanica); $i++) {
             $total_mecanica += $mecanica[$i]->docente_inscrito->count();
             $total_m_mecanica += $mecanica[$i]->docente_inscrito->where('sexo', 1)->count();
             $total_f_mecanica += $mecanica[$i]->docente_inscrito->where('sexo', 2)->count();
@@ -362,7 +362,7 @@ class DeteccionNecesidades extends Model
         $total_sistemas = 0;
         $total_m_sistemas = 0;
         $total_f_sistemas = 0;
-        for ($i = 0; $i < count($sistemas) - 1; $i++) {
+        for ($i = 0; $i < count($sistemas); $i++) {
             $total_sistemas += $sistemas[$i]->docente_inscrito->count();
             $total_m_sistemas += $sistemas[$i]->docente_inscrito->where('sexo', 1)->count();
             $total_f_sistemas += $sistemas[$i]->docente_inscrito->where('sexo', 2)->count();
@@ -370,7 +370,7 @@ class DeteccionNecesidades extends Model
         $total_industrial = 0;
         $total_m_industrial = 0;
         $total_f_industrial = 0;
-        for ($i = 0; $i < count($industrial) - 1; $i++) {
+        for ($i = 0; $i < count($industrial); $i++) {
             $total_industrial += $industrial[$i]->docente_inscrito->count();
             $total_m_industrial += $industrial[$i]->docente_inscrito->where('sexo', 1)->count();
             $total_f_industrial += $industrial[$i]->docente_inscrito->where('sexo', 2)->count();
@@ -378,7 +378,7 @@ class DeteccionNecesidades extends Model
         $total_electronica = 0;
         $total_m_electronica = 0;
         $total_f_electronica = 0;
-        for ($i = 0; $i < count($electronica) - 1; $i++) {
+        for ($i = 0; $i < count($electronica); $i++) {
             $total_electronica += $electronica[$i]->docente_inscrito->count();
             $total_m_electronica += $electronica[$i]->docente_inscrito->where('sexo', 1)->count();
             $total_f_electronica += $electronica[$i]->docente_inscrito->where('sexo', 2)->count();
@@ -386,7 +386,7 @@ class DeteccionNecesidades extends Model
         $total_electrica = 0;
         $total_m_electrica = 0;
         $total_f_electrica = 0;
-        for ($i = 0; $i < count($electrica) - 1; $i++) {
+        for ($i = 0; $i < count($electrica); $i++) {
             $total_electrica += $electrica[$i]->docente_inscrito->count();
             $total_m_electrica += $electrica[$i]->docente_inscrito->where('sexo', 1)->count();
             $total_f_electrica += $electrica[$i]->docente_inscrito->where('sexo', 2)->count();
@@ -394,7 +394,7 @@ class DeteccionNecesidades extends Model
         $total_bio = 0;
         $total_m_bio = 0;
         $total_f_bio = 0;
-        for ($i = 0; $i < count($bio) - 1; $i++) {
+        for ($i = 0; $i < count($bio); $i++) {
             $total_bio += $bio[$i]->docente_inscrito->count();
             $total_m_bio += $bio[$i]->docente_inscrito->where('sexo', 1)->count();
             $total_f_bio += $bio[$i]->docente_inscrito->where('sexo', 2)->count();
@@ -402,7 +402,7 @@ class DeteccionNecesidades extends Model
         $total_quimica  = 0;
         $total_m_quimica = 0;
         $total_f_quimica = 0;
-        for ($i = 0; $i < count($quimica) - 1; $i++) {
+        for ($i = 0; $i < count($quimica); $i++) {
             $total_quimica += $quimica[$i]->docente_inscrito->count();
             $total_m_quimica += $quimica[$i]->docente_inscrito->where('sexo', 1)->count();
             $total_f_quimica += $quimica[$i]->docente_inscrito->where('sexo', 2)->count();
@@ -410,7 +410,7 @@ class DeteccionNecesidades extends Model
         $total_gestion = 0;
         $total_m_gestion = 0;
         $total_f_gestion = 0;
-        for ($i = 0; $i < count($gestion) - 1; $i++) {
+        for ($i = 0; $i < count($gestion); $i++) {
             $total_gestion += $gestion[$i]->docente_inscrito->count();
             $total_m_gestion += $gestion[$i]->docente_inscrito->where('sexo', 1)->count();
             $total_f_gestion += $gestion[$i]->docente_inscrito->where('sexo', 2)->count();
@@ -418,7 +418,7 @@ class DeteccionNecesidades extends Model
         $total_logistica = 0;
         $total_m_logistica = 0;
         $total_f_logistica = 0;
-        for ($i = 0; $i < count($logistica) - 1; $i++) {
+        for ($i = 0; $i < count($logistica); $i++) {
             $total_logistica += $logistica[$i]->docente_inscrito->count();
             $total_m_logistica += $logistica[$i]->docente_inscrito->where('sexo', 1)->count();
             $total_f_logistica += $logistica[$i]->docente_inscrito->where('sexo', 2)->count();
@@ -426,7 +426,7 @@ class DeteccionNecesidades extends Model
         $total_mecatronica = 0;
         $total_m_mecatronica = 0;
         $total_f_mecatronica = 0;
-        for ($i = 0; $i < count($mecatronica) - 1; $i++) {
+        for ($i = 0; $i < count($mecatronica); $i++) {
             $total_mecatronica += $mecatronica[$i]->docente_inscrito->count();
             $total_m_mecatronica += $mecatronica[$i]->docente_inscrito->where('sexo', 1)->count();
             $total_f_mecatronica += $mecatronica[$i]->docente_inscrito->where('sexo', 2)->count();
@@ -434,7 +434,7 @@ class DeteccionNecesidades extends Model
         $total_cb = 0;
         $total_m_cb = 0;
         $total_f_cb = 0;
-        for ($i = 0; $i < count($cb) - 1; $i++) {
+        for ($i = 0; $i < count($cb); $i++) {
             $total_cb += $cb[$i]->docente_inscrito->count();
             $total_m_cb += $cb[$i]->docente_inscrito->where('sexo', 1)->count();
             $total_f_cb += $cb[$i]->docente_inscrito->where('sexo', 2)->count();
@@ -442,7 +442,7 @@ class DeteccionNecesidades extends Model
         $total_ciencias_ea = 0;
         $total_m_ciencias_ea = 0;
         $total_f_ciencias_ea = 0;
-        for ($i = 0; $i < count($ciencias_ea) - 1; $i++) {
+        for ($i = 0; $i < count($ciencias_ea); $i++) {
             $total_ciencias_ea += $ciencias_ea[$i]->docente_inscrito->count();
             $total_m_ciencias_ea += $ciencias_ea[$i]->docente_inscrito->where('sexo', 1)->count();
             $total_f_ciencias_ea += $ciencias_ea[$i]->docente_inscrito->where('sexo', 2)->count();
@@ -450,7 +450,7 @@ class DeteccionNecesidades extends Model
         $total_carreras = 0;
         $total_m_carreras = 0;
         $total_f_carreras = 0;
-        for ($i = 0; $i < count($todas_carreras) - 1; $i++) {
+        for ($i = 0; $i < count($todas_carreras); $i++) {
             $total_carreras += $todas_carreras[$i]->docente_inscrito->count();
             $total_m_carreras += $todas_carreras[$i]->docente_inscrito->where('sexo', 1)->count();
             $total_f_carreras += $todas_carreras[$i]->docente_inscrito->where('sexo', 2)->count();
