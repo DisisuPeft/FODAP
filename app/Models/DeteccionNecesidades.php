@@ -355,105 +355,105 @@ class DeteccionNecesidades extends Model
         $total_m_mecanica = 0;
         $total_f_mecanica = 0;
         for ($i = 0; $i < count($mecanica) - 1; $i++) {
-            $total_mecanica = $mecanica[$i]->docente_inscrito->count() + $mecanica[$i + 1]->docente_inscrito->count();
-            $total_m_mecanica = $mecanica[$i]->docente_inscrito->where('sexo', 1)->count() +  $mecanica[$i + 1]->docente_inscrito->where('sexo', 1)->count();
-            $total_f_mecanica = $mecanica[$i]->docente_inscrito->where('sexo', 2)->count() +  $mecanica[$i + 1]->docente_inscrito->where('sexo', 2)->count();
+            $total_mecanica += $mecanica[$i]->docente_inscrito->count();
+            $total_m_mecanica += $mecanica[$i]->docente_inscrito->where('sexo', 1)->count();
+            $total_f_mecanica += $mecanica[$i]->docente_inscrito->where('sexo', 2)->count();
         }
         $total_sistemas = 0;
         $total_m_sistemas = 0;
         $total_f_sistemas = 0;
         for ($i = 0; $i < count($sistemas) - 1; $i++) {
-            $total_sistemas = $sistemas[$i]->docente_inscrito->count() + $sistemas[$i + 1]->docente_inscrito->count();
-            $total_m_sistemas = $sistemas[$i]->docente_inscrito->where('sexo', 1)->count() + $sistemas[$i + 1]->docente_inscrito->where('sexo', 1)->count();
-            $total_f_sistemas = $sistemas[$i]->docente_inscrito->where('sexo', 2)->count() + $sistemas[$i + 1]->docente_inscrito->where('sexo', 2)->count();
+            $total_sistemas += $sistemas[$i]->docente_inscrito->count();
+            $total_m_sistemas += $sistemas[$i]->docente_inscrito->where('sexo', 1)->count();
+            $total_f_sistemas += $sistemas[$i]->docente_inscrito->where('sexo', 2)->count();
         }
         $total_industrial = 0;
         $total_m_industrial = 0;
         $total_f_industrial = 0;
         for ($i = 0; $i < count($industrial) - 1; $i++) {
-            $total_industrial = $industrial[$i]->docente_inscrito->count() + $industrial[$i + 1]->docente_inscrito->count();
-            $total_m_industrial = $industrial[$i]->docente_inscrito->where('sexo', 1)->count() + $industrial[$i + 1]->docente_inscrito->where('sexo', 1)->count();
-            $total_f_industrial = $industrial[$i]->docente_inscrito->where('sexo', 2)->count() + $industrial[$i + 1]->docente_inscrito->where('sexo', 2)->count();
+            $total_industrial += $industrial[$i]->docente_inscrito->count();
+            $total_m_industrial += $industrial[$i]->docente_inscrito->where('sexo', 1)->count();
+            $total_f_industrial += $industrial[$i]->docente_inscrito->where('sexo', 2)->count();
         }
         $total_electronica = 0;
         $total_m_electronica = 0;
         $total_f_electronica = 0;
         for ($i = 0; $i < count($electronica) - 1; $i++) {
-            $total_electronica = $electronica[$i]->docente_inscrito->count() + $electronica[$i + 1]->docente_inscrito->count();
-            $total_m_electronica = $electronica[$i]->docente_inscrito->where('sexo', 1)->count() + $electronica[$i + 1]->docente_inscrito->where('sexo', 1)->count();
-            $total_f_electronica = $electronica[$i]->docente_inscrito->where('sexo', 2)->count() + $electronica[$i + 1]->docente_inscrito->where('sexo', 2)->count();
+            $total_electronica += $electronica[$i]->docente_inscrito->count();
+            $total_m_electronica += $electronica[$i]->docente_inscrito->where('sexo', 1)->count();
+            $total_f_electronica += $electronica[$i]->docente_inscrito->where('sexo', 2)->count();
         }
         $total_electrica = 0;
         $total_m_electrica = 0;
         $total_f_electrica = 0;
         for ($i = 0; $i < count($electrica) - 1; $i++) {
-            $total_electrica = $electrica[$i]->docente_inscrito->count() + $electrica[$i + 1]->docente_inscrito->count();
-            $total_m_electrica = $electrica[$i]->docente_inscrito->where('sexo', 1)->count() + $electrica[$i + 1]->docente_inscrito->where('sexo', 1)->count();
-            $total_f_electrica = $electrica[$i]->docente_inscrito->where('sexo', 2)->count() + $electrica[$i + 1]->docente_inscrito->where('sexo', 2)->count();
+            $total_electrica += $electrica[$i]->docente_inscrito->count();
+            $total_m_electrica += $electrica[$i]->docente_inscrito->where('sexo', 1)->count();
+            $total_f_electrica += $electrica[$i]->docente_inscrito->where('sexo', 2)->count();
         }
         $total_bio = 0;
         $total_m_bio = 0;
         $total_f_bio = 0;
         for ($i = 0; $i < count($bio) - 1; $i++) {
-            $total_bio = $bio[$i]->docente_inscrito->count() + $bio[$i + 1]->docente_inscrito->count();
-            $total_m_bio = $bio[$i]->docente_inscrito->where('sexo', 1)->count() + $bio[$i + 1]->docente_inscrito->where('sexo', 1)->count();
-            $total_f_bio = $bio[$i]->docente_inscrito->where('sexo', 2)->count() + $bio[$i + 1]->docente_inscrito->where('sexo', 2)->count();
+            $total_bio += $bio[$i]->docente_inscrito->count();
+            $total_m_bio += $bio[$i]->docente_inscrito->where('sexo', 1)->count();
+            $total_f_bio += $bio[$i]->docente_inscrito->where('sexo', 2)->count();
         }
         $total_quimica  = 0;
         $total_m_quimica = 0;
         $total_f_quimica = 0;
         for ($i = 0; $i < count($quimica) - 1; $i++) {
-            $total_quimica = $quimica[$i]->docente_inscrito->count() + $quimica[$i + 1]->docente_inscrito->count();
-            $total_m_quimica = $quimica[$i]->docente_inscrito->where('sexo', 1)->count() + $quimica[$i + 1]->docente_inscrito->where('sexo', 1)->count();
-            $total_f_quimica = $quimica[$i]->docente_inscrito->where('sexo', 2)->count() + $quimica[$i + 1]->docente_inscrito->where('sexo', 2)->count();
+            $total_quimica += $quimica[$i]->docente_inscrito->count();
+            $total_m_quimica += $quimica[$i]->docente_inscrito->where('sexo', 1)->count();
+            $total_f_quimica += $quimica[$i]->docente_inscrito->where('sexo', 2)->count();
         }
         $total_gestion = 0;
         $total_m_gestion = 0;
         $total_f_gestion = 0;
         for ($i = 0; $i < count($gestion) - 1; $i++) {
-            $total_gestion = $gestion[$i]->docente_inscrito->count() + $gestion[$i + 1]->docente_inscrito->count();
-            $total_m_gestion = $gestion[$i]->docente_inscrito->where('sexo', 1)->count() + $gestion[$i + 1]->docente_inscrito->where('sexo', 1)->count();
-            $total_f_gestion = $gestion[$i]->docente_inscrito->where('sexo', 2)->count() + $gestion[$i + 1]->docente_inscrito->where('sexo', 2)->count();
+            $total_gestion += $gestion[$i]->docente_inscrito->count();
+            $total_m_gestion += $gestion[$i]->docente_inscrito->where('sexo', 1)->count();
+            $total_f_gestion += $gestion[$i]->docente_inscrito->where('sexo', 2)->count();
         }
         $total_logistica = 0;
         $total_m_logistica = 0;
         $total_f_logistica = 0;
         for ($i = 0; $i < count($logistica) - 1; $i++) {
-            $total_logistica = $logistica[$i]->docente_inscrito->count() + $logistica[$i + 1]->docente_inscrito->count();
-            $total_m_logistica = $logistica[$i]->docente_inscrito->where('sexo', 1)->count() + $logistica[$i + 1]->docente_inscrito->where('sexo', 1)->count();
-            $total_f_logistica = $logistica[$i]->docente_inscrito->where('sexo', 2)->count() + $logistica[$i + 1]->docente_inscrito->where('sexo', 2)->count();
+            $total_logistica += $logistica[$i]->docente_inscrito->count();
+            $total_m_logistica += $logistica[$i]->docente_inscrito->where('sexo', 1)->count();
+            $total_f_logistica += $logistica[$i]->docente_inscrito->where('sexo', 2)->count();
         }
         $total_mecatronica = 0;
         $total_m_mecatronica = 0;
         $total_f_mecatronica = 0;
         for ($i = 0; $i < count($mecatronica) - 1; $i++) {
-            $total_mecatronica = $mecatronica[$i]->docente_inscrito->count() + $mecatronica[$i + 1]->docente_inscrito->count();
-            $total_m_mecatronica = $mecatronica[$i]->docente_inscrito->where('sexo', 1)->count() + $mecatronica[$i + 1]->docente_inscrito->where('sexo', 1)->count();
-            $total_f_mecatronica = $mecatronica[$i]->docente_inscrito->where('sexo', 2)->count() + $mecatronica[$i + 1]->docente_inscrito->where('sexo', 2)->count();
+            $total_mecatronica += $mecatronica[$i]->docente_inscrito->count();
+            $total_m_mecatronica += $mecatronica[$i]->docente_inscrito->where('sexo', 1)->count();
+            $total_f_mecatronica += $mecatronica[$i]->docente_inscrito->where('sexo', 2)->count();
         }
         $total_cb = 0;
         $total_m_cb = 0;
         $total_f_cb = 0;
         for ($i = 0; $i < count($cb) - 1; $i++) {
-            $total_cb = $cb[$i]->docente_inscrito->count() + $cb[$i + 1]->docente_inscrito->count();
-            $total_m_cb = $cb[$i]->docente_inscrito->where('sexo', 1)->count() + $cb[$i + 1]->docente_inscrito->where('sexo', 1)->count();
-            $total_f_cb = $cb[$i]->docente_inscrito->where('sexo', 2)->count() + $cb[$i + 1]->docente_inscrito->where('sexo', 2)->count();
+            $total_cb += $cb[$i]->docente_inscrito->count();
+            $total_m_cb += $cb[$i]->docente_inscrito->where('sexo', 1)->count();
+            $total_f_cb += $cb[$i]->docente_inscrito->where('sexo', 2)->count();
         }
         $total_ciencias_ea = 0;
         $total_m_ciencias_ea = 0;
         $total_f_ciencias_ea = 0;
         for ($i = 0; $i < count($ciencias_ea) - 1; $i++) {
-            $total_ciencias_ea = $ciencias_ea[$i]->docente_inscrito->count() + $ciencias_ea[$i + 1]->docente_inscrito->count();
-            $total_m_ciencias_ea = $ciencias_ea[$i]->docente_inscrito->where('sexo', 1)->count() + $ciencias_ea[$i + 1]->docente_inscrito->where('sexo', 1)->count();
-            $total_f_ciencias_ea = $ciencias_ea[$i]->docente_inscrito->where('sexo', 2)->count() + $ciencias_ea[$i + 1]->docente_inscrito->where('sexo', 2)->count();
+            $total_ciencias_ea += $ciencias_ea[$i]->docente_inscrito->count();
+            $total_m_ciencias_ea += $ciencias_ea[$i]->docente_inscrito->where('sexo', 1)->count();
+            $total_f_ciencias_ea += $ciencias_ea[$i]->docente_inscrito->where('sexo', 2)->count();
         }
         $total_carreras = 0;
         $total_m_carreras = 0;
         $total_f_carreras = 0;
         for ($i = 0; $i < count($todas_carreras) - 1; $i++) {
-            $total_carreras = $todas_carreras[$i]->docente_inscrito->count() + $todas_carreras[$i + 1]->docente_inscrito->count();
-            $total_m_carreras = $todas_carreras[$i]->docente_inscrito->where('sexo', 1)->count() + $todas_carreras[$i + 1]->docente_inscrito->where('sexo', 1)->count();
-            $total_f_carreras = $todas_carreras[$i]->docente_inscrito->where('sexo', 2)->count() + $todas_carreras[$i + 1]->docente_inscrito->where('sexo', 2)->count();
+            $total_carreras += $todas_carreras[$i]->docente_inscrito->count();
+            $total_m_carreras += $todas_carreras[$i]->docente_inscrito->where('sexo', 1)->count();
+            $total_f_carreras += $todas_carreras[$i]->docente_inscrito->where('sexo', 2)->count();
         }
         return array(
             array("carrera" => "Mecánica", "total" => $total_mecanica, "Total_de_hombres_capacitados" => $total_m_mecanica, "Total_de_mujeres_capacitadas" => $total_f_mecanica),
