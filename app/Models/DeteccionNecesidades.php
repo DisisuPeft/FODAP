@@ -658,8 +658,8 @@ class DeteccionNecesidades extends Model
         $totales_todos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->select('docente.id')
             ->distinct()
+            ->select('docente.id')
             ->count();
         $totales_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
@@ -667,8 +667,8 @@ class DeteccionNecesidades extends Model
             ->where(function ($query) {
                 $query->where('docente.sexo', '=', 1);
             })
-            ->select('docente.id')
             ->distinct()
+            ->select('docente.id')
             ->count();
         $totales_femenino = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
@@ -676,8 +676,8 @@ class DeteccionNecesidades extends Model
             ->where(function ($query) {
                 $query->where('docente.sexo', '=', 2);
             })
-            ->select('docente.id')
             ->distinct()
+            ->select('docente.id')
             ->count();
         return array(
             array("carrera" => "Mecánica", "total" => $totales_mecanica, "Total_de_hombres_capacitados" => $totales_mecanica_masculinos, "Total_de_mujeres_capacitadas" => $totales_mecanica_femenino),
