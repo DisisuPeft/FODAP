@@ -317,30 +317,30 @@ class DeteccionNecesidades extends Model
     }
     public static function docente_carrera_consult()
     {
-        $totales_mecanica = DB::table('docente')
-            ->leftjoin('inscripcion', 'inscripcion.docente_id', '=', 'docente.id')
-            ->where('docente.carrera_id', '=', 1)
-            ->whereColumn('inscripcion.docente_id', '=', 'docente.id')
+        $totales_mecanica = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 1)
             ->select('docente.id')
             ->distinct()
             ->count();
-        $totales_mecanica_masculinos = DB::table('docente')
-            ->leftjoin('inscripcion', 'inscripcion.docente_id', '=', 'docente.id')
+        $totales_mecanica_masculinos = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->where(function ($query) {
-                $query->where('docente.carrera_id', '=', 1)
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 1)
                     ->where('docente.sexo', '=', 1);
             })
-            ->whereColumn('inscripcion.docente_id', '=', 'docente.id')
             ->select('docente.id')
             ->distinct()
             ->count();
-        $totales_mecanica_femenino = DB::table('docente')
-            ->leftjoin('inscripcion', 'inscripcion.docente_id', '=', 'docente.id')
+        $totales_mecanica_femenino = DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->where(function ($query) {
-                $query->where('docente.carrera_id', '=', 1)
+                $query->where('deteccion_necesidades.carrera_dirigido', '=', 1)
                     ->where('docente.sexo', '=', 2);
             })
-            ->whereColumn('inscripcion.docente_id', '=', 'docente.id')
             ->select('docente.id')
             ->distinct()
             ->count();
