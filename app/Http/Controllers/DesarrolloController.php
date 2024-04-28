@@ -386,7 +386,7 @@ class DesarrolloController extends Controller
 
         $totales = DB::table('docente')
             ->leftjoin('inscripcion', 'inscripcion.docente_id', '=', 'docente.id')
-            ->where('inscripcion.docente_id', '=', 'docente.id')
+            ->whereColumn('inscripcion.docente_id', '=', 'docente.id')
             ->distinct()
             ->get();
         // ->count();
