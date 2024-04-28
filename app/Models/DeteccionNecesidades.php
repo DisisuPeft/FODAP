@@ -347,8 +347,7 @@ class DeteccionNecesidades extends Model
             ->where('carrera_dirigido', '=', 11)->get();
         $ciencias_ea = DeteccionNecesidades::with('docente_inscrito')
             ->where('carrera_dirigido', '=', 12)->get();
-        $todas_carreras = DeteccionNecesidades::with('docente_inscrito')
-            ->where('carrera_dirigido', '=', 13)->get();
+        $todas_carreras = DeteccionNecesidades::with('docente_inscrito')->get();
 
         //Cuantps dpcentes por carrera, cuantos fueron mujeres y cuantos fueron hombres
         $total_mecanica = 0;
