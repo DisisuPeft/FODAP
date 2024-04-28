@@ -84,12 +84,14 @@ class DesarrolloController extends Controller
 
         $departamento = Departamento::all();
         $carrera = Carrera::all();
+        $todas_carreras = DeteccionNecesidades::with('docente_inscrito')->get();
 
         return Inertia::render('Views/desarrollo/coordinacion/ShowRegistrosC', [
             'cursos_fd' => $cursos_fd,
             'cursos_ap' => $cursos_ap,
             'departamento' => $departamento,
             'carrera' => $carrera,
+            'todas' => $todas_carreras,
         ]);
     }
 

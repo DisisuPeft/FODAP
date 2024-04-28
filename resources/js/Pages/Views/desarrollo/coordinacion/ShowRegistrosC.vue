@@ -11,6 +11,7 @@ const props = defineProps({
     cursos_ap: Array,
     departamento: Array,
     carrera: Array,
+    todas: Array,
 });
 const search = ref("");
 const search_ap = ref("");
@@ -133,7 +134,7 @@ onMounted(() => {
     store.get_curso_desarrollo();
 });
 
-console.log(devolver());
+console.log(todas);
 </script>
 
 <template>
