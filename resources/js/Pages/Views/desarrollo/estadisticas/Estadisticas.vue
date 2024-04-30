@@ -203,7 +203,11 @@ console.log(props.docente_carrera);
                                 <div
                                     class="flex justify-center items-center mt-2"
                                 >
-                                    <template v-if="showingNavigationDropdown">
+                                    <template
+                                        v-if="
+                                            showingNavigationDropdown === false
+                                        "
+                                    >
                                         <v-icon
                                             >mdi-arrow-down-drop-circle-outline</v-icon
                                         >
