@@ -214,7 +214,8 @@ console.log(props.docente_carrera);
                                     </template>
                                     <template
                                         v-if="
-                                            showingNavigationDropdown === true
+                                            showingNavigationDropdown ===
+                                            !showingNavigationDropdown
                                         "
                                     >
                                         <v-icon
