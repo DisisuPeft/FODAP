@@ -212,7 +212,11 @@ console.log(props.docente_carrera);
                                             >mdi-arrow-down-drop-circle-outline</v-icon
                                         >
                                     </template>
-                                    <template v-if="!showingNavigationDropdown">
+                                    <template
+                                        v-if="
+                                            showingNavigationDropdown === true
+                                        "
+                                    >
                                         <v-icon
                                             >arrow-up-drop-circle-outline</v-icon
                                         >
