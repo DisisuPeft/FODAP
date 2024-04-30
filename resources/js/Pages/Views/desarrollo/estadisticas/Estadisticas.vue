@@ -203,9 +203,16 @@ console.log(props.docente_carrera);
                                 <div
                                     class="flex justify-center items-center mt-2"
                                 >
-                                    <v-icon
-                                        >mdi-arrow-down-drop-circle-outline</v-icon
-                                    >
+                                    <template v-if="showingNavigationDropdown">
+                                        <v-icon
+                                            >mdi-arrow-down-drop-circle-outline</v-icon
+                                        >
+                                    </template>
+                                    <template v-if="!showingNavigationDropdown">
+                                        <v-icon
+                                            >arrow-up-drop-circle-outline</v-icon
+                                        >
+                                    </template>
                                 </div>
                             </div>
                         </div>
