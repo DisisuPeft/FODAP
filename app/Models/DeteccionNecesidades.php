@@ -677,7 +677,7 @@ class DeteccionNecesidades extends Model
                 $query->where('docente.sexo', '=', 2);
             })
             ->distinct()
-            ->select('docente.id')
+            ->select('docente.id', 'docente.*')
             ->count();
         return array(
             array("carrera" => "Mecánica", "total" => $totales_mecanica, "Total_de_hombres_capacitados" => $totales_mecanica_masculinos, "Total_de_mujeres_capacitadas" => $totales_mecanica_femenino),
