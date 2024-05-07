@@ -151,7 +151,7 @@
         </tr>
         <tr>
             <td style="text-align: center; vertical-align: middle; font-size: 9pt;  font-weight: bold;padding-left: 50px">
-                DIRECTOR DEL
+                DIRECTOR
             </td>
             <td style="text-align: center; vertical-align: middle; font-size: 9pt;  font-weight: bold;padding-right: 70px" >
                 FACILITADOR (A)
@@ -163,11 +163,6 @@
                     <!-- Puedes agregar la imagen de la firma u otro contenido aquí -->
                 </td>
             @endif
-        </tr>
-        <tr>
-            <td style="text-align: center; vertical-align: middle; font-size: 9pt;  font-weight: bold;padding-left: 50px">
-                {{$instituto[0]->name}}
-            </td>
         </tr>
     </table>
 </body>
