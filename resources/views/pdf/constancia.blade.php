@@ -35,14 +35,14 @@
 
 <body style="">
     <div style="margin-top: 160px"></div>
-    <table width="100%" style="margin-left: 8px">
+    <table width="100%" style="margin-left: 4px">
         <tr>
             <td style="text-align: center; vertical-align: middle; font-size: 18pt; font-weight: bolder">
                 EL TECNOLÓGICO NACIONAL DE MÉXICO
             </td>
         </tr>
     </table>
-    <table width="100%" style="margin-left: 8px">
+    <table width="100%" style="margin-left: 4px">
         <tr>
             <td style="text-align: center; vertical-align: middle; font-size: 14pt; font-weight: bold">
                 A TRAVÉS DEL {{$instituto[0]->name}}
@@ -50,7 +50,7 @@
         </tr>
     </table>
     <div style="margin-top: 20px"></div>
-    <table width="100%" style="margin-left: 8px">
+    <table width="100%" style="margin-left: 4px">
         <tr>
             <td style="text-align: center; vertical-align: middle; font-size: 14pt;">
                 OTORGA LA PRESENTE
@@ -58,7 +58,7 @@
         </tr>
     </table>
     <div style="margin-top: 20px"></div>
-    <table width="100%" style="margin-left: 8px">
+    <table width="100%" style="margin-left: 4px">
         <tr>
             <td style="text-align: center; vertical-align: middle;  font-size: 22pt; font-weight: bold">
                 CONSTANCIA
@@ -66,7 +66,7 @@
         </tr>
     </table>
     <div style="margin-top: 20px"></div>
-    <table width="100%" style="margin-left: 8px">
+    <table width="100%" style="margin-left: 4px">
         <tr>
             <td style="text-align: center; vertical-align: middle; font-size: 14pt;">
                 A
@@ -74,7 +74,7 @@
         </tr>
     </table>
     <div style="margin-top: 20px"></div>
-    <table width="100%" style="margin-left: 8px">
+    <table width="100%" style="margin-left: 4px">
         <tr>
             <td style="text-align: center; vertical-align: middle; font-size: 24pt; font-weight: bold;">
                 {{$docente->nombre_completo}}
@@ -82,7 +82,7 @@
         </tr>
     </table>
     <div style="margin-top: 50px"></div>
-    <table width="100%" style="margin-left: 8px">
+    <table width="100%" style="margin-left: 4px">
         <tr>
             <td style="text-align: center; vertical-align: middle; sans-serif; font-size: 14pt;">
                 Por su destacada participación en el
@@ -103,7 +103,7 @@
         </tr>
     </table>
     <div style="margin-top: 10px"></div>
-    <table width="100%" style="margin-left: 8px">
+    <table width="100%" style="margin-left: 4px">
         <tr>
             <td style="text-align: center; vertical-align: middle; font-size: 16pt; font-weight: bold;">
                 "{{$curso->nombreCurso}}"
@@ -125,7 +125,7 @@
     <div style="margin-top: 15px"></div>
     <table>
         <tr>
-            <td style="text-align: justify; font-size: 8pt; padding-left: 420px">
+            <td style="text-align: justify; font-size: 8pt; padding-left: 450px">
                 Tuxtla Gutierrez, Chiapas; {{$month[2]}} {{$month[1]}} de {{$formatFechasF[0]}}
             </td>
         </tr>
