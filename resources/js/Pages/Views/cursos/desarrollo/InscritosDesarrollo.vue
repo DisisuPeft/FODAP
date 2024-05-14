@@ -346,9 +346,7 @@ function submit_inscripcion(form) {
         onError: () => {
             dialog_inscripcion.value = false;
             loading.value = false;
-            snackbar.value = true;
-            color.value = "error";
-            message.value = props.errors[0];
+            custom_snackbar();
             setTimeout(() => {
                 timeout.value = false;
             }, 5000);
