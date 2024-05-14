@@ -329,57 +329,30 @@ function descargar_formato_constancia_reconocimiento() {
 
 function submit_inscripcion(form) {
     loading.value = true;
-    if (props.auth.role === 1 || props.auth.role === 2) {
-        form.post(route("inscribir.docente", props.curso.id), {
-            onSuccess: () => {
-                dialog_inscripcion.value = false;
-                loading.value = false;
-                snackbar.value = true;
-                color.value = "green";
-                message.value = "Docente inscrito con exito";
-                setTimeout(() => {
-                    timeout.value = false;
-                }, 5000);
-                form.reset();
-            },
-            onError: () => {
-                dialog_inscripcion.value = false;
-                loading.value = false;
-                snackbar.value = true;
-                color.value = "error";
-                message.value = props.errors[0];
-                setTimeout(() => {
-                    timeout.value = false;
-                }, 5000);
-                form.reset();
-            },
-        });
-    } else if (props.auth.role === 3) {
-        form.post(route("inscripcion.academico", props.curso.id), {
-            onSuccess: () => {
-                dialog_inscripcion.value = false;
-                loading.value = false;
-                snackbar.value = true;
-                color.value = "green";
-                message.value = "Docente inscrito con exito";
-                setTimeout(() => {
-                    timeout.value = false;
-                }, 5000);
-                form.reset();
-            },
-            onError: () => {
-                dialog_inscripcion.value = false;
-                loading.value = false;
-                snackbar.value = true;
-                color.value = "error";
-                message.value = props.errors[0];
-                setTimeout(() => {
-                    timeout.value = false;
-                }, 5000);
-                form.reset();
-            },
-        });
-    }
+    form.post(route("inscribir.docente", props.curso.id), {
+        onSuccess: () => {
+            dialog_inscripcion.value = false;
+            loading.value = false;
+            snackbar.value = true;
+            color.value = "green";
+            message.value = "Docente inscrito con exito";
+            setTimeout(() => {
+                timeout.value = false;
+            }, 5000);
+            form.reset();
+        },
+        onError: () => {
+            dialog_inscripcion.value = false;
+            loading.value = false;
+            snackbar.value = true;
+            color.value = "error";
+            message.value = props.errors[0];
+            setTimeout(() => {
+                timeout.value = false;
+            }, 5000);
+            form.reset();
+        },
+    });
 }
 </script>
 
