@@ -270,6 +270,8 @@ onMounted(() => {
     } else {
         color_ficha.value = "error";
     }
+
+    console.log(props.inscritos);
 });
 
 const custom_snackbar = () => {
