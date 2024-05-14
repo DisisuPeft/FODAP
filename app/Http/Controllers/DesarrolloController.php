@@ -310,6 +310,7 @@ class DesarrolloController extends Controller
             })
             ->where('inscripcion.curso_id', '=', $id)
             ->select('docente.*', 'calificaciones.calificacion', 'inscripcion.curso_id AS inscripcion_curso_id')
+            ->distinct()
             ->get();
 
 

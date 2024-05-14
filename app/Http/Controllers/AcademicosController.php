@@ -130,6 +130,7 @@ class AcademicosController extends Controller
 
 
         $inscritos = DB::table('docente')
+            ->orderBy('nombre', 'asc')
             ->join('inscripcion', 'inscripcion.docente_id', '=', 'docente.id')
             ->leftJoin('calificaciones', function ($join) {
                 $join->on('calificaciones.docente_id', '=', 'docente.id')
@@ -137,7 +138,9 @@ class AcademicosController extends Controller
             })
             ->where('inscripcion.curso_id', '=', $id)
             ->select('docente.*', 'calificaciones.calificacion', 'inscripcion.curso_id AS inscripcion_curso_id')
+            ->distinct() // Agregar el método distinct aquí
             ->get();
+
         return Inertia::render('Views/cursos/academicos/ShowInscritos', [
             'curso' => $this->consult_view($id),
             'docente' => Docente::orderBy('nombre', 'asc')->get(),
