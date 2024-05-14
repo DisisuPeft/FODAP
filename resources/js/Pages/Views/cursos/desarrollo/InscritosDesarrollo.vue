@@ -327,8 +327,8 @@ function descargar_formato_constancia_reconocimiento() {
         });
 }
 
-function submit_inscripcion(teacher) {
-    console.log(teacher);
+function submit_inscripcion(form) {
+    console.log(form);
 }
 </script>
 

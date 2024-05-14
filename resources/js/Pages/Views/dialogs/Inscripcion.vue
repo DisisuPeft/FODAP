@@ -29,7 +29,7 @@ const emit = defineEmits([
 ]);
 
 const form = useForm({
-    id_docente: [],
+    id_docente: null,
 });
 
 const filterData = computed(() => {
@@ -45,7 +45,8 @@ const filterData = computed(() => {
     });
 });
 function addTeachers(teacher) {
-    emit("form:inscripcion", teacher);
+    form.id_docente = teacher;
+    emit("form:inscripcion", form);
 }
 </script>
 

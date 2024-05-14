@@ -347,13 +347,13 @@ class DesarrolloController extends Controller
         if ($num <= $deteccion->numeroProfesores) {
 
 
-            foreach ($request->id_docente as $docente) {
-                if ($deteccion->docente_inscrito()->where('docente_id', $docente)->exists()) {
-                    return back()->withErrors('Este docente ya esta inscrito');
-                } else {
-                    $deteccion->docente_inscrito()->attach($docente);
-                }
+            // foreach ($request->id_docente as $docente) {
+            if ($deteccion->docente_inscrito()->where('docente_id', $docente)->exists()) {
+                return back()->withErrors('Este docente ya esta inscrito');
+            } else {
+                $deteccion->docente_inscrito()->attach($docente);
             }
+            // }
 
             event(new InscripcionEvent($request->id_docente));
             return redirect()->route('index.desarrollo.inscritos', ['id' => $deteccion->id]);
