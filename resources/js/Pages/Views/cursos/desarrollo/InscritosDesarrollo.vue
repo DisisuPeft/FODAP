@@ -326,6 +326,10 @@ function descargar_formato_constancia_reconocimiento() {
             snackErrorActivator();
         });
 }
+
+function submit_inscripcion(teacher) {
+    console.log(teacher);
+}
 </script>
 
 <template>
@@ -479,6 +483,7 @@ function descargar_formato_constancia_reconocimiento() {
                         v-model="dialog_inscripcion"
                         @update:modelValue="dialog_inscripcion = $event"
                         @custom:snackbar="custom_snackbar"
+                        @form:inscripcion="submit_inscripcion"
                     ></Inscripcion>
                 </div>
                 <div class="flex justify-end mb-10">
