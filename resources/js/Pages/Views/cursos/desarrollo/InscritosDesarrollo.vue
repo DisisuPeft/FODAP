@@ -260,18 +260,16 @@ onMounted(() => {
     axios
         .get(route("count.cursos"))
         .then((res) => {
-            console.log(res.data);
+            // console.log(res.data);
         })
         .catch((err) => {
-            console.log(err.response.data);
+            // console.log(err.response.data);
         });
     if (props.curso.ficha_tecnica) {
         color_ficha.value = "success";
     } else {
         color_ficha.value = "error";
     }
-
-    console.log(props.inscritos);
 });
 
 const custom_snackbar = () => {
