@@ -29,7 +29,7 @@ const emit = defineEmits([
 ]);
 
 const form = useForm({
-    id_docente: null,
+    id_docente: [],
 });
 
 const filterData = computed(() => {
@@ -89,7 +89,7 @@ function addTeachers(teacher) {
                         <tr v-for="docente in filterData" :key="docente.id">
                             <td>{{ docente.nombre_completo }}</td>
                             <td>
-                                <primary-button @click="addTeachers(docente)"
+                                <primary-button @click="addTeachers(docente.id)"
                                     >Inscribir</primary-button
                                 >
                             </td>

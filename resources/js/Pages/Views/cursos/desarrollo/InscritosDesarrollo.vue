@@ -272,8 +272,8 @@ onMounted(() => {
     }
 });
 
-const custom_snackbar = (snack) => {
-    snackbar.value = snack;
+const custom_snackbar = () => {
+    snackbar.value = true;
     message.value = props.errors[0];
     color.value = "error";
     setTimeout(() => {
