@@ -25,7 +25,7 @@ const timeout = ref(4000);
 const emit = defineEmits(["update:modelValue", "custom:snackbar"]);
 
 const form = useForm({
-    id_docente: [],
+    id_docente: null,
 });
 
 const filterData = computed(() => {
@@ -41,31 +41,33 @@ const filterData = computed(() => {
     });
 });
 function addTeachers(teacher) {
-    if (!form.id_docente.includes(teacher)) {
-        form.id_docente.push(teacher.id);
-        console.log(form);
-        if (props.auth.role === 1 || props.auth.role === 2) {
-            form.post(route("inscribir.docente", props.curso.id), {
-                onSuccess: () => {
-                    form.reset();
-                },
-                onError: () => {
-                    emit("custom:snackbar", true);
-                    form.reset();
-                },
-            });
-        } else if (props.auth.role === 3) {
-            form.post(route("inscripcion.academico", props.curso.id), {
-                onSuccess: () => {
-                    form.reset();
-                },
-                onError: () => {
-                    emit("custom:snackbar", true);
-                    form.reset();
-                },
-            });
-        }
+    // if (!form.id_docente.includes(teacher)) {
+    form.id_docente = teacher;
+    console.log(form);
+    if (props.auth.role === 1 || props.auth.role === 2) {
+        form.post(route("inscribir.docente", props.curso.id), {
+            onSuccess: () => {
+                emit("update:modelValue", false);
+                form.reset();
+            },
+            onError: () => {
+                emit("custom:snackbar", true);
+                form.reset();
+            },
+        });
+    } else if (props.auth.role === 3) {
+        form.post(route("inscripcion.academico", props.curso.id), {
+            onSuccess: () => {
+                emit("update:modelValue", false);
+                form.reset();
+            },
+            onError: () => {
+                emit("custom:snackbar", true);
+                form.reset();
+            },
+        });
     }
+    // }
 }
 </script>
 
