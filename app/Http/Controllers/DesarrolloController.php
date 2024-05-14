@@ -348,10 +348,10 @@ class DesarrolloController extends Controller
 
 
             // foreach ($request->id_docente as $docente) {
-            if ($deteccion->docente_inscrito()->where('docente_id', $docente)->exists()) {
-                return back()->withErrors('Este docente ya esta inscrito');
+            if (!$deteccion->docente_inscrito()->where('docente_id', $request->id_docente)->exists()) {
+                $deteccion->docente_inscrito()->attach($request->id_docente);
             } else {
-                $deteccion->docente_inscrito()->attach($docente);
+                return back()->withErrors('Este docente ya esta inscrito');
             }
             // }
 
