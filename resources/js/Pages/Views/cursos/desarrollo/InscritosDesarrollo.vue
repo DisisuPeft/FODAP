@@ -951,11 +951,11 @@ function descargar_formato_constancia_reconocimiento() {
             @update:modelValue="snackbar = $event"
             :timeout="timeout"
         >
-            <template v-slot:reloadingbutton>
+            <!-- <template v-slot:reloadingbutton>
                 <div class="flex justify-start pa-1">
                     <v-btn @click="reloadPage" icon="mdi-reload"></v-btn>
                 </div>
-            </template>
+            </template> -->
         </CustomSnackBar>
         <Loading v-model="loading" @update:loading="loading = $event">
             <v-fade-transition leave-absolute>
