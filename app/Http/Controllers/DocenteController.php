@@ -22,29 +22,31 @@ use Inertia\Inertia;
 
 class DocenteController extends Controller
 {
-    public function index_cursos(){
+    public function index_cursos()
+    {
 
         //Actualiza el estado del curso
         date_default_timezone_set('America/Mexico_City');
         CoursesController::state_curso();
 
         $cursos = DeteccionNecesidades::with(['carrera', 'deteccion_facilitador', 'docente_inscrito'])
-                ->where('aceptado', '=', 1)
-                ->where('id_departamento', '=', auth()->user()->departamento_id)
-                ->orWhere('carrera_dirigido', '=', 13)
-                ->where(function($query) {
-                    $query->where('estado', '=', 0)
+            ->where('aceptado', '=', 1)
+            ->where('id_departamento', '=', auth()->user()->departamento_id)
+            ->orWhere('carrera_dirigido', '=', 13)
+            ->where(function ($query) {
+                $query->where('estado', '=', 0)
                     ->orWhere('estado', '=', 1);
-                })
-                ->orderBy('id', 'desc')
-                ->get();
+            })
+            ->orderBy('id', 'desc')
+            ->get();
 
         return Inertia::render('Views/cursos/docentes/CursosDocentes', [
             'cursos' => $cursos
         ]);
     }
 
-    public function index_registros_docente(){
+    public function index_registros_docente()
+    {
         date_default_timezone_set('America/Mexico_City');
         CoursesController::state_curso();
         $docente = Docente::with('inscrito')->where('id', '=', auth()->user()->docente_id)->first();
@@ -54,7 +56,8 @@ class DocenteController extends Controller
     }
 
 
-    public function inscripcion_docente(Request $request, $id){
+    public function inscripcion_docente(Request $request, $id)
+    {
         $request->validate([
             'id_docente' => 'required'
         ]);
@@ -64,35 +67,36 @@ class DocenteController extends Controller
             $syncDocente = DesarrolloController::consult_to_sync($id, $request->id_docente);
             event(new CalificacionEvent($syncDocente));
             return Redirect::route('index.cursos.docentes');
-
-        } catch (\Exception $exception){
-            return back()->withErrors('Registro no creado, el error es:'.$exception->getMessage());
+        } catch (\Exception $exception) {
+            return back()->withErrors('Registro no creado, el error es:' . $exception->getMessage());
         }
     }
 
-    public function desinscribirme(Request $request, $docente){
+    public function desinscribirme(Request $request, $docente)
+    {
         try {
             $curso = $request->curso;
-            $teacher = Docente::with(['inscrito' => function($query) use ($curso){
+            $teacher = Docente::with(['inscrito' => function ($query) use ($curso) {
                 $query->where('inscripcion.curso_id', '=', $curso);
             }])->find($docente);
 
             $teacher->inscrito()->detach($curso);
 
             return redirect()->route('index.cursos.docentes')->with('message', 'Docente eliminado del curso');
-//            return response()->json([
-//                'teacher' => $teacher,
-//            ]);
+            //            return response()->json([
+            //                'teacher' => $teacher,
+            //            ]);
 
-        } catch (\Exception $exception){
-            return back()->withErrors('Registro no creado, el error es:'.$exception->getMessage());
+        } catch (\Exception $exception) {
+            return back()->withErrors('Registro no creado, el error es:' . $exception->getMessage());
         }
     }
-    public function misCursos(){
+    public function misCursos()
+    {
         date_default_timezone_set('America/Mexico_City');
         CoursesController::state_curso();
 
-        $docente = Docente::with('inscrito', 'calificacion_docente', )->where('id', '=', auth()->user()->docente_id)->first();
+        $docente = Docente::with('inscrito', 'calificacion_docente',)->where('id', '=', auth()->user()->docente_id)->first();
 
         $misCursos = DB::table('inscripcion')
             ->join('deteccion_necesidades', 'inscripcion.curso_id', '=', 'deteccion_necesidades.id')
@@ -112,10 +116,11 @@ class DocenteController extends Controller
         ]);
     }
 
-    public function upload_cvu(Request $request){
+    public function upload_cvu(Request $request)
+    {
 
-        if ($request->hasFile('file')){
-            $file_path = $request->file('file')->storeAs('/CVUupload/', 'CVU_'.$request->id.'.pdf', 'public');
+        if ($request->hasFile('file')) {
+            $file_path = $request->file('file')->storeAs('/CVUupload/', 'CVU_' . $request->id . '.pdf', 'public');
 
 
             $file = FilesCVU::create([
@@ -132,7 +137,8 @@ class DocenteController extends Controller
         return back()->withErrors('No se subio correctamente el CVU');
     }
 
-    public function show_facilitadores($id){
+    public function show_facilitadores($id)
+    {
         CoursesController::state_curso();
         $docente = Docente::with('cvu', 'facilitador_has_deteccion')->find($id);
         return Inertia::render('Views/cursos/facilitadores/Facilitadores', [
@@ -140,12 +146,13 @@ class DocenteController extends Controller
         ]);
     }
 
-    public function facilitador_curso($facilitador, $id){
+    public function facilitador_curso($facilitador, $id)
+    {
         $docente = Docente::find($facilitador);
         $curso = DeteccionNecesidades::with(['carrera', 'deteccion_facilitador', 'docente_inscrito', 'ficha_tecnica', 'calificaciones_curso', 'ficha_tecnica'])
             ->orderBy('id', 'desc')
             ->find($id);
-//        $ficha = $curso->ficha_tecnica != null ? FichaTecnica::with( 'temas', 'evaluacion_criterio')->find($curso->ficha_tecnica->id) : null;
+        //        $ficha = $curso->ficha_tecnica != null ? FichaTecnica::with( 'temas', 'evaluacion_criterio')->find($curso->ficha_tecnica->id) : null;
         $inscritos = DB::table('docente')
             ->join('inscripcion', 'inscripcion.docente_id', '=', 'docente.id')
             ->leftJoin('calificaciones', function ($join) {
@@ -154,6 +161,7 @@ class DocenteController extends Controller
             })
             ->where('inscripcion.curso_id', '=', $id)
             ->select('docente.*', 'calificaciones.calificacion', 'inscripcion.curso_id AS inscripcion_curso_id')
+            ->distinct()
             ->get();
         return Inertia::render('Views/cursos/facilitadores/MiCursoFacilitador', [
             'curso' => $curso,
@@ -162,7 +170,8 @@ class DocenteController extends Controller
         ]);
     }
 
-    public function crear_ficha_tecnica($facilitador, $id){
+    public function crear_ficha_tecnica($facilitador, $id)
+    {
         $docente = Docente::find($facilitador);
         $curso = DeteccionNecesidades::with('deteccion_facilitador')->find($id);
         return Inertia::render('Views/cursos/facilitadores/CreateFicha', [
@@ -171,13 +180,14 @@ class DocenteController extends Controller
         ]);
     }
 
-    public function store_ficha_tecnica(FichaTecnicaRequest $request){
-       $user = auth()->user();
-       $ficha_tecnica = FichaTecnica::create($request->validated());
+    public function store_ficha_tecnica(FichaTecnicaRequest $request)
+    {
+        $user = auth()->user();
+        $ficha_tecnica = FichaTecnica::create($request->validated());
 
-       $ficha_tecnica->save();
+        $ficha_tecnica->save();
 
-        foreach($request->input('temas') as $item){
+        foreach ($request->input('temas') as $item) {
             $temas = Temas::create([
                 'ficha_id' => $ficha_tecnica->id,
                 'name_tema' => $item[0],
@@ -187,7 +197,7 @@ class DocenteController extends Controller
             $temas->save();
         }
 
-        foreach($request->input('criterio_eval') as $element){
+        foreach ($request->input('criterio_eval') as $element) {
             $criterio_evaluacion = CriteriosEvaluacion::create([
                 'ficha_id' => $ficha_tecnica->id,
                 'criterio' => $element[0],
@@ -198,14 +208,15 @@ class DocenteController extends Controller
         }
 
 
-        if($user->role == 1 || $user->role == 2){
+        if ($user->role == 1 || $user->role == 2) {
             return Redirect::route('index.desarrollo.inscritos', ['id' => $request->id_curso]);
-        }else {
+        } else {
             return redirect()->route('show.curso.facilitador', [$request->id_docente, $request->id_curso]);
         }
     }
 
-    public function edit_ficha($facilitador, $id){
+    public function edit_ficha($facilitador, $id)
+    {
         $docente = Docente::find($facilitador);
         $curso = DeteccionNecesidades::with('deteccion_facilitador')->find($id);
         $ficha = FichaTecnica::where('id_curso', $id)->first();
@@ -216,22 +227,23 @@ class DocenteController extends Controller
         ]);
     }
 
-    public function update_ficha(FichaTecnicaRequest $request, $id){
+    public function update_ficha(FichaTecnicaRequest $request, $id)
+    {
         $user = auth()->user();
         $ficha_tecnica = FichaTecnica::find($id);
         $criterios = CriteriosEvaluacion::where('ficha_id', $ficha_tecnica->id)->get();
         $temas = Temas::where('ficha_id', $ficha_tecnica->id)->get();
 
-//        foreach($request->input('temas', []) as $index => $item){
-//            // Verifica si hay un tema correspondiente en la base de datos
-//            if(isset($temas[$index])) {
-//                // Actualiza el tema con los valores proporcionados en la solicitud
-//                $temas[$index]->name_tema = $item[0];
-//                $temas[$index]->tiempo_programado = $item[1];
-//                $temas[$index]->act_aprendizaje = $item[2];
-//                $temas[$index]->save();
-//            }
-//        }
+        //        foreach($request->input('temas', []) as $index => $item){
+        //            // Verifica si hay un tema correspondiente en la base de datos
+        //            if(isset($temas[$index])) {
+        //                // Actualiza el tema con los valores proporcionados en la solicitud
+        //                $temas[$index]->name_tema = $item[0];
+        //                $temas[$index]->tiempo_programado = $item[1];
+        //                $temas[$index]->act_aprendizaje = $item[2];
+        //                $temas[$index]->save();
+        //            }
+        //        }
         foreach ($request->input('temas', []) as $index => $item) {
             if (isset($temas[$index])) {
                 $temas[$index]->name_tema = $item[0];
@@ -241,7 +253,7 @@ class DocenteController extends Controller
             }
         }
 
-// Verifica si hay nuevos temas para agregar
+        // Verifica si hay nuevos temas para agregar
         $numTemasExistente = count($temas);
         $maxTemas = 14; // Máximo total de temas permitidos
 
@@ -257,9 +269,9 @@ class DocenteController extends Controller
                 $nuevoTema->save();
             }
         }
-        foreach($request->input('criterio_eval', []) as $index => $item){
+        foreach ($request->input('criterio_eval', []) as $index => $item) {
             // Verifica si hay un tema correspondiente en la base de datos
-            if(isset($criterios[$index])) {
+            if (isset($criterios[$index])) {
                 // Actualiza el tema con los valores proporcionados en la solicitud
                 $criterios[$index]->criterio = $item[0];
                 $criterios[$index]->valor = $item[1];
@@ -267,28 +279,28 @@ class DocenteController extends Controller
                 $criterios[$index]->save();
             }
         }
-            $ficha_tecnica->update($request->validated());
-            if($user->role == 1 || $user->role == 2){
-                return Redirect::route('index.desarrollo.inscritos', ['id' => $request->id_curso]);
-            }else {
-                return redirect()->route('show.curso.facilitador', [$request->id_docente, $request->id_curso]);
-            }
+        $ficha_tecnica->update($request->validated());
+        if ($user->role == 1 || $user->role == 2) {
+            return Redirect::route('index.desarrollo.inscritos', ['id' => $request->id_curso]);
+        } else {
+            return redirect()->route('show.curso.facilitador', [$request->id_docente, $request->id_curso]);
+        }
     }
-    public function delete_ficha($id){
+    public function delete_ficha($id)
+    {
         $criterios = CriteriosEvaluacion::where('ficha_id', $id)->get();
-        foreach ($criterios as $criterio){
+        foreach ($criterios as $criterio) {
             $criterio->delete();
         }
         $temas = Temas::where('ficha_id', $id)->get();
-        foreach ($temas as $tema){
+        foreach ($temas as $tema) {
             $tema->delete();
         }
         $ficha = FichaTecnica::find($id);
         $ficha->delete();
-
-
     }
-    public function calificaciones_facilitador(Request $request){
+    public function calificaciones_facilitador(Request $request)
+    {
         $request->validate([
             'docente_id' => 'required',
             'calificacion' => 'required',
@@ -303,7 +315,8 @@ class DocenteController extends Controller
         return Redirect::route('show.curso.facilitador', [$request->docente_id, $request->curso_id]);
     }
 
-    public function update_calificaciones_facilitador(Request $request){
+    public function update_calificaciones_facilitador(Request $request)
+    {
         $request->validate([
             'docente_id' => 'required',
             'calificacion' => 'required',
@@ -312,11 +325,11 @@ class DocenteController extends Controller
 
         $this->update_calificacion($request, $request->docente_id);
         return Redirect::route('show.curso.facilitador', [$request->docente_id, $request->curso_id]);
-
     }
 
-    public static function add_calificacion($payload){
-        if(isset($payload->curso_id)) {
+    public static function add_calificacion($payload)
+    {
+        if (isset($payload->curso_id)) {
             try {
                 DB::beginTransaction();
                 $calificacion = Calificaciones::create([
@@ -327,27 +340,29 @@ class DocenteController extends Controller
                 $calificacion->save();
                 DB::commit();
                 return "Ok";
-            }catch (\Exception $exception){
-                    DB::rollBack();
-                    return Redirect::back()->withErrors('error', 'Error a la hora de crear el registro: ' . $exception->getMessage());
+            } catch (\Exception $exception) {
+                DB::rollBack();
+                return Redirect::back()->withErrors('error', 'Error a la hora de crear el registro: ' . $exception->getMessage());
             }
         }
         return null;
     }
 
-    public static function update_calificacion($payload, $id){
+    public static function update_calificacion($payload, $id)
+    {
         $calificacion = Calificaciones::where('docente_id', $id)
             ->where('curso_id', $payload->curso_id)
             ->first();
 
-        if($calificacion) {
+        if ($calificacion) {
             $calificacion->calificacion = $payload->calificacion;
             $calificacion->save();
             return $calificacion;
         }
         return null;
     }
-    public static function create_instance_docente($request){
+    public static function create_instance_docente($request)
+    {
         $docente = Docente::create([
             'rfc' => $request->rfc,
             'curp' => $request->curp,
@@ -370,7 +385,8 @@ class DocenteController extends Controller
 
         return $docente;
     }
-    public static function updated_instance_docente($request, $id){
+    public static function updated_instance_docente($request, $id)
+    {
         $docente = Docente::find($id);
 
         $docente->rfc = $request->rfc;
@@ -394,21 +410,23 @@ class DocenteController extends Controller
         return $docente;
     }
 
-    public static function delete_docente($id){
+    public static function delete_docente($id)
+    {
         $docente = Docente::find($id);
         $docente->delete();
     }
 
-    public static function facilitadores_permission($facilitadores){
-        foreach ($facilitadores as $facilitador){
+    public static function facilitadores_permission($facilitadores)
+    {
+        foreach ($facilitadores as $facilitador) {
             $docente = Docente::find($facilitador);
-            if ($docente->user_id){
+            if ($docente->user_id) {
                 $user = User::find($docente->user_id);
                 return $user->givePermissionTo('facilitador');
-            }else {
+            } else {
                 return response()->noContent();
             }
-//            return $docente->usuario->givePermissionTo('facilitador');
+            //            return $docente->usuario->givePermissionTo('facilitador');
         }
     }
 }
