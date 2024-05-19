@@ -1,4 +1,3 @@
-
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import NavLink from "@/Components/NavLink.vue";
@@ -9,6 +8,8 @@ import { TailwindPagination } from 'laravel-vue-pagination';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import CustomSnackBar from "@/Components/CustomSnackBar.vue";
 import {router} from "@inertiajs/vue3";
+import Loading from "@/Components/Loading.vue";
+import Modal from "@/Components/Modal.vue";
 
 const store = Deteccion()
 const props = defineProps({
@@ -24,7 +25,8 @@ const timeout = ref(0)
 const message = ref("")
 const color = ref("")
 const snackbar = ref(false)
-
+const loading = ref(false)
+const modal = ref(false)
 const search = ref("");
 const search2 = ref("");
 const carrera = ref()
@@ -329,6 +331,34 @@ const pdfDeteccion = (form) => {
                 </div>
             </template>
         </CustomSnackBar>
+        <Loading v-model="loading" @update:loading="loading = $event">
+            <v-fade-transition leave-absolute>
+                <v-progress-circular
+                    v-if="loading"
+                    color="info"
+                    :size="64"
+                    :width="7"
+                    indeterminate
+                ></v-progress-circular>
+            </v-fade-transition>
+        </Loading>
+        <Modal :show="show">
+            <div class="grid grid-rows-1">
+                <div class="flex justify-end">
+                    <div class="flex justify-end ma-5">
+                        <button class="rounded-full" @click="show = false">
+                            <i class="mdi mdi-close text-4xl" ></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-center">
+                <i class="mdi mdi-alert-circle-outline text-6xl"></i>
+            </div>
+            <div class="flex justify-center">
+                <p class="text-center text-4xl ma-10">{{ message }}</p>
+            </div>
+        </Modal>
     </AuthenticatedLayout>
 </template>
 
