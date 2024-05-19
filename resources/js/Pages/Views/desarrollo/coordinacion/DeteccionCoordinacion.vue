@@ -129,6 +129,47 @@ onMounted(() => {
         snackEventActivator()
     });
 });
+const pdfDeteccion = (form) => {
+    loading.value = true;
+    axios
+        .get("/pdf/deteccion", {
+            params: {
+                anio: form.anio,
+                carrera: form.carrera,
+                periodo: form.periodo,
+            },
+        })
+        .then((res) => {
+            // cursos.value = res.data.cursos
+            if (res.data.mensaje) {
+                message.value = res.data.mensaje;
+                pdf_dialog.value = false
+                show.value = true;
+                loading.value = false;
+            } else {
+                const url = "/storage/Deteccion.pdf";
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", "deteccion.pdf");
+                document.body.appendChild(link);
+                link.click();
+                form.reset();
+                message.value = "Documento generado con exito";
+                timeout.value = 5000;
+                color.value = "success";
+                snackSuccess.value = true;
+                loading.value = false;
+            }
+        })
+        .catch((error) => {
+            message.value =
+                "¡Debe ingresar los datos para generar el documento!";
+            color.value = "error";
+            timeout.value = 5000;
+            snackSuccess.value = true;
+            loading.value = false;
+        });
+};
 </script>
 
 <template>
@@ -141,7 +182,12 @@ onMounted(() => {
                 <v-btn color="blue-darken-1" rounded size="large" @click="pdf_dialog = true">Generar PDF</v-btn>
             </v-row>
         </v-container>
-        <DeteccionDialog :carreras="props.carrera" v-model="pdf_dialog" @update:modelValue="pdf_dialog = $event"></DeteccionDialog>
+        <DeteccionDialog
+            :carreras="props.carrera"
+            v-model:modelValue="pdf_dialog"
+            @update:modelValue="pdf_dialog = $event"
+            @form:deteccion="pdfDeteccion"
+        ></DeteccionDialog>
         <div class="mt-2 mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-4 mt-2 sm:p-8 bg-white shadow sm:rounded-lg">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">Deteccion de Necesidades de Formación Docente</h2>
