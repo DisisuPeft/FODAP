@@ -159,7 +159,7 @@ const pdfDeteccion = (form) => {
                 message.value = "Documento generado con exito";
                 timeout.value = 5000;
                 color.value = "success";
-                snackSuccess.value = true;
+                snackbar.value = true;
                 loading.value = false;
             }
         })
