@@ -31,7 +31,7 @@ const search = ref("");
 const search2 = ref("");
 const carrera = ref()
 const carrera2= ref()
-
+const show = ref(false)
 const filterCursoFD = computed(() => {
     const busqueda = search.value.toLowerCase().trim();
     const carer = carrera.value
