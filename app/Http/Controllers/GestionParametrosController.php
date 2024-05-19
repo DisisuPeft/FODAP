@@ -413,4 +413,11 @@ class   GestionParametrosController extends Controller
     {
         $request->file('file')->storeAs('/img/', 'educacion.jpg', 'public');
     }
+    public function subir_imagen(Request $request): void
+    {
+        $request->validate([
+            'file' => ['required', 'mimes:jpg,jpeg,png'],
+        ]);
+        $request->file('file')->storeAs('/img/', 'educacion.jpg', 'public');
+    }
 }
