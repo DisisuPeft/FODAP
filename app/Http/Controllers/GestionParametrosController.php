@@ -36,7 +36,8 @@ use Spatie\Permission\Models\Role;
 
 class   GestionParametrosController extends Controller
 {
-    public function edit(Request $request){
+    public function edit(Request $request)
+    {
         $users =  User::where('id', '!=', auth()->user()->id)->with('docente', 'departamento', 'permissions')->get();
         $lugar = Lugar::with('curso')->get();
         $departamento = Departamento::with('jefe_docente')->get();
@@ -61,7 +62,8 @@ class   GestionParametrosController extends Controller
         ]);
     }
 
-    public function create_carrera(Request $request){
+    public function create_carrera(Request $request)
+    {
         $departamento = Departamento::all();
         $carrera = Carrera::all()->except(['13']);
         $docente = Docente::all();
@@ -72,7 +74,8 @@ class   GestionParametrosController extends Controller
         ]);
     }
 
-    public function store_carrera(Request $request){
+    public function store_carrera(Request $request)
+    {
         $carrera = Carrera::create([
             'departamento_id' => $request->departamento_id,
             'nameCarrera' => $request->nameCarrera,
@@ -82,9 +85,9 @@ class   GestionParametrosController extends Controller
         $carrera->save();
 
         return Redirect::route('parametros.edit');
-
     }
-    public function edit_carrera(Request $request, $id){
+    public function edit_carrera(Request $request, $id)
+    {
         $carrera = Carrera::find($id);
         $departamento = Departamento::all();
         $docente = Docente::all();
@@ -95,7 +98,8 @@ class   GestionParametrosController extends Controller
             'departamento' => $departamento,
         ]);
     }
-    public function update_carrera(Request $request, $id){
+    public function update_carrera(Request $request, $id)
+    {
         $carrera = Carrera::find($id);
 
         $carrera->nameCarrera = $request->nameCarrera;
@@ -105,10 +109,10 @@ class   GestionParametrosController extends Controller
         $carrera->save();
 
         return redirect()->route('edit.carrera', ['id' => $id]);
-
     }
 
-    public function create_departamento(){
+    public function create_departamento()
+    {
         $departamento = Departamento::with('jefe_docente')->get();
         $carrera = Carrera::all()->except(['13']);
         $docente = Docente::all();
@@ -117,10 +121,10 @@ class   GestionParametrosController extends Controller
             'carrera' => $carrera,
             'departamento' => $departamento,
         ]);
-
     }
 
-    public function store_departamento(Request $request){
+    public function store_departamento(Request $request)
+    {
         $departamento = Departamento::create([
             'carrera_id' => $request->carrera_id,
             'nameDepartamento' => $request->nameDepartamento,
@@ -132,7 +136,8 @@ class   GestionParametrosController extends Controller
         return Redirect::route('parametros.edit');
     }
 
-    public function edit_departamento(Request $request, $id){
+    public function edit_departamento(Request $request, $id)
+    {
         $departamento = Departamento::find($id);
         $carrera = Carrera::all();
         $docente = Docente::all();
@@ -143,7 +148,8 @@ class   GestionParametrosController extends Controller
             'departamento' => $departamento,
         ]);
     }
-    public function update_departamento(Request $request, $id){
+    public function update_departamento(Request $request, $id)
+    {
         $departamento = Departamento::find($id);
 
         $departamento->nameDepartamento = $request->nameDepartamento;
@@ -152,39 +158,44 @@ class   GestionParametrosController extends Controller
         $departamento->save();
 
         return redirect()->route('edit.departamento', ['id' => $id]);
-
     }
 
-    public function create_lugar(){
+    public function create_lugar()
+    {
         return Inertia::render('Views/desarrollo/forms/CreateLugar');
     }
 
-    public function store_lugar(Request $request){
+    public function store_lugar(Request $request)
+    {
         $lugar = Lugar::create($request->all());
         $lugar->save();
         return Redirect::route('parametros.edit');
     }
 
-    public function edit_lugar($id){
+    public function edit_lugar($id)
+    {
         return Inertia::render('Views/desarrollo/forms/EditLugar', [
             'lugar' => Lugar::find($id)
         ]);
     }
 
-    public function update_lugar($id, Request $request){
+    public function update_lugar($id, Request $request)
+    {
         $lugar = Lugar::find($id);
         $lugar->nombreAula = $request->nombreAula;
         $lugar->save();
         return Redirect::route('parametros.edit');
     }
 
-    public function delete_lugar($id){
+    public function delete_lugar($id)
+    {
         $lugar = Lugar::find($id);
         $lugar->delete();
         return Redirect::route('parametros.edit');
     }
 
-    public function dates_detecciones(Request $request){
+    public function dates_detecciones(Request $request)
+    {
         if ($request->fecha_Inicio <= $request->fecha_Final) {
             try {
                 // Establecer la zona horaria aquí
@@ -209,14 +220,15 @@ class   GestionParametrosController extends Controller
 
                 return Redirect::route('parametros.edit');
             } catch (\Exception $e) {
-                return back()->withErrors('Error al crear el registro'.$e->getMessage());
+                return back()->withErrors('Error al crear el registro' . $e->getMessage());
             }
         } else {
             return back()->withErrors('La fecha final no puede ser menor que la fecha inicial');
         }
     }
 
-    public function destoy_users(Request $request){
+    public function destoy_users(Request $request)
+    {
         $request->validate([
             'id' => ['required'],
         ]);
@@ -226,7 +238,8 @@ class   GestionParametrosController extends Controller
         $user->delete();
     }
 
-    public function edit_users($id){
+    public function edit_users($id)
+    {
         $departamento = Departamento::all();
         $roles = Role::all();
         $docente = Docente::all();
@@ -239,7 +252,8 @@ class   GestionParametrosController extends Controller
             'rol' => $roles,
         ]);
     }
-    public function edit_email(Request $request, $id){
+    public function edit_email(Request $request, $id)
+    {
         $request->validate([
             'email' => ['required', 'email'],
         ]);
@@ -253,7 +267,8 @@ class   GestionParametrosController extends Controller
 
         return redirect()->route('edit.docentes', ['id' => $user->docente_id]);
     }
-    public function update_user(Request $request, $id){
+    public function update_user(Request $request, $id)
+    {
         $request->validate([
             'docente_id' => ['required'],
             'departamento_id' => ['required'],
@@ -267,9 +282,9 @@ class   GestionParametrosController extends Controller
             'role' => $request->role,
         ]);
 
-//        Docente::where('id', $request->docente_id)->update([//actualiza el user id, es decir, que si cristina se logea
-//            'user_id' => $user->id
-//        ]);
+        //        Docente::where('id', $request->docente_id)->update([//actualiza el user id, es decir, que si cristina se logea
+        //            'user_id' => $user->id
+        //        ]);
         $rol = Role::where('id', $request->role)->first();
         $user->syncRoles([]);
         $user->assignRole($rol->name);
@@ -289,27 +304,31 @@ class   GestionParametrosController extends Controller
         $user = User::find($id);
         $user->password = Hash::make($request->password);
         $user->save();
-        if (auth()->user()->role == 3 || auth()->user()->role == 4){
+        if (auth()->user()->role == 3 || auth()->user()->role == 4) {
             Auth::guard('web')->logout();
             return redirect('/');
         }
     }
-//en el instalador preguntar que acepta tener permisos!
-    public function set_permission($id){
+    //en el instalador preguntar que acepta tener permisos!
+    public function set_permission($id)
+    {
         $user = User::find($id);
         $user->givePermissionTo('edit profile');
     }
 
-    public function revoke_permissions($id){
+    public function revoke_permissions($id)
+    {
         $user = User::find($id);
         $user->revokePermissionTo('edit profile');
     }
 
-    public static function admin(){
+    public static function admin()
+    {
         return User::find(auth()->user()->id);
     }
 
-    public function create_subdireccion(Request $request){
+    public function create_subdireccion(Request $request)
+    {
         $request->validate([
             'name' => 'required'
         ]);
@@ -319,9 +338,9 @@ class   GestionParametrosController extends Controller
         ]);
 
         $subdireccion->save();
-
     }
-    public function update_subdireccion($id, Request $request){
+    public function update_subdireccion($id, Request $request)
+    {
         $subdireccion = Subdireccion::find($id);
 
         $subdireccion->delete();
@@ -331,39 +350,44 @@ class   GestionParametrosController extends Controller
         $subdireccion->save();
     }
 
-    public function subir_cvu(Request $request){
+    public function subir_cvu(Request $request)
+    {
         $request->file('file')->storeAs('/CVUdownload/', 'CVU_editable.docx', 'public');
         return redirect()->route('parametros.edit');
     }
-    public function subir_img_acta(Request $request){
+    public function subir_img_acta(Request $request)
+    {
         $request->validate([
             'file' => ['required', 'mimes:jpg,jpeg,png'],
         ]);
         $year = date('Y');
-        $path = '/Membretado/'.$year;
+        $path = '/Membretado/' . $year;
         $request->file('file')->storeAs($path, 'img_acta_calificaciones.jpg', 'public');
         return redirect()->route('parametros.edit');
     }
-    public function subir_img_constancia(Request $request){
+    public function subir_img_constancia(Request $request)
+    {
         $request->validate([
             'file' => ['required', 'mimes:jpg,jpeg,png'],
         ]);
         $year = date('Y');
-        $path = '/Membretado/'.$year;
+        $path = '/Membretado/' . $year;
         $request->file('file')->storeAs($path, 'img_constancia.jpg', 'public');
         return redirect()->route('parametros.edit');
     }
-    public function subir_img_constancia_2(Request $request){
+    public function subir_img_constancia_2(Request $request)
+    {
         $request->validate([
             'file' => ['required', 'mimes:jpg,jpeg,png'],
         ]);
         $year = date('Y');
-        $path = '/Membretado/'.$year;
+        $path = '/Membretado/' . $year;
         $request->file('file')->storeAs($path, 'logo_constancia_page_2.png', 'public');
         return redirect()->route('parametros.edit');
     }
 
-    public function create_director(Request $request){
+    public function create_director(Request $request)
+    {
         $request->validate([
             'nameDirector' => 'required'
         ]);
@@ -371,9 +395,9 @@ class   GestionParametrosController extends Controller
         $director = Director::create($request->all());
 
         $director->save();
-
     }
-    public function update_director($id, Request $request){
+    public function update_director($id, Request $request)
+    {
         $director = Director::find($id);
 
         $director->delete();
@@ -383,7 +407,8 @@ class   GestionParametrosController extends Controller
         $director->save();
     }
 
-    public function create_instituto(Request $request){
+    public function create_instituto(Request $request)
+    {
         $request->validate([
             'nameInstituto'
         ]);
@@ -393,7 +418,8 @@ class   GestionParametrosController extends Controller
 
         $instituto->save();
     }
-    public function update_instituto($id, Request $request){
+    public function update_instituto($id, Request $request)
+    {
         $instituto = NombreInstituto::find($id);
 
         $instituto->delete();
@@ -403,10 +429,12 @@ class   GestionParametrosController extends Controller
         $instituto->save();
     }
 
-    public function upLogo(Request $request){
+    public function upLogo(Request $request)
+    {
         $request->file('file')->storeAs('/img/', 'logo.jpg', 'public');
     }
-    public function upLogo_tecnm(Request $request){
+    public function upLogo_tecnm(Request $request)
+    {
         $request->file('file')->storeAs('/img/', 'logoTecnm.jpg', 'public');
     }
     public function upLogo_educacion(Request $request): void
@@ -419,5 +447,20 @@ class   GestionParametrosController extends Controller
             'file' => ['required', 'mimes:jpg,jpeg,png'],
         ]);
         $request->file('file')->storeAs('/img/', 'educacion.jpg', 'public');
+    }
+    public static function if_enable_deteccion()
+    {
+        $dates = ConfigDates::latest('id')->first();
+
+        if (empty($dates)) {
+            return null;
+        } else {
+            $startDate = Carbon::parse($dates->fecha_inicio);
+            $endDate = Carbon::parse($dates->fecha_final);
+            $currentDate = Carbon::now('GMT-6');
+            $tiemporestante = $currentDate->diff($endDate);
+            $fechas = [$currentDate->between($startDate, $endDate), $tiemporestante];
+            return $fechas;
+        }
     }
 }

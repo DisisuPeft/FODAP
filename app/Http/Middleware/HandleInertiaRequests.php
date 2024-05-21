@@ -46,10 +46,11 @@ class HandleInertiaRequests extends Middleware
 
             ],
             'info' => [
-                [ fn (Docente $docente, Request $request) =>
-                $request->user()
-                    ? $docente->where('id', $request->user()->docente_id)->first('nombre', 'apellidoPat', 'apellidoMat')
-                    : null
+                [
+                    fn (Docente $docente, Request $request) =>
+                    $request->user()
+                        ? $docente->where('id', $request->user()->docente_id)->first('nombre', 'apellidoPat', 'apellidoMat')
+                        : null
                 ],
             ],
             'ziggy' => function () use ($request) {
@@ -61,6 +62,7 @@ class HandleInertiaRequests extends Middleware
                 'message' => fn () => $request->session()->get('message')
             ],
             'can_install' => Installer::can_install(),
+            'dates' => GestionParametrosController::if_enable_deteccion(),
         ]);
     }
 }

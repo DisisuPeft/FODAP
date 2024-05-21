@@ -21,6 +21,7 @@ const props = defineProps({
         type: Array,
     },
     auth: Object,
+    dates: Array,
 });
 const pdf_dialog = ref(false);
 const snackbar = ref(false);
@@ -28,8 +29,8 @@ const color = ref("");
 const message = ref("");
 const timeout = ref(0);
 const search = ref();
-const loading = ref(false)
-const show = ref(false)
+const loading = ref(false);
+const show = ref(false);
 
 const snackEventActivator = () => {
     snackbar.value = true;
@@ -129,7 +130,7 @@ const pdfDeteccion = (form) => {
             // cursos.value = res.data.cursos
             if (res.data.mensaje) {
                 message.value = res.data.mensaje;
-                pdf_dialog.value = false
+                pdf_dialog.value = false;
                 show.value = true;
                 loading.value = false;
             } else {
@@ -166,8 +167,8 @@ const pdfDeteccion = (form) => {
                 Deteccion de Necesidades
             </h2>
 
-            <div v-if="store.si_dates !== null">
-                <template v-if="store.si_dates[0] === true">
+            <div v-if="props.dates !== null">
+                <template v-if="props.dates[0] === true">
                     <NavLink
                         :href="route('detecciones.create')"
                         :active="route().current('detecciones.create')"
@@ -199,31 +200,31 @@ const pdfDeteccion = (form) => {
                 </div>
             </template>
             <div class="flex justify-end mr-2 pr-2">
-                <div v-if="store.si_dates !== null">
-                    <template v-if="store.si_dates[0] === true">
-                        <template v-if="store.si_dates[1].d === 1">
+                <div v-if="props.dates">
+                    <template v-if="props.dates[0] === true">
+                        <template v-if="props.dates[1].d === 1">
                             <v-alert color="warning" icon="$warning" prominent>
                                 <strong class="text-center text-lg">
-                                    Queda un {{ store.si_dates[1].d }} dia y
-                                    {{ store.si_dates[1].h }} h para poder
+                                    Queda un {{ props.dates[1].d }} dia y
+                                    {{ props.dates[1].h }} h para poder capturar
+                                    Deteccion de Necesidades
+                                </strong>
+                            </v-alert>
+                        </template>
+                        <template v-if="props.dates[1].d === 0">
+                            <v-alert color="error" icon="$error" prominent>
+                                <strong class="text-center text-lg">
+                                    Quedan {{ props.dates[1].h }} h para poder
                                     capturar Deteccion de Necesidades
                                 </strong>
                             </v-alert>
                         </template>
-                        <template v-if="store.si_dates[1].d === 0">
-                            <v-alert color="error" icon="$error" prominent>
-                                <strong class="text-center text-lg">
-                                    Quedan {{ store.si_dates[1].h }} h para
-                                    poder capturar Deteccion de Necesidades
-                                </strong>
-                            </v-alert>
-                        </template>
-                        <template v-if="store.si_dates[1].d > 1">
+                        <template v-if="props.dates[1].d > 1">
                             <v-alert color="info" icon="$info">
                                 <strong class="text-center text-lg">
-                                    Quedan {{ store.si_dates[1].d }} dias y
-                                    {{ store.si_dates[1].h }} h para poder hacer
-                                    su captura de Deteccion de Necesidades
+                                    Quedan {{ props.dates[1].d }} dias y
+                                    {{ props.dates[1].h }} h para poder hacer su
+                                    captura de Deteccion de Necesidades
                                 </strong>
                             </v-alert>
                         </template>
@@ -320,7 +321,7 @@ const pdfDeteccion = (form) => {
                 <div class="flex justify-end">
                     <div class="flex justify-end ma-5">
                         <button class="rounded-full" @click="show = false">
-                            <i class="mdi mdi-close text-4xl" ></i>
+                            <i class="mdi mdi-close text-4xl"></i>
                         </button>
                     </div>
                 </div>
