@@ -31,7 +31,7 @@ class Carrera extends Model
     //Academia
     public function presidente_academia(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->hasOne(Docente::class, 'id', 'presidente_academia');
+        return $this->hasOne(Docente::class, 'presidente_academia', 'id');
     }
     public function docente_carrera()
     {
