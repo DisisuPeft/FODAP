@@ -32,22 +32,22 @@ class CoursesController extends Controller
             DB::beginTransaction();
             $fecha_Inical = Carbon::parse($request->fecha_I);
             $fecha_final = Carbon::parse($request->fecha_F);
-            if ($fecha_Inical <= $fecha_final){
+            if ($fecha_Inical <= $fecha_final) {
 
                 $deteccion = DeteccionNecesidades::create($request->validated() + [
-                        'aceptado' => 0,
-                        'obs' => 0,
-                        'total_horas' => $this->total_horas($request->fecha_I, $request->fecha_F, $request->hora_I, $request->hora_F),
-                        'id_departamento' => auth()->user()->departamento_id,
-                        'facilitador_externo' => $request->facilitador_externo,
-                        'id_jefe' => $request->id_jefe
-                    ]);
+                    'aceptado' => 0,
+                    'obs' => 0,
+                    'total_horas' => $this->total_horas($request->fecha_I, $request->fecha_F, $request->hora_I, $request->hora_F),
+                    'id_departamento' => auth()->user()->departamento_id,
+                    'facilitador_externo' => $request->facilitador_externo,
+                    'id_jefe' => $request->id_jefe
+                ]);
 
                 $deteccion->save();
 
                 $deteccion->deteccion_facilitador()->toggle($request->input('facilitadores', []));
 
-//               DocenteController::facilitadores_permission($request->input('facilitadores'));
+                //               DocenteController::facilitadores_permission($request->input('facilitadores'));
 
                 $this->sendNotification($deteccion);
 
@@ -55,11 +55,10 @@ class CoursesController extends Controller
 
                 event(new DeteccionEvent($deteccion));
                 return Redirect::route('detecciones.create');
-
-            }else{
+            } else {
                 return back()->withErrors('La fecha final no puede ser menor que la fecha inicial');
             }
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             DB::rollBack();
             return Redirect::route('detecciones.create')->withErrors('error', 'Error a la hora de crear el registro: ' . $exception->getMessage());
         }
@@ -82,10 +81,9 @@ class CoursesController extends Controller
 
         $deteccion->deteccion_facilitador()->sync([]);
 
-        if(count($facilitadores) > 3){
+        if (count($facilitadores) > 3) {
             return Redirect::back()->withErrors('Excede el limite de facilitadores');
-        }
-        else{
+        } else {
             $deteccion->deteccion_facilitador()->sync(
                 $facilitadores,
                 false
@@ -153,11 +151,12 @@ class CoursesController extends Controller
         }
     }
 
-    public function assign_clave(){
-
+    public function assign_clave()
+    {
     }
 
-    public function count_generate_curso_clave(){
+    public function count_generate_curso_clave()
+    {
         $type = null;
         $anio = date('Y');
         $cursos = DeteccionNecesidades::whereYear('fecha_F', '=', $anio)
@@ -189,34 +188,34 @@ class CoursesController extends Controller
                 $claveV->save();
             }
         }
-//        for ($i = 0; $i < $cursos->count(); $i++) {
-//            $claveCurso = 'TNM-021-' . $i . '-' . $anio;
-//            $clave = ClaveCurso::create([
-//                'curso_id' => $cursos[$i]->id,
-//                'clave' => $claveCurso,
-//            ]);
-//            $clave->save();
-//
-//            switch ($cursos[$i]->tipo_FDoAP){
-//                case 1: $type = 'FD';
-//                    break;
-//                case 2: $type = 'AP';
-//                    break;
-//            }
-//            $claveValidacion = 'SA-DDA-'.$type.'-'.$cursos[$i]->id.'-'.$anio;
-//            $claveV = ClaveValidacion::create([
-//                'curso_id' => $cursos[$i]->id,
-//                'clave' => $claveValidacion
-//            ]);
-//            $claveV->save();
-//
-//            break;
-//        }
+        //        for ($i = 0; $i < $cursos->count(); $i++) {
+        //            $claveCurso = 'TNM-021-' . $i . '-' . $anio;
+        //            $clave = ClaveCurso::create([
+        //                'curso_id' => $cursos[$i]->id,
+        //                'clave' => $claveCurso,
+        //            ]);
+        //            $clave->save();
+        //
+        //            switch ($cursos[$i]->tipo_FDoAP){
+        //                case 1: $type = 'FD';
+        //                    break;
+        //                case 2: $type = 'AP';
+        //                    break;
+        //            }
+        //            $claveValidacion = 'SA-DDA-'.$type.'-'.$cursos[$i]->id.'-'.$anio;
+        //            $claveV = ClaveValidacion::create([
+        //                'curso_id' => $cursos[$i]->id,
+        //                'clave' => $claveValidacion
+        //            ]);
+        //            $claveV->save();
+        //
+        //            break;
+        //        }
         return redirect()->route('index.desarrollo.cursos')->with('message', 'Claves de cursos generada');
-
     }
 
-    public static function clave_generar($curso_id){
+    public static function clave_generar($curso_id)
+    {
         $curso = DeteccionNecesidades::find($curso_id);
         $anio = explode("-", $curso->fecha_F);
         $claveCurso = 'TNM-021-' . $curso_id . '-' . $anio[0];
@@ -225,20 +224,22 @@ class CoursesController extends Controller
             'curso_id' => $curso_id,
             'clave' => $claveCurso,
         ]);
-
     }
 
-    public static function clave_validacion($curso_id){
+    public static function clave_validacion($curso_id)
+    {
         $curso = DeteccionNecesidades::find($curso_id);
         $anio = explode("-", $curso->fecha_F);
         $type = null;
-        switch ($curso->tipo_FDoAP){
-            case 1: $type = 'FD';
-                    break;
-            case 2: $type = 'AP';
-                    break;
+        switch ($curso->tipo_FDoAP) {
+            case 1:
+                $type = 'FD';
+                break;
+            case 2:
+                $type = 'AP';
+                break;
         }
-        $claveValidacion = 'SA-DDA-'.$type.'-'.$curso->id.'-'.$anio[0];
+        $claveValidacion = 'SA-DDA-' . $type . '-' . $curso->id . '-' . $anio[0];
         return ClaveValidacion::create([
             'curso_id' => $curso->id,
             'clave' => $claveValidacion

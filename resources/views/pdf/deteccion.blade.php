@@ -297,8 +297,14 @@
             </thead>
             <tbody>
             <tr>
-                <td>  </td>
-                <td>  </td>
+                <td> 
+                    @if($cursos[0]->carrera->id == 13)
+                    
+                    @else
+                        {{$presidente->nombre}}
+                    @endif    
+                </td>
+                <td> </td>
             </tr>
             </tbody>
         </table>

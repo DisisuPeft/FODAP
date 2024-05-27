@@ -17,6 +17,7 @@ class Carrera extends Model
         'nameCarrera', 'departamento_id', 'presidente_academia'
     ];
 
+    // protected $with = ['presidente_academia'];
     protected $primaryKey = 'id';
 
     public function departamento(): BelongsTo
@@ -32,7 +33,8 @@ class Carrera extends Model
     {
         return $this->hasOne(Docente::class, 'id', 'presidente_academia');
     }
-    public function docente_carrera(){
+    public function docente_carrera()
+    {
         return $this->belongsTo(Docente::class, 'carrera_id', 'id');
     }
 }

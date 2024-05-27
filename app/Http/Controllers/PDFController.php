@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Validator;
 use Webklex\PDFMerger\Facades\PDFMergerFacade as PDFMerger;
 use setasign\Fpdi\Fpdi;
 use setasign\Fpdi\PdfReader;
+
 class PDFController extends Controller
 {
     public static function pdf_request_deteccion($data): \Illuminate\Database\Eloquent\Collection|array
@@ -40,9 +41,9 @@ class PDFController extends Controller
             ->where('periodo', '=', $data->input('periodo'))
             ->where('tipo_FDoAP', '=', 1)
             ->whereYear('fecha_I', '=', $data->input('anio'))->get();
-
     }
-    public static function AP_request($data){
+    public static function AP_request($data)
+    {
         return DeteccionNecesidades::with(['carrera', 'deteccion_facilitador', 'jefe', 'departamento', 'lugar'])
             ->where('periodo', '=', $data->input('periodo'))
             ->where('tipo_FDoAP', '=', 2)
@@ -62,20 +63,23 @@ class PDFController extends Controller
         $request->validated();
         $cursos = $this->pdf_request_deteccion($request);
         $subdireccion = Subdireccion::all();
-        if (count($cursos) == 0){
+        $presidente = DB::table('carreras')
+            ->selectRaw("docente.nombre AS nombre")
+            ->join('docente', 'carreras.presidente_academia', '=', 'docente.id')
+            ->first();
+        if (count($cursos) == 0) {
             return response()->json([
                 'mensaje' => 'No se encontro ningun dato con ese criterio de busqueda'
             ]);
-        }else {
-            $pdf = Pdf::loadView('pdf.deteccion', compact('cursos', 'subdireccion'))->output();
+        } else {
+            $pdf = Pdf::loadView('pdf.deteccion', compact('cursos', 'subdireccion', 'presidente'))->output();
             $path = "Deteccion.pdf";
             $this->save_file($pdf, $path);
-//            return $this->download_file($path);
+            //            return $this->download_file($path);
             return response()->json([
-               'status' => 'Ok'
+                'status' => 'Ok'
             ]);
         }
-
     }
     public function PIFDAP_pdf(PIFDAPRequest $request)
     {
@@ -88,24 +92,25 @@ class PDFController extends Controller
             ->first();
         $anio = $request->anio;
         $periodo = $request->periodo;
-        if (count($FD) == 0 && count($AP) == 0){
+        if (count($FD) == 0 && count($AP) == 0) {
             return response()->json([
                 'mensaje' => 'No se encontro ningun dato con ese criterio de busqueda',
             ]);
-        }else {
+        } else {
             $pdf = Pdf::loadView('pdf.PIFDAP', compact('FD', 'AP', 'anio', 'periodo', 'subdireccion', 'departamento'))
                 ->setPaper('letter', 'landscape')
                 ->output();
             $path = 'PIFDAP.pdf';
             $this->save_file($pdf, $path);
-//            return $this->download_file($path);
+            //            return $this->download_file($path);
             return response()->json([
-               'status' => 'OK'
+                'status' => 'OK'
             ]);
         }
     }
 
-    public function cdi_pdf(Request $request){
+    public function cdi_pdf(Request $request)
+    {
         $curso = DeteccionNecesidades::with('deteccion_facilitador', 'carrera')->find($request->id_curso);
         $docente = Docente::with('usuario', 'posgrado', 'plaza', 'departamento', 'puesto')->find($request->docente);
         $pdf = Pdf::loadView('pdf.CDI', compact('curso', 'docente'))
@@ -113,31 +118,33 @@ class PDFController extends Controller
 
         $path = 'CDI.pdf';
         return $this->save_file($pdf, $path);
-//        return response()->json([
-//            'docente' => $docente,
-//            'curso' => $curso,
-//        ]);
+        //        return response()->json([
+        //            'docente' => $docente,
+        //            'curso' => $curso,
+        //        ]);
     }
 
-    public function ficha_tecnica_pdf(Request $request){
+    public function ficha_tecnica_pdf(Request $request)
+    {
         $ficha = FichaTecnica::find($request->id_ficha);
         $name_instituto = NombreInstituto::all();
-        $departamento = Departamento::with( 'jefe_docente')->where('nameDepartamento', '=','Departamento de Desarrollo Académico')->first();
+        $departamento = Departamento::with('jefe_docente')->where('nameDepartamento', '=', 'Departamento de Desarrollo Académico')->first();
         $pdf = Pdf::loadView('pdf.fichatecnica', compact('ficha', 'name_instituto', 'departamento'))
             ->output();
-//
+        //
         $path = 'ficha.pdf';
 
         return $this->save_file($pdf, $path);
 
-//        return response()->json([
-//            'chinga tu puta madre' => $ficha,
-//            'ya me tienes hasta la verga' => $name_instituto,
-//            'hijo de tu puta madre' => $departamento,
-////            'pdf' => $pdf
-//        ]);
+        //        return response()->json([
+        //            'chinga tu puta madre' => $ficha,
+        //            'ya me tienes hasta la verga' => $name_instituto,
+        //            'hijo de tu puta madre' => $departamento,
+        ////            'pdf' => $pdf
+        //        ]);
     }
-    public function acta_calificaciones_pdf(Request $request){
+    public function acta_calificaciones_pdf(Request $request)
+    {
         $year = date('Y');
         $curso = DeteccionNecesidades::with('calificaciones_curso', 'carrera')->find($request->id);
         $pdf = Pdf::loadView('pdf.actacalificaciones', compact('year', 'curso'))
@@ -147,7 +154,8 @@ class PDFController extends Controller
 
         return $this->save_file($pdf, $path);
     }
-    public function constancia_pdf(Request $request){
+    public function constancia_pdf(Request $request)
+    {
         $year = date('Y');
         $instituto = DB::table('nombre_instituto')->get();
         $docente = Docente::with('inscrito', 'posgrado', 'carrera', 'puesto')->find($request->id_docente);
@@ -179,7 +187,7 @@ class PDFController extends Controller
         $path = 'constancia1.pdf';
 
         $pdf_2 = Pdf::loadView('pdf.constancia_2', compact('year', 'curso', 'docente', 'day', 'anio', 'month_get', 'coordinacion', 'ficha'))
-            ->setPaper('a4','landscape')
+            ->setPaper('a4', 'landscape')
             ->output();
 
         $path_2 = 'constancia2.pdf';
@@ -197,16 +205,17 @@ class PDFController extends Controller
         ]);
     }
 
-    public static function merge_pdf($pdf1, $pdf2){
+    public static function merge_pdf($pdf1, $pdf2)
+    {
         $name = "constancia.pdf";
-        $ruta = storage_path('app/public/'.$name);
-        $pdf_1 = storage_path('app/public/'.$pdf1.'.pdf');
-        $pdf_2 = storage_path('app/public/'.$pdf2.'.pdf');
+        $ruta = storage_path('app/public/' . $name);
+        $pdf_1 = storage_path('app/public/' . $pdf1 . '.pdf');
+        $pdf_2 = storage_path('app/public/' . $pdf2 . '.pdf');
 
         if (!file_exists($pdf_1) || !file_exists($pdf_2)) {
             // Manejar la falta de archivos, lanzar excepción o generar los PDFs previamente si es necesario
             return null;
-        }else {
+        } else {
             $pdf = new Fpdi();
 
             $pageCount1 = $pdf->setSourceFile($pdf_1);
@@ -228,7 +237,8 @@ class PDFController extends Controller
         }
     }
 
-    public static function parse_date($fecha1){
+    public static function parse_date($fecha1)
+    {
         $fechaActual = date("Y-m-d");
         $componentes2 = date_parse($fechaActual);
         $componentes = date_parse($fecha1);
@@ -257,5 +267,4 @@ class PDFController extends Controller
         $day = $componentes2['day'];
         return [$mesesEnEspanol[$mesNumero], $mesesEnEspanol[$month_number], $day];
     }
-
 }
