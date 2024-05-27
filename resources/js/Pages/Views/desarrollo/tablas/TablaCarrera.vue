@@ -10,7 +10,7 @@ const header = [
     { key: "nameCarrera", title: "Nombre" },
     { key: "departamento.nameDepartamento", title: "Departamento a cargo" },
     {
-        key: "carrera.presidente_academia.nombre_completo",
+        key: "presidente_academia.nombre_completo",
         title: "Presidente de la academia",
     },
     { key: "options", title: "Opciones" },
@@ -21,7 +21,7 @@ const props = defineProps({
     },
 });
 
-console.log(props.carrera);
+// console.log(props.carrera);
 </script>
 
 <template>
