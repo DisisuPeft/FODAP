@@ -20,6 +20,8 @@ const props = defineProps({
         type: Array,
     },
 });
+
+console.log(props.carrera);
 </script>
 
 <template>
