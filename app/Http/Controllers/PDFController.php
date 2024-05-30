@@ -64,7 +64,7 @@ class PDFController extends Controller
         $cursos = $this->pdf_request_deteccion($request);
         $subdireccion = Subdireccion::all();
         $presidente = DB::table('carreras')
-            ->selectRaw("docente.nombre AS nombre")
+            ->selectRaw("docente.nombre_completo AS nombre")
             ->join('docente', 'carreras.presidente_academia', '=', 'docente.id')
             ->where('carreras.id', '=', $request->carrera)
             ->first();
