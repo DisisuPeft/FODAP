@@ -66,7 +66,7 @@ class PDFController extends Controller
         $presidente = DB::table('carreras')
             ->selectRaw("docente.nombre AS nombre")
             ->join('docente', 'carreras.presidente_academia', '=', 'docente.id')
-            ->where('carrera.id', '=', $request->carrera)
+            ->where('carreras.id', '=', $request->carrera)
             ->first();
         if (count($cursos) == 0) {
             return response()->json([
