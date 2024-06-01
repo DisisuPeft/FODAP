@@ -140,12 +140,12 @@ const pdfDeteccion = (form) => {
                 link.setAttribute("download", "deteccion.pdf");
                 document.body.appendChild(link);
                 link.click();
+                loading.value = false;
                 form.reset();
                 message.value = "Documento generado con exito";
                 timeout.value = 5000;
                 color.value = "success";
                 snackSuccess.value = true;
-                loading.value = false;
             }
         })
         .catch((error) => {

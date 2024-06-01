@@ -2,28 +2,98 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import NavLink from "@/Components/NavLink.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import {ref} from "vue";
+import { ref, computed } from "vue";
 
-const search = ref()
+const search = ref();
+const fd = ref(null);
+const ap = ref(null);
+const periodo = ref(null);
+const anio = ref(null);
+const cursos_fd = ref();
 const props = defineProps({
     detecciones: {
-        type: Array
+        type: Array,
     },
     auth: Object,
-})
+});
+const tipos_cursos = [
+    { id: 1, text: "FORMACION DOCENTE" },
+    { id: 2, text: "ACTUALIZACION PROFESIONAL" },
+];
+const filter = computed(() => {
+    const formacion = fd.value;
+    const actualizacion = ap.value;
+    const p = perido.value;
+    const anio = anio.value;
+
+    let cursosFiltrados = [...props.detecciones];
+
+    if (formacion) {
+        cursosFiltrados = cursosFiltrados.filter((c) => {
+            c.tipo_FDoAP === formacion;
+        });
+    }
+    if (actualizacion) {
+        cursosFiltrados = cursosFiltrados.filter((c) => {
+            c.tipo_FDoAP === formacion;
+        });
+    }
+    if (p) {
+        cursosFiltrados = cursosFiltrados.filter((c) => {
+            c.periodo === p;
+        });
+    }
+    if (anio) {
+        cursosFiltrados = cursosFiltrados.filter((c) => {
+            const parse_anio = new Date(c.fecha_I).getFullYear();
+            return parse_anio === anio;
+        });
+    }
+    return cursosFiltrados;
+});
+const fullYears = computed(() => {
+    const maxYears = new Date().getFullYear() + 1;
+    const minYears = maxYears - 7;
+    const years = [];
+    for (let i = maxYears; i >= minYears; i--) {
+        years.push(i);
+    }
+
+    return years;
+});
+// console.log("Listo");
 </script>
 
 <template>
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Registros de cursos</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                Registros de cursos
+            </h2>
         </template>
 
         <div class="mt-2 mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-4 mt-2 sm:p-8 bg-white shadow sm:rounded-lg">
+                <div class="flex justify-center">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+                        <div class="flex justify-center">
+                            <select id="frutas" v-model="fd">
+                                <option>Seleccionar</option>
+                                <option
+                                    v-for="cursos in tipos_cursos"
+                                    :value="cursos.id"
+                                    :key="cursos.id"
+                                    class="ma-10"
+                                >
+                                    {{ cursos.text }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <template v-if="props.detecciones.length !== 0">
                     <v-data-iterator
-                        :items="props.detecciones"
+                        :items="filter"
                         item-value="nombreCurso"
                         :search="search"
                     >
@@ -35,49 +105,114 @@ const props = defineProps({
                                 hide-details
                                 placeholder="Buscar"
                                 prepend-inner-icon="mdi-magnify"
-                                style="max-width: 300px;"
+                                style="max-width: 300px"
                                 variant="solo"
                             >
-
                             </v-text-field>
                         </template>
-                        <template v-slot:default="{items}">
+                        <template v-slot:default="{ items }">
                             <v-container class="pa-2" fluid>
                                 <v-row dense>
-                                    <v-col v-for="item in items" :key="item.nameCarrera"
-                                           cols="auto"
-                                           md="4"
+                                    <v-col
+                                        v-for="item in items"
+                                        :key="item.nameCarrera"
+                                        cols="auto"
+                                        md="4"
                                     >
-                                        <v-card class="pb-3" border flat >
-                                            <v-list-item class="mb-2" :subtitle="item.raw.asignaturaFA">
+                                        <v-card class="pb-3" border flat>
+                                            <v-list-item
+                                                class="mb-2"
+                                                :subtitle="
+                                                    item.raw.asignaturaFA
+                                                "
+                                            >
                                                 <template v-slot:title>
-                                                    <strong class="text-h6 mb-2">
-                                                        {{item.raw.nombreCurso}}
+                                                    <strong
+                                                        class="text-h6 mb-2"
+                                                    >
+                                                        {{
+                                                            item.raw.nombreCurso
+                                                        }}
                                                     </strong>
                                                 </template>
                                             </v-list-item>
-                                            <div class="d-flex justify-space-between px-4">
-                                                <div class="d-flex align-center text-caption text-medium-emphasis me-1">
-                                                    <template v-if="item.raw.tipo_FDoAP === 1">
-                                                        <p class="text-truncate">Formación Docente</p>
+                                            <div
+                                                class="d-flex justify-space-between px-4"
+                                            >
+                                                <div
+                                                    class="d-flex align-center text-caption text-medium-emphasis me-1"
+                                                >
+                                                    <template
+                                                        v-if="
+                                                            item.raw
+                                                                .tipo_FDoAP ===
+                                                            1
+                                                        "
+                                                    >
+                                                        <p
+                                                            class="text-truncate"
+                                                        >
+                                                            Formación Docente
+                                                        </p>
                                                     </template>
-                                                    <template v-if="item.raw.tipo_FDoAP === 2">
-                                                        <p>Actualización Profesional</p>
+                                                    <template
+                                                        v-if="
+                                                            item.raw
+                                                                .tipo_FDoAP ===
+                                                            2
+                                                        "
+                                                    >
+                                                        <p>
+                                                            Actualización
+                                                            Profesional
+                                                        </p>
                                                     </template>
                                                 </div>
                                             </div>
-                                            <div class="d-flex justify-space-between px-4">
-                                                <div class="d-flex align-center text-caption text-medium-emphasis me-1">
-                                                    <p class="text-truncate">Dirigido a la academica de {{item.raw.carrera.nameCarrera}}</p>
+                                            <div
+                                                class="d-flex justify-space-between px-4"
+                                            >
+                                                <div
+                                                    class="d-flex align-center text-caption text-medium-emphasis me-1"
+                                                >
+                                                    <p class="text-truncate">
+                                                        Dirigido a la academica
+                                                        de
+                                                        {{
+                                                            item.raw.carrera
+                                                                .nameCarrera
+                                                        }}
+                                                    </p>
                                                 </div>
                                             </div>
-                                            <div class="d-flex justify-space-between px-4">
-                                                <div class="d-flex align-center text-caption text-medium-emphasis me-1">
-                                                    <template v-if="item.raw.estado === 2">
-                                                        <strong class="text-truncate">Finalizado</strong>
+                                            <div
+                                                class="d-flex justify-space-between px-4"
+                                            >
+                                                <div
+                                                    class="d-flex align-center text-caption text-medium-emphasis me-1"
+                                                >
+                                                    <template
+                                                        v-if="
+                                                            item.raw.estado ===
+                                                            2
+                                                        "
+                                                    >
+                                                        <strong
+                                                            class="text-truncate"
+                                                            >Finalizado</strong
+                                                        >
                                                     </template>
                                                 </div>
-                                                <NavLink :href="route('show.inscritos.academicos', item.raw.id)" type="button" as="button">
+                                                <NavLink
+                                                    :href="
+                                                        route(
+                                                            'show.inscritos.academicos',
+                                                            item.raw.id
+                                                        )
+                                                    "
+                                                    type="button"
+                                                    as="button"
+                                                >
                                                     <v-btn
                                                         border
                                                         flat
@@ -98,13 +233,17 @@ const props = defineProps({
                 </template>
                 <template v-else>
                     <div class="mt-2 mx-auto sm:px-6 lg:px-8 space-y-6">
-                        <div class="p-4 mt-2 sm:p-8 bg-white shadow sm:rounded-lg">
+                        <div
+                            class="p-4 mt-2 sm:p-8 bg-white shadow sm:rounded-lg"
+                        >
                             <v-alert
                                 color="blue-darken-1"
                                 icon="mdi-alert-circle"
                                 prominent
                             >
-                                Actualmente no hay cursos por realizarse, puede visualizar todos los que se llevaron acabo al presionar  "Ver todos los registros".
+                                Actualmente no hay cursos por realizarse, puede
+                                visualizar todos los que se llevaron acabo al
+                                presionar "Ver todos los registros".
                             </v-alert>
                         </div>
                     </div>
@@ -114,6 +253,4 @@ const props = defineProps({
     </AuthenticatedLayout>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

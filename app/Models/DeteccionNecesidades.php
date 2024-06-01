@@ -54,6 +54,7 @@ class DeteccionNecesidades extends Model
     ];
 
     protected $with = ['clave_curso', 'clave_validacion'];
+    //relaciones
     public function deteccion_facilitador()
     {
         return $this->belongsToMany(Docente::class, 'deteccion_has_facilitadores', 'deteccion_id', 'docente_id');
@@ -103,6 +104,36 @@ class DeteccionNecesidades extends Model
     {
         return $this->hasOne(ClaveValidacion::class, 'curso_id', 'id');
     }
+
+    //seccion
+
+    public function formacion_docente()
+    {
+        return DeteccionNecesidades::with('carrera', 'deteccion_facilitador', 'jefe', 'departamento')
+            ->where('id_jefe', auth()->user()->docente_id)
+            ->where(function ($query) {
+                $query->where('aceptado', '=', 1)
+                    ->where('estado', '=', 2)
+                    ->where('tipo_FDoAP', '=', 1);
+            })
+            ->orderBy('id', 'desc')
+            ->get();
+    }
+
+    public function actualizacion()
+    {
+        return DeteccionNecesidades::with('carrera', 'deteccion_facilitador', 'jefe', 'departamento')
+            ->where('id_jefe', auth()->user()->docente_id)
+            ->where(function ($query) {
+                $query->where('aceptado', '=', 1)
+                    ->where('estado', '=', 2)
+                    ->where('tipo_FDoAP', '=', 2);
+            })
+            ->orderBy('id', 'desc')
+            ->get();
+    }
+
+    //spageti
 
     public static function contancia_export($payload)
     {
