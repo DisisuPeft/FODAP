@@ -33,11 +33,6 @@ const filter = computed(() => {
             c.tipo_FDoAP === formacion;
         });
     }
-    if (actualizacion) {
-        cursosFiltrados = cursosFiltrados.filter((c) => {
-            c.tipo_FDoAP === formacion;
-        });
-    }
     if (p) {
         cursosFiltrados = cursosFiltrados.filter((c) => {
             c.periodo === p;
@@ -77,17 +72,26 @@ const fullYears = computed(() => {
                 <div class="flex justify-center">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
                         <div class="flex justify-center">
-                            <select id="frutas" v-model="fd">
-                                <option>Seleccionar</option>
-                                <option
-                                    v-for="cursos in tipos_cursos"
-                                    :value="cursos.id"
-                                    :key="cursos.id"
-                                    class="ma-10"
-                                >
-                                    {{ cursos.text }}
-                                </option>
-                            </select>
+                            <div class="grid grid-rows-1">
+                                <div class="flex justify-start">
+                                    <label class="text-sm">
+                                        Filtrar por tipo de curso (Formación
+                                        docente o Actualización profesional)
+                                    </label>
+                                </div>
+                                <div class="flex justify-center">
+                                    <select v-model="fd">
+                                        <option>Seleccionar</option>
+                                        <option
+                                            v-for="cursos in tipos_cursos"
+                                            :value="cursos.id"
+                                            :key="cursos.id"
+                                        >
+                                            {{ cursos.text }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
