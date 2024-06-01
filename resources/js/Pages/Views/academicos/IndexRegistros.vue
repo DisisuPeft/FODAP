@@ -23,7 +23,7 @@ const tipos_cursos = [
 const filter = computed(() => {
     const formacion = fd.value;
     const actualizacion = ap.value;
-    const p = perido.value;
+    const p = periodo.value;
     const anio = anio.value;
 
     let cursosFiltrados = [...props.detecciones];
@@ -35,7 +35,7 @@ const filter = computed(() => {
     }
     if (p) {
         cursosFiltrados = cursosFiltrados.filter((c) => {
-            console.log(c);
+            c.periodo === p;
         });
     }
     if (anio) {
