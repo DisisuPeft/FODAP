@@ -35,7 +35,7 @@ const filter = computed(() => {
     }
     if (p) {
         cursosFiltrados = cursosFiltrados.filter((c) => {
-            c.periodo === p;
+            console.log(c);
         });
     }
     if (anio) {
