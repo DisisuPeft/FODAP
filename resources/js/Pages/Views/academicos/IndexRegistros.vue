@@ -56,7 +56,7 @@ const fullYears = computed(() => {
 
     return years;
 });
-// console.log("Listo");
+console.log(props.detecciones);
 </script>
 
 <template>
