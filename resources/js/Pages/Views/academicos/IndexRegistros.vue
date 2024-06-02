@@ -39,6 +39,7 @@ const filter = computed(() => {
 
     if (formacion) {
         cursosFiltrados = cursosFiltrados.filter((c) => {
+            console.log(c.tipo_FDoAP, formacion);
             c.tipo_FDoAP === formacion;
         });
     }
@@ -68,7 +69,7 @@ console.log(fd);
 
         <div class="mt-2 mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-4 mt-2 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="flex justify-center mt-5">
+                <div class="flex justify-center mt-5 mb-5">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
                         <div class="flex justify-center">
                             <div class="grid grid-rows-1">
