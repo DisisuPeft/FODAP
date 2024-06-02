@@ -8,7 +8,7 @@ const search = ref();
 const fd = ref(null);
 const ap = ref(null);
 const periodo = ref(null);
-const anio = ref(null);
+const anio = ref();
 const cursos_fd = ref();
 const props = defineProps({
     detecciones: {
@@ -20,11 +20,20 @@ const tipos_cursos = [
     { id: 1, text: "FORMACION DOCENTE" },
     { id: 2, text: "ACTUALIZACION PROFESIONAL" },
 ];
+const fullYears = computed(() => {
+    const maxYears = new Date().getFullYear() + 1;
+    const minYears = maxYears - 7;
+    const years = [];
+    for (let i = maxYears; i >= minYears; i--) {
+        years.push(i);
+    }
+
+    return years;
+});
 const filter = computed(() => {
     let formacion = fd.value;
-    let actualizacion = ap.value;
     let p = periodo.value;
-    let anio = anio.value;
+    let a = anio.value;
 
     let cursosFiltrados = [...props.detecciones];
 
@@ -38,25 +47,15 @@ const filter = computed(() => {
             c.periodo === p;
         });
     }
-    if (anio) {
+    if (a) {
         cursosFiltrados = cursosFiltrados.filter((c) => {
             const parse_anio = new Date(c.fecha_I).getFullYear();
-            return parse_anio === anio;
+            return parse_anio === a;
         });
     }
     return cursosFiltrados;
 });
-const fullYears = computed(() => {
-    const maxYears = new Date().getFullYear() + 1;
-    const minYears = maxYears - 7;
-    const years = [];
-    for (let i = maxYears; i >= minYears; i--) {
-        years.push(i);
-    }
-
-    return years;
-});
-console.log(props.detecciones);
+console.log(fd);
 </script>
 
 <template>
@@ -69,7 +68,7 @@ console.log(props.detecciones);
 
         <div class="mt-2 mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-4 mt-2 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="flex justify-center">
+                <div class="flex justify-center mt-5">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
                         <div class="flex justify-center">
                             <div class="grid grid-rows-1">
@@ -97,7 +96,7 @@ console.log(props.detecciones);
                 </div>
                 <template v-if="props.detecciones.length !== 0">
                     <v-data-iterator
-                        :items="props.detecciones"
+                        :items="filter"
                         item-value="nombreCurso"
                         :search="search"
                     >
