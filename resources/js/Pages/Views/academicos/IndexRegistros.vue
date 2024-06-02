@@ -21,10 +21,10 @@ const tipos_cursos = [
     { id: 2, text: "ACTUALIZACION PROFESIONAL" },
 ];
 const filter = computed(() => {
-    const formacion = fd.value;
-    const actualizacion = ap.value;
-    const p = periodo.value;
-    const anio = anio.value;
+    let formacion = fd.value;
+    let actualizacion = ap.value;
+    let p = periodo.value;
+    let anio = anio.value;
 
     let cursosFiltrados = [...props.detecciones];
 
