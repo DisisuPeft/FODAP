@@ -113,6 +113,7 @@ onMounted(() => {
         }
     );
 });
+console.log(props.cursos);
 </script>
 
 <template>
