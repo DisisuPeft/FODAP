@@ -30,6 +30,10 @@ const fullYears = computed(() => {
 
     return years;
 });
+const period = [
+    { id: 1, text: "ENERO-JUNIO" },
+    { id: 2, text: "AGOSTO-DICIEMBRE" },
+];
 const filter = computed(() => {
     let formacion = fd.value;
     let p = periodo.value;
@@ -40,12 +44,12 @@ const filter = computed(() => {
     if (formacion) {
         cursosFiltrados = cursosFiltrados.filter((c) => {
             console.log(c.tipo_FDoAP, formacion);
-            c.tipo_FDoAP === formacion;
+            return c.tipo_FDoAP === formacion;
         });
     }
     if (p) {
         cursosFiltrados = cursosFiltrados.filter((c) => {
-            c.periodo === p;
+            return c.periodo === p;
         });
     }
     if (a) {
@@ -88,6 +92,30 @@ console.log(fd);
                                             :key="cursos.id"
                                         >
                                             {{ cursos.text }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="flex justify-center">
+                                    <select v-model="periodo">
+                                        <option>Seleccionar</option>
+                                        <option
+                                            v-for="pp in period"
+                                            :value="pp.id"
+                                            :key="pp.id"
+                                        >
+                                            {{ pp.text }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="flex justify-center">
+                                    <select v-model="anio">
+                                        <option>Seleccionar</option>
+                                        <option
+                                            v-for="an in fullYears"
+                                            :value="an"
+                                            :key="an"
+                                        >
+                                            {{ an }}
                                         </option>
                                     </select>
                                 </div>
