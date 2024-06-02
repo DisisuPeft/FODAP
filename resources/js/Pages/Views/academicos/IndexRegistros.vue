@@ -80,7 +80,7 @@ console.log(props.detecciones);
                                     </label>
                                 </div>
                                 <div class="flex justify-center">
-                                    <select v-model="fd">
+                                    <!-- <select v-model="fd">
                                         <option>Seleccionar</option>
                                         <option
                                             v-for="cursos in tipos_cursos"
@@ -89,7 +89,7 @@ console.log(props.detecciones);
                                         >
                                             {{ cursos.text }}
                                         </option>
-                                    </select>
+                                    </select> -->
                                 </div>
                             </div>
                         </div>
