@@ -95,6 +95,15 @@ console.log(fd);
                                         </option>
                                     </select>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-center">
+                            <div class="grid grid-rows-1">
+                                <div class="flex justify-start">
+                                    <label class="text-sm">
+                                        Filtrar por periodo
+                                    </label>
+                                </div>
                                 <div class="flex justify-center">
                                     <select v-model="periodo">
                                         <option>Seleccionar</option>
@@ -106,6 +115,15 @@ console.log(fd);
                                             {{ pp.text }}
                                         </option>
                                     </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-center">
+                            <div class="grid grid-rows-1">
+                                <div class="flex justify-start">
+                                    <label class="text-sm">
+                                        Filtrar por año
+                                    </label>
                                 </div>
                                 <div class="flex justify-center">
                                     <select v-model="anio">
