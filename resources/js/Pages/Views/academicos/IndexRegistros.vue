@@ -73,7 +73,7 @@ const filter = computed(() => {
 
         <div class="mt-2 mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-4 mt-2 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="flex justify-center mt-5 mb-5">
+                <div class="flex justify-center mt-5 mb-5 ma-8">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
                         <div class="flex justify-center">
                             <div class="grid grid-rows-1">
@@ -85,7 +85,7 @@ const filter = computed(() => {
                                 </div>
                                 <div class="flex justify-center">
                                     <select v-model="fd">
-                                        <!-- <option>Seleccionar</option> -->
+                                        <option></option>
                                         <option
                                             v-for="cursos in tipos_cursos"
                                             :value="cursos.id"
@@ -106,7 +106,7 @@ const filter = computed(() => {
                                 </div>
                                 <div class="flex justify-center">
                                     <select v-model="periodo">
-                                        <!-- <option>Seleccionar</option> -->
+                                        <option></option>
                                         <option
                                             v-for="pp in period"
                                             :value="pp.id"
@@ -127,7 +127,7 @@ const filter = computed(() => {
                                 </div>
                                 <div class="flex justify-center">
                                     <select v-model="anio">
-                                        <!-- <option>Seleccionar</option> -->
+                                        <option></option>
                                         <option
                                             v-for="an in fullYears"
                                             :value="an"

@@ -158,7 +158,7 @@ onMounted(() => {
                         </div>
                         <div class="flex justify-center">
                             <select v-model="p">
-                                <!-- <option>Seleccionar</option> -->
+                                <option></option>
                                 <option
                                     v-for="pp in period"
                                     :value="pp.id"
@@ -177,7 +177,7 @@ onMounted(() => {
                         </div>
                         <div class="flex justify-center">
                             <select v-model="a">
-                                <!-- <option>Seleccionar</option> -->
+                                <option></option>
                                 <option
                                     v-for="an in fullYears"
                                     :value="an"
