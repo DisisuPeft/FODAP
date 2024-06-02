@@ -43,7 +43,7 @@ const filter = computed(() => {
 
     if (formacion) {
         cursosFiltrados = cursosFiltrados.filter((c) => {
-            console.log(c.tipo_FDoAP, formacion);
+            // console.log(c.tipo_FDoAP, formacion);
             return c.tipo_FDoAP === formacion;
         });
     }
@@ -60,7 +60,7 @@ const filter = computed(() => {
     }
     return cursosFiltrados;
 });
-console.log(fd);
+// console.log(fd);
 </script>
 
 <template>
@@ -85,7 +85,7 @@ console.log(fd);
                                 </div>
                                 <div class="flex justify-center">
                                     <select v-model="fd">
-                                        <option>Seleccionar</option>
+                                        <!-- <option>Seleccionar</option> -->
                                         <option
                                             v-for="cursos in tipos_cursos"
                                             :value="cursos.id"
@@ -106,7 +106,7 @@ console.log(fd);
                                 </div>
                                 <div class="flex justify-center">
                                     <select v-model="periodo">
-                                        <option>Seleccionar</option>
+                                        <!-- <option>Seleccionar</option> -->
                                         <option
                                             v-for="pp in period"
                                             :value="pp.id"
@@ -127,7 +127,7 @@ console.log(fd);
                                 </div>
                                 <div class="flex justify-center">
                                     <select v-model="anio">
-                                        <option>Seleccionar</option>
+                                        <!-- <option>Seleccionar</option> -->
                                         <option
                                             v-for="an in fullYears"
                                             :value="an"
