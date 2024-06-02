@@ -139,7 +139,7 @@ onMounted(() => {
                         </div>
                         <div class="flex justify-center">
                             <select v-model="t">
-                                <!-- <option>Seleccionar</option> -->
+                                <option></option>
                                 <option
                                     v-for="cursos in tipos_cursos"
                                     :value="cursos.id"
