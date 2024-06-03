@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import TablaCursoAcademico from "@/Pages/Views/cursos/tablas/TablaCursoAcademico.vue";
 import { Head } from "@inertiajs/vue3";
 import NavLink from "@/Components/NavLink.vue";
@@ -113,7 +113,9 @@ onMounted(() => {
         }
     );
 });
-console.log(props.cursos, p, filter);
+watch(p, newp, () => {
+    console.log(p, newp);
+});
 </script>
 
 <template>
