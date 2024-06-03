@@ -113,7 +113,7 @@ onMounted(() => {
         }
     );
 });
-watch(p, newp, () => {
+watch(p, (newp) => {
     console.log(p, newp);
 });
 </script>
