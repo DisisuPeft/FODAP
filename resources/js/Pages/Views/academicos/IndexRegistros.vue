@@ -22,7 +22,7 @@ const tipos_cursos = [
 ];
 const fullYears = computed(() => {
     const maxYears = new Date().getFullYear() + 1;
-    const minYears = maxYears - 7;
+    const minYears = maxYears - 3;
     const years = [];
     for (let i = maxYears; i >= minYears; i--) {
         years.push(i);

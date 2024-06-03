@@ -180,7 +180,7 @@ class AcademicosController extends Controller
 
             return redirect()->route('show.inscritos.academicos', ['id' => $deteccion->id]);
         } else {
-            return redirect()->route('show.inscritos.academicos', ['id' => $deteccion->id])->withErrors('Llego al maximo de docentes que el curso permite inscribir');
+            return redirect()->route('show.inscritos.academicos', ['id' => $deteccion->id])->withErrors('Cupo completo');
         }
     }
 
