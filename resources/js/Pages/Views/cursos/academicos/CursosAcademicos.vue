@@ -75,13 +75,14 @@ const filter = computed(() => {
     }
     if (periodo) {
         cursosFiltrados = cursosFiltrados.filter((c) => {
-            return c.periodo === p;
+            // console.log(c.periodo, formacion);
+            return c.periodo === periodo;
         });
     }
     if (anio) {
         cursosFiltrados = cursosFiltrados.filter((c) => {
             const parse_anio = new Date(c.fecha_I).getFullYear();
-            return parse_anio === a;
+            return parse_anio === anio;
         });
     }
     return cursosFiltrados;
@@ -114,7 +115,7 @@ onMounted(() => {
     );
 });
 watch(p, (newp) => {
-    console.log(p, newp);
+    // console.log(p, newp);
 });
 </script>
 
