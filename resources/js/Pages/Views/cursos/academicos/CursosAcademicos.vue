@@ -113,7 +113,7 @@ onMounted(() => {
         }
     );
 });
-console.log(props.cursos);
+console.log(props.cursos, p, filter);
 </script>
 
 <template>
