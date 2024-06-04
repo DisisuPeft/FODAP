@@ -2,7 +2,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import {useForm} from "@inertiajs/vue3";
-import {computed, onMounted, ref} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import NavLink from "@/Components/NavLink.vue";
 import CreateDocenteA from "@/Pages/Views/academicos/docentes/CreateDocenteA.vue";
@@ -85,7 +85,7 @@ const form = useForm({
     facilitador_externo: null,
     id_lugar: null,
     observaciones: null,
-    jefe: props.curso.jefe.id,
+    jefe: null,
     departamento: props.curso.departamento.id,
 });
 const filtroCarrera = computed(() => {
@@ -166,6 +166,9 @@ onMounted(() => {
     }
 })
 
+watch(props.curso.jefe_id, (newVal) => {
+    newVal === null ? null : props.curso.jefe_id
+})
 </script>
 
 <template>
