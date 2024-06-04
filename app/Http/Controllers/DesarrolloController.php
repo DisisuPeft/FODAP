@@ -194,12 +194,14 @@ class DesarrolloController extends Controller
 
     public function update_curso(CursoRequest $request, $id)
     {
+        DB::beginTransaction();
         $totalHoras = CoursesController::total_horas($request->fecha_I, $request->fecha_F, $request->hora_I, $request->hora_F);
         // $departamento = $this->query_carrera($request->carrera_dirigido);
         $facilitadores = $request->input('facilitadores', []);
+        $departamento = Departamento::with('jefe_docente')->find($request->id_departamento);
 
         $curso = DeteccionNecesidades::find($id);
-        $curso->id_jefe = $request->jefe;
+        $curso->id_jefe = $request->jefe == null ? $departamento->jefe_docente->id : $request->jefe_id;
         $curso->total_horas = $totalHoras;
         $curso->id_departamento = $request->departamento;
         $curso->facilitador_externo = $request->facilitador_externo;
@@ -210,6 +212,7 @@ class DesarrolloController extends Controller
         $curso->deteccion_facilitador()->sync([]);
 
         if (count($facilitadores) > 3) {
+            DB::rollBack();
             return Redirect::back()->withErrors('Excede el limite de docentes');
         } else {
             $curso->deteccion_facilitador()->sync(
@@ -219,6 +222,8 @@ class DesarrolloController extends Controller
             $curso->update($request->validated());
 
             $curso->save();
+
+            DB::commit();
 
             return Redirect::route('index.desarrollo.inscritos', ['id' => $curso->id]);
         }
