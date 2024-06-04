@@ -198,8 +198,8 @@ class DesarrolloController extends Controller
         $totalHoras = CoursesController::total_horas($request->fecha_I, $request->fecha_F, $request->hora_I, $request->hora_F);
         // $departamento = $this->query_carrera($request->carrera_dirigido);
         $facilitadores = $request->input('facilitadores', []);
-        $departamento = Departamento::with('jefe_docente')->find($request->id_departamento);
-        dd($request);
+        $departamento = Departamento::with('jefe_docente')->find($request->departamento);
+        // dd($request);
         $curso = DeteccionNecesidades::find($id);
         $curso->id_jefe = $request->jefe == null ? $departamento->jefe_docente->id : $request->jefe_id;
         $curso->total_horas = $totalHoras;
