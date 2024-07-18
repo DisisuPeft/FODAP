@@ -112,17 +112,60 @@ class PDFController extends Controller
 
     public function cdi_pdf(Request $request)
     {
+//        dd($request);
+        $band = 0;
+        $null_values = [];
+        $string_out = "";
+        $arr_final = [];
+        $request->validate([
+            'docente' => 'required',
+            'id_curso' => 'required',
+        ]);
         $curso = DeteccionNecesidades::with('deteccion_facilitador', 'carrera')->find($request->id_curso);
         $docente = Docente::with('usuario', 'posgrado', 'plaza', 'departamento', 'puesto')->find($request->docente);
-        $pdf = Pdf::loadView('pdf.CDI', compact('curso', 'docente'))
-            ->output();
-
-        $path = 'CDI.pdf';
-        return $this->save_file($pdf, $path);
-        //        return response()->json([
-        //            'docente' => $docente,
-        //            'curso' => $curso,
-        //        ]);
+        if ($curso && $docente){
+//            $relaciones = ['deteccion_facilitador', 'carrera'];
+//            foreach ($curso->getAttributes() as $key => $value) {
+//                if(is_null($value)){
+//                    $band++;
+//                    $null_values[] = 'La propiedad del curso: '.$key.' esta vacia';
+//                }
+//            }
+//            foreach ($relaciones as $relacion) {
+//                if (is_null($curso->{$relacion})) {
+//                    $band++;
+//                    $null_values[] = 'La relacion del curso'.$relacion.' esta vacia';
+//                }
+//            }
+            $r2 = ['usuario', 'posgrado', 'plaza', 'departamento', 'puesto'];
+            $teacher = $docente->getAttributes();
+//            dd($teacher);
+            foreach ($teacher as $key => $value) {
+                if(is_null($value)){
+//                    dd($key, $value);
+////                    dd($docente->getAttributes());
+                    if ($key != "interno" && "clavePresup" && "horarioEntrada" && "horarioSalida" && "prodep" && "empresa" && "tipodecurso"){
+                        $band++;
+                        $null_values[] = "Falta información del docente: '".$key."'. Esta vacia";
+                    }
+                    break;
+                }
+            }
+            foreach ($r2 as $relacion) {
+                if (is_null($docente->{$relacion})) {
+                    $band++;
+                    $null_values[] = 'El docente no cuenta con la relacion de "'.$relacion.'", esta vacio. Informe al administrador del sistema';
+                }
+            }
+            $mensajeConcatenado = implode(". ", $null_values);
+            $pdf = Pdf::loadView('pdf.CDI', compact('curso', 'docente'))
+                        ->output();
+            $path = 'CDI.pdf';
+            $this->save_file($pdf, $path);
+            return [$band, $mensajeConcatenado];
+        }else{
+            return "No existe un curso o docente asociado a esta cedula";
+        }
     }
 
     public function ficha_tecnica_pdf(Request $request)
@@ -147,8 +190,10 @@ class PDFController extends Controller
     public function acta_calificaciones_pdf(Request $request)
     {
         $year = date('Y');
-        $curso = DeteccionNecesidades::with('calificaciones_curso', 'carrera')->find($request->id);
-        $pdf = Pdf::loadView('pdf.actacalificaciones', compact('year', 'curso'))
+        $curso = DeteccionNecesidades::with('calificaciones_curso', 'carrera', 'deteccion_facilitador')->find($request->id);
+        $facilitadores = $curso->deteccion_facilitador;
+//        dd($facilitadores, $curso);
+        $pdf = Pdf::loadView('pdf.actacalificaciones', compact('year', 'curso', 'facilitadores'))
             ->output();
 
         $path = 'acta_de_calificaciones.pdf';

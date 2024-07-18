@@ -7,16 +7,16 @@ import NavLink from "@/Components/NavLink.vue";
 import CustomSnackBar from "@/Components/CustomSnackBar.vue";
 import InfoDialog from "@/Components/InfoDialog.vue";
 import {Curso} from "@/store/curso.js";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 const store = Curso()
 const props = defineProps({
     docente: Object,
     auth: Object,
-    misCursos: {
-        type: Array
-    }
+    misCursos: Object
 });
-let curso_selected = ref({})
+// console.log(props.misCursos)
+const curso_selected = ref({})
 const dialogInfo = ref(false)
 const search = ref()
 const color = ref("")
@@ -51,6 +51,10 @@ const snackSuccessActivator = () => {
         snackbar.value = false
     }, timeout.value)
 };
+
+const parseArray = computed(() => {
+     return Object.values(props.misCursos);
+})
 onMounted(() => {
     window.Echo.private(`App.Models.User.${props.auth.user.id}`).notification((notification) => {
         switch (notification.type){
@@ -71,7 +75,7 @@ onMounted(() => {
     window.Echo.private('calificacion-update').listen('CalificacionEvent', (event) => {
         snackEventActivator()
     })
-
+    // console.log(parseArray.value)
     // id_ref.value !== null ? store.get_curso_info(id_ref.value.id) : 0
 });
 
@@ -81,13 +85,14 @@ const reloadPage = () => {
 }
 
 function openDialog(curso){
+    // console.log(typeof curso)
     curso_selected.value = curso
     dialogInfo.value = true
 }
 watch(() => curso_selected.value, (newID) => {
-    id_ref.value = newID
-
-    store.infoCourse(id_ref.value.id)
+    // id_ref.value = newID
+    //
+    // store.infoCourse(id_ref.value.id)
 });
 </script>
 
@@ -98,112 +103,149 @@ watch(() => curso_selected.value, (newID) => {
             <h2 class="text-lg font-medium text-gray-900">Mis Cursos</h2>
         </template>
 
-            <template v-if="props.misCursos.length !== 0">
-                <div class=" mx-auto sm:px-6 lg:px-8 space-y-6">
-                    <div class="p-4 mt-7 sm:p-8 bg-white shadow sm:rounded-lg">
-                        <v-data-iterator
-                            :items="props.misCursos"
-                            item-value="nombreCurso"
-                            :search="search"
-                        >
-                            <template v-slot:header>
-                                <v-text-field
-                                    v-model="search"
-                                    clearable
-                                    density="comfortable"
-                                    hide-details
-                                    placeholder="Buscar"
-                                    prepend-inner-icon="mdi-magnify"
-                                    style="max-width: 300px;"
-                                    variant="solo"
-                                >
+        <template v-if="props.misCursos.length !== 0">
+            <div class=" mx-auto sm:px-6 lg:px-8 space-y-6">
+                <div class="p-4 mt-7 sm:p-8 bg-white shadow-2xl sm:rounded-lg">
+<!--                    <v-virtual-scroll-->
+<!--                        :items="props.misCursos"-->
+<!--                        height="500"-->
+<!--                        item-height="400"-->
+<!--                        class="mt-4"-->
 
-                                </v-text-field>
-                            </template>
-                            <template v-slot:default="{items}">
-                                <v-container class="pa-2 pt-15" fluid>
-                                    <v-row dense>
-                                        <v-col v-for="item in items" :key="item.nameCarrera"
-                                               cols="auto"
-                                               md="6"
-                                        >
-                                            <v-card class="pb-3" border flat width="600">
-                                                <v-list-item class="mb-2" :subtitle="item.raw.asignaturaFA">
-                                                    <template v-slot:title>
-                                                        <strong class="text-h6 mb-2">
-                                                            {{item.raw.nombreCurso}}
-                                                        </strong>
-                                                    </template>
-                                                </v-list-item>
-                                                <div class="d-flex justify-space-between px-4">
-                                                    <div class="d-flex align-center text-caption text-medium-emphasis me-1">
-<!--                                                        <template v-if="item.raw.tipo_FDoAP === 1">-->
-<!--                                                            <p class="text-truncate">Formación Docente</p>-->
-<!--                                                        </template>-->
-<!--                                                        <template v-if="item.raw.tipo_FDoAP === 2">-->
-<!--                                                            <p>Actualización Profesional</p>-->
-<!--                                                        </template>-->
-                                                    </div>
-                                                </div>
-                                                <div class="d-flex justify-space-between px-4">
-                                                    <div class="d-flex align-center text-caption text-medium-emphasis me-1">
-<!--                                                        <p class="text-truncate">Dirigido a la academica de {{item.raw.carrera.nameCarrera}}</p>-->
-                                                    </div>
-                                                </div>
-                                                <div class="d-flex justify-space-between px-4 pt-4">
-                                                    <div class="d-flex align-center text-caption text-medium-emphasis me-1">
-                                                        <template v-if="item.raw.calificacion === null">
-                                                            <v-chip variant="flat" color="blue-darken-1" >
-                                                                SIN CALIFICACION ASIGNADA
-                                                            </v-chip>
-                                                        </template>
-                                                        <template v-if="item.raw.calificacion === 0">
-                                                            <v-chip variant="flat" color="error" prepend-icon="mdi-cancel">
-                                                                NO APROBADO
-                                                            </v-chip>
-                                                        </template>
-                                                        <template v-if="item.raw.calificacion === 1">
-                                                            <v-chip variant="flat" color="success" prepend-icon="mdi-check-bold">
-                                                                APROBADO
-                                                            </v-chip>
-                                                        </template>
-                                                    </div>
+<!--                    >-->
+<!--                        <template v-slot:default="{ item }">-->
+<!--                            &lt;!&ndash;                            <v-list-item>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                <template v-slot:prepend>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                    <div class="d-flex align-center text-caption text-medium-emphasis me-1">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                        <template v-if="item.estado === 0">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                            <v-chip variant="flat" color="warning" prepend-icon="$info">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                                Curso por realizar&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                            </v-chip>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                        </template>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                        <template v-else>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                            <v-chip variant="flat" color="success" prepend-icon="$info">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                                En curso&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                            </v-chip>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                        </template>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                </template>&ndash;&gt;-->
 
-                                                        <v-btn
-                                                            border
-                                                            flat
-                                                            size="large"
-                                                            class="text-none"
-                                                            text="Ver"
-                                                            prepend-icon="mdi-eye-arrow-right-outline"
-                                                            @click="openDialog(item.raw)"
-                                                        >
-                                                        </v-btn>
+<!--                            &lt;!&ndash;                                <div class="ml-8">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                    <v-list-item-title class="text-h5">{{ item.nombreCurso }}</v-list-item-title>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                    <v-list-item-subtitle class="text-h6">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                        {{item.objetivoEvento}}&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                    </v-list-item-subtitle>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                    <v-list-item-action class="mt-5">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                        <div v-if="item.docente_inscrito.some(inscrito => inscrito.id === props.auth.user.docente_id)">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                            <danger-button @click="desinscribirme(props.auth.user.docente_id, item.id)">Desinscribirme</danger-button>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                        </div>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                    </v-list-item-action>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                </div>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                <div class="d-flex justify-space-between px-4 pt-4">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                    <div class="d-flex align-center text-caption text-medium-emphasis me-1">&ndash;&gt;-->
 
-                                                </div>
-                                            </v-card>
-                                        </v-col>
-                                    </v-row>
-                                </v-container>
-                            </template>
-                        </v-data-iterator>
+<!--                            &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                    <div v-if="item.docente_inscrito.some(inscrito => inscrito.id === props.auth.user.docente_id)">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                                <v-alert variant="outlined" color="success">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                                    <strong class=""> Inscrito </strong>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                                </v-alert>&ndash;&gt;-->
+
+<!--                            &lt;!&ndash;                                    </div>&ndash;&gt;-->
+
+<!--                            &lt;!&ndash;                                    <div v-else>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                        <secondary-button type="submit" @click="submit(item.id)">Inscribirse</secondary-button>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                </div>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                            </v-list-item>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4"> &lt;!&ndash; Añadido gap-4 para el espacio entre columnas &ndash;&gt;&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                <div class="flex justify-center items-center">&ndash;&gt;-->
+<!--                            <div class="max-w-2xl mx-auto overflow-hidden md:max-w-4xl">-->
+<!--                                <div class="md:flex">-->
+<!--                                    <div class="md:flex items-center">-->
+<!--                                        <template v-if="item.estado === 0">-->
+<!--                                            <v-chip variant="flat" color="warning" prepend-icon="$info">-->
+<!--                                                Curso por realizar-->
+<!--                                            </v-chip>-->
+<!--                                        </template>-->
+<!--                                        <template v-else>-->
+<!--                                            <v-chip variant="flat" color="success" prepend-icon="$info">-->
+<!--                                                En curso-->
+<!--                                            </v-chip>-->
+<!--                                        </template>-->
+<!--                                    </div>-->
+<!--                                    <div class="p-8">-->
+<!--                                        <div class="uppercase tracking-wide text-sm font-semibold">{{ item.nombreCurso }}</div>-->
+<!--                                        <p class="block mt-1 text-sm leading-tight font-medium text-black hover:underline">{{ item.objetivoEvento }}</p>-->
+<!--                                        <p class="mt-2 text-black">Fecha de realizacion: {{ item.fecha_I.split('-').reverse().join('/') }} al {{ item.fecha_F.split('-').reverse().join('/') }}</p>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">-->
+<!--                                    <div class="flex justify-center">-->
+<!--                                        <button class="rounded-lg bg-white shadow-2xl hover:bg-gray-500" @click="openDialog(item.id)">-->
+<!--                                            <v-icon>-->
+<!--                                                mdi-eye-arrow-right-outline-->
+<!--                                            </v-icon> Ver-->
+<!--                                        </button>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
+<!--                        </template>-->
+<!--                    </v-virtual-scroll>-->
+                    <div class="grid grid-cols-1 md:grid-cols-3">
+                        <div v-for="(item, index) in parseArray" :key="index" class="flex justify-center items-center">
+                            <div class="max-w-2xl mx-auto overflow-hidden md:max-w-4xl">
+                                <div class="md:flex">
+                                    <div class="md:flex items-center">
+                                        <template v-if="item.estado === 0">
+                                            <v-chip variant="flat" color="warning" prepend-icon="$info">
+                                                Curso por realizar
+                                            </v-chip>
+                                        </template>
+                                        <template v-else>
+                                            <v-chip variant="flat" color="success" prepend-icon="$info">
+                                                En curso
+                                            </v-chip>
+                                        </template>
+                                    </div>
+                                    <div class="p-8">
+                                        <div class="uppercase tracking-wide text-sm font-semibold">{{ item.nombreCurso }}</div>
+                                        <p class="block mt-1 text-sm leading-tight font-medium text-black hover:underline" @click="openDialog(item)">{{ item.objetivoEvento }}</p>
+                                        <p class="mt-2 text-black">Fecha de realizacion: {{item.fecha_I}}</p>
+                                    </div>
+                                </div>
+                                <div class="flex justify-end">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!--                                        <div class="flex justify-end md:justify-end">-->
+<!--                                            <button class="rounded-lg bg-white shadow-2xl hover:bg-gray-500" @click="openDialog(item)">-->
+<!--                                                <v-icon>-->
+<!--                                                    mdi-eye-arrow-right-outline-->
+<!--                                                </v-icon> Ver-->
+<!--                                            </button>-->
+<!--                                        </div>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </template>
-            <template v-else>
-                <div class="mx-auto sm:px-6 lg:px-8 space-y-6">
-                    <div class="p-4 mt-7 sm:p-8 bg-white shadow sm:rounded-lg">
-                        <v-alert
-                            border="start"
-                            color="info"
-                            type="info"
-                            title="Cursos"
-                        >
-                            <h2>Actualmente no estas inscrito a un curso o no estan disponbles !Pronto deberias verlos disponible!</h2>
-                        </v-alert>
-                    </div>
+            </div>
+        </template>
+        <template v-else>
+            <div class="mx-auto sm:px-6 lg:px-8 space-y-6">
+                <div class="p-4 mt-7 sm:p-8 bg-white shadow sm:rounded-lg">
+                    <v-alert
+                        border="start"
+                        color="info"
+                        type="info"
+                        title="Cursos"
+                    >
+                        <strong>Actualmente no hay cursos que visualizar !Pronto deberian ser agregados!</strong>
+                    </v-alert>
                 </div>
-            </template>
+            </div>
+        </template>
         <div class="mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-4 mt-7 sm:p-8 bg-white shadow sm:rounded-lg">
                 <v-col>

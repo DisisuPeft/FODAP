@@ -216,9 +216,9 @@
     <table class="w100">
         <tr>
             <td class="titles">NOMBRE:</td>
-            <td class="uline content center" style="width:30%"> {{$docente->apellidoPat}} </td>
-            <td class="uline content center" style="width:30%"> {{$docente->apellidoMat}} </td>
-            <td class="uline content center" style="width:30%"> {{$docente->nombre}} </td>
+            <td class="uline content center" style="width:30%"> {{$docente?->apellidoPat}} </td>
+            <td class="uline content center" style="width:30%"> {{$docente?->apellidoMat}} </td>
+            <td class="uline content center" style="width:30%"> {{$docente?->nombre}} </td>
         </tr>
         <tr>
             <td></td>
@@ -230,49 +230,49 @@
     <table class="w100">
         <tr>
             <td class="titles">R.F.C.:</td>
-            <td class="uline content w50"> {{$docente->rfc}} </td>
+            <td class="uline content w50"> {{$docente?->rfc}} </td>
             <td class="titles">CURP:</td>
-            <td class="uline content w50"> {{$docente->curp}} </td>
+            <td class="uline content w50"> {{$docente?->curp}} </td>
         </tr>
     </table>
     <table class="w100">
         <tr>
             <td class="titles">CORREO ELECTRÓNICO INSTITUCIONAL:</td>
-            <td class="uline content w100"> {{$docente->usuario->email}} </td>
+            <td class="uline content w100"> {{$docente?->usuario?->email}} </td>
         </tr>
     </table>
 
     <table class="w100">
         <tr>
             <td class="titles">NOMBRE DEL ÚLTIMO GRADO DE ESTUDIOS:</td>
-            <td class="uline content w100">{{$docente->posgrado->nombre}}</td>
+            <td class="uline content w100">{{$docente?->posgrado->nombre}}</td>
         </tr>
     </table>
     <table class="w100">
         <tr>
             <td class="titles">LICENCIATURA:</td>
-            <td class="uline content w100"> {{$docente->licenciatura}} </td>
+            <td class="uline content w100"> {{$docente?->licenciatura}} </td>
         </tr>
     </table>
     <p class="infoTitles">DATOS LABORALES</p>
 
     <table style="float:right;padding-right:1cm;">
         <tr>
-            @if($docente->tipo_plaza == 1)
+            @if($docente?->tipo_plaza == 1)
                 <td class="titles">DIRECTIVO</td>
                 <td class="content" style="width:50px">( X )</td>
                 <td class="titles">DOCENTE / INTERINATO</td>
                 <td class="content" style="width:50px">( )</td>
                 <td class="titles">HONORARIOS</td>
                 <td class="content">( )</td>
-            @elseif($docente->tipo_plaza == 2)
+            @elseif($docente?->tipo_plaza == 2)
                 <td class="titles">DIRECTIVO</td>
                 <td class="content" style="width:50px">( )</td>
                 <td class="titles">DOCENTE / INTERINATO</td>
                 <td class="content" style="width:50px">( X )</td>
                 <td class="titles">HONORARIOS</td>
                 <td class="content">( )</td>
-            @elseif($docente->tipo_plaza == 3)
+            @elseif($docente?->tipo_plaza == 3)
                 <td class="titles">DIRECTIVO</td>
                 <td class="content" style="width:50px">( )</td>
                 <td class="titles">DOCENTE / INTERINATO</td>
@@ -292,25 +292,25 @@
     <table class="w100">
         <tr>
             <td class="titles">ÁREA DE ADSCRIPCIÓN:</td>
-            <td class="uline content w100"> {{ $docente->departamento->nameDepartamento }} </td>
+            <td class="uline content w100"> {{ $docente->departamento?->nameDepartamento }} </td>
         </tr>
     </table>
     <table class="w100">
         <tr>
             <td class="titles">PUESTO QUE DESEMPEÑA:</td>
-            <td class="uline content w100"> {{$docente->puesto->nombre}} </td>
+            <td class="uline content w100"> {{$docente->puesto?->nombre}} </td>
         </tr>
     </table>
     <table class="w100">
         <tr>
             <td class="titles">NOMBRE DEL JEFE INMEDIATO:</td>
-            <td class="uline content w100"> {{$docente->departamento->jefe_docente->nombre_completo}} </td>
+            <td class="uline content w100"> {{$docente->departamento?->jefe_docente->nombre_completo}} </td>
         </tr>
     </table>
     <table class="w100">
         <tr>
             <td class="titles">TELÉFONO DE CONTACTO:</td>
-            <td class="uline content w100"> {{$docente->telefono }} </td>
+            <td class="uline content w100"> {{$docente?->telefono }} </td>
         </tr>
     </table>
     <table class="w100">
@@ -327,7 +327,7 @@
     </table>
     <div class="footer">
         <p style="float:left">ITTG-AD-PO-006-04</p>
-        <p style="display:inline;float:right;">Rev. {{0}}</p>
+        <p style="float:right;">Rev. {{0}}</p>
     </div>
 </body>
 

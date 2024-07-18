@@ -88,6 +88,7 @@ class ProfileController extends Controller
     {
         try {
             $request->validate([
+                'id' => 'required',
                 'rfc' => 'required',
                 'curp' => 'required',
                 'nombre' => 'required',
@@ -110,9 +111,13 @@ class ProfileController extends Controller
                 ]);
 
                 $docente_find->save();
+
+                return "Docente actualizado";
             }else {
                 $docente = DocenteController::create_instance_docente($request);
-
+                $docente->update([
+                    'user_id' => $request->id
+                ]);
                 $docente->save();
 
                 User::where('id', $request->id)->update([

@@ -61,6 +61,7 @@ class DocenteController extends Controller
         $request->validate([
             'id_docente' => 'required'
         ]);
+//        dd('error');
         try {
             $deteccion = DeteccionNecesidades::find($id);
             $deteccion->docente_inscrito()->attach($request->input('id_docente'));
@@ -100,6 +101,8 @@ class DocenteController extends Controller
 
         $misCursos = DB::table('inscripcion')
             ->join('deteccion_necesidades', 'inscripcion.curso_id', '=', 'deteccion_necesidades.id')
+//            ->leftjoin('deteccion_has_facilitadores', 'deteccion_necesidades.id', '=', 'deteccion_has_facilitadores.deteccion_id')
+//            ->leftjoin('docente','deteccion_has_facilitadores.docente_id','=','docente.id')
             ->leftJoin('calificaciones', function ($join) {
                 $join->on('calificaciones.curso_id', '=', 'inscripcion.curso_id')
                     ->where('calificaciones.docente_id', '=', auth()->user()->docente_id);
@@ -109,7 +112,7 @@ class DocenteController extends Controller
             ->select('deteccion_necesidades.*', 'inscripcion.id AS InscripcionID', 'calificaciones.calificacion AS calificacion', 'calificaciones.id AS calificacionID')
             ->get();
 
-
+//        dd($misCursos);
         return Inertia::render('Views/cursos/docentes/MisCursosDocentes', [
             'docente' => $docente,
             'misCursos' => $misCursos

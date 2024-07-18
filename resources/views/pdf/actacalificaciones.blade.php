@@ -37,7 +37,6 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-weight: bold;
             text-align: start;
             margin-left: 100px;
             font-family: "Arial", "Helvetica", sans-serif;
@@ -90,7 +89,7 @@
             margin-top: 1px;
         }
         .margen-izquierdo {
-            margin-left: 100px;
+            margin-left: 50px;
             margin-top: 1px;
         }
     </style>
@@ -102,9 +101,9 @@
         <p>ACTA DE CALIFICACIONES</p>
     </div>
     <div class="text-position">
-        <p>NOMBRE DEL CURSO/TALLER: {{$curso->nombreCurso}}</p>
-        <p>FECHA DE REALIZACIÓN: {{$curso->fecha_I}} - {{$curso->fecha_F}}</p>
-        <p>ÁREA ACADÉMICA: {{$curso->carrera->nameCarrera}}</p>
+        <p><b>NOMBRE DEL CURSO/TALLER</b>: {{$curso->nombreCurso}}</p>
+        <p><b>FECHA DE REALIZACIÓN</b>: {{$curso->fecha_I}} - {{$curso->fecha_F}}</p>
+        <p><b>ÁREA ACADÉMICA</b>: {{$curso->carrera->nameCarrera}}</p>
     </div>
 
     <table class="custom_table">
@@ -138,14 +137,23 @@
     </table>
     <div style="page-break-before: auto"></div>
     <div class="final_part">
-        <div style="float: left;" class="margen-izquierdo">
-            <p class="firmas">FACILITADOR 1</p>
-            <p class="firmas words_strong">NOMBRE Y FIRMA</p>
-        </div>
-        <div style="float: right;" class="margen-derecho">
-            <p class="firmas">FACILITADOR 2</p>
-            <p class="firmas words_strong">NOMBRE Y FIRMA</p>
-        </div>
+        @if(count($facilitadores) > 0)
+            <div style="text-align: center;" class="">
+                @for ($i = 0; $i < min(3, count($facilitadores)); $i++)
+                    <div style="display: inline-block; margin: 0 10px;">
+                        <p class="">FACILITADOR {{ $i + 1 }}</p>
+                        <p class="">{{ mb_strtoupper($facilitadores[$i]->nombre_completo, 'UTF-8') }}</p>
+                        <p class="">NOMBRE Y FIRMA</p>
+                    </div>
+                @endfor
+            </div>
+        @else
+            <div style="display: inline-block; margin: 0 10px;" class="">
+                <p class="">FACILITADOR</p>
+                <p class="">{{ mb_strtoupper($curso->facilitador_externo, 'UTF-8') }}</p>
+                <p class="">NOMBRE Y FIRMA</p>
+            </div>
+        @endif
     </div>
 </body>
 

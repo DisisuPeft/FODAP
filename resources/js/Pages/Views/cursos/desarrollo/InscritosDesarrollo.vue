@@ -15,6 +15,8 @@ import Calificaciones from "@/Components/Calificaciones.vue";
 import CalificacionesUpdate from "@/Components/CalificacionesUpdate.vue";
 import Modal from "@/Components/Modal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
+import {notify} from "@/jsfields/alertas.js";
+import {no} from "vuetify/locale";
 
 const store = Curso();
 
@@ -40,6 +42,7 @@ const docente = ref();
 const dialogCalificacionUpdate = ref(false);
 const show_ficha = ref(false);
 const color_ficha = ref("");
+const mm = ref([])
 const reloadPage = () => {
     router.reload();
     snackbar.value = false;
@@ -55,7 +58,11 @@ const update_docente_calificacion = (docente_id, calification) => {
     calificacion.value = calification;
     dialogCalificacionUpdate.value = true;
 };
-
+// const from_cdi = computed(() => {
+//     for(let i = 0;i<=mm.value.length;i++){
+//         return mm[i].value
+//     }
+// })
 const snackEventActivator = () => {
     snackbar.value = true;
     message.value =
@@ -118,6 +125,10 @@ const submit = (inscripcion, id) => {
             },
         })
         .then((res) => {
+            if (res.data[0] > 0){
+               mm.value = res.data[1]
+               notify('Advertencia', 'warning', `${res.data[1]}`)
+            }
             const url = "/storage/CDI.pdf";
             const link = document.createElement("a");
             link.href = url;

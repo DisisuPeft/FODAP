@@ -172,7 +172,7 @@ console.log(props.cursos);
                                                 Curso por realizar
                                             </v-chip>
                                         </template>
-                                        <template v-else>
+                                        <template v-else-if="item.estado === 1">
                                             <v-chip
                                                 variant="flat"
                                                 color="success"

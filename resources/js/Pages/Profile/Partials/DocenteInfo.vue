@@ -7,6 +7,8 @@ import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import CustomSnackBar from "@/Components/CustomSnackBar.vue";
+import {confirmy, errorMsg, notify, success_alert} from "@/jsfields/alertas.js";
+import Swal from "sweetalert2";
 
 const user = computed(() => usePage().props.auth.user);
 const alert = ref(true)
@@ -84,21 +86,51 @@ const sex = [{ value: 1, text: "MASCULINO" }, { value: 2, text: "FEMENINO" }];
 
 function submit() {
     if (!props.docente) {
-        form.post(route('docente.create'), {
-            onSuccess: () => {
-                snackSuccessActivator()
-            },
-            onError: () => {
-                snackErrorActivator()
+        Swal.fire({
+            title: '¿Esta seguro de haber ingresado todos los datos?',
+            text: '',
+            allowOutsideClick: false,
+            icon: 'alert',
+            allowEscapeKey: false,
+            allowEnterKey:false,
+            showConfirmButton: true,
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar',
+            showCancelButton: true
+        }).then((res) => {
+            if (res.isConfirmed){
+                form.post(route('docente.create'), {
+                    onSuccess: () => {
+                        success_alert('Exito', 'Creado con exito')
+                    },
+                    onError: () => {
+                        errorMsg('Error', 'Verifica haber ingresado todos los datos, si no comunica al departamento de desarrollo academico')
+                    }
+                })
             }
         })
     } else {
-        form.put(route('update.docente', props.docente.id), {
-            onSuccess: () => {
-                snackSuccessActivator()
-            },
-            onError: () => {
-                snackErrorActivator()
+        Swal.fire({
+            title: '¿Esta seguro de haber ingresado todos los datos?',
+            text: '',
+            allowOutsideClick: false,
+            icon: 'alert',
+            allowEscapeKey: false,
+            allowEnterKey:false,
+            showConfirmButton: true,
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar',
+            showCancelButton: true
+        }).then((res) => {
+            if (res.isConfirmed){
+                form.put(route('update.docente', props.docente.id), {
+                    onSuccess: () => {
+                        success_alert('Exito', 'Actualizado con exito')
+                    },
+                    onError: () => {
+                        errorMsg('Error', 'Verifica haber ingresado todos los datos, si no comunica al departamento de desarrollo academico')
+                    }
+                })
             }
         })
     }
