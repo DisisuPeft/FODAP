@@ -29,6 +29,13 @@
         table {
             width: 100%;
         }
+        .final_part {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            top: 400px;
+            margin-top: 100px;
+        }
     </style>
 
 </head>
@@ -131,33 +138,71 @@
         </tr>
     </table>
     <div style="margin-top: 120px"></div>
+{{--    <div class="final_part">--}}
+{{--        <div style="text-align: center;" class="">--}}
+{{--            <div style="display: inline-block; margin: 0 10px;" class="">--}}
+{{--                <p style="font-weight: bold" class="">Director</p>--}}
+{{--                <p class="">{{mb_strtoupper($director[0]->nameDirector, 'UTF-8')}}</p>--}}
+{{--                <p class="">NOMBRE Y FIRMA</p>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--        @if(count($facilitador) > 0)--}}
+{{--            <div style="text-align: center;" class="">--}}
+{{--                @for ($i = 0; $i < min(3, count($facilitador)); $i++)--}}
+{{--                    <div style="display: inline-block; margin: 0 10px;">--}}
+{{--                        <p class="">FACILITADOR {{ $i + 1 }}</p>--}}
+{{--                        <p class="">{{ mb_strtoupper($facilitador[$i]->nombre_completo, 'UTF-8') }}</p>--}}
+{{--                        <p class="">NOMBRE Y FIRMA</p>--}}
+{{--                    </div>--}}
+{{--                @endfor--}}
+{{--            </div>--}}
+{{--        @else--}}
+{{--            <div style="display: inline-block; margin: 0 10px;" class="">--}}
+{{--                <p class="">FACILITADOR</p>--}}
+{{--                <p class="">{{ mb_strtoupper($curso->facilitador_externo, 'UTF-8') }}</p>--}}
+{{--                <p class="">NOMBRE Y FIRMA</p>--}}
+{{--            </div>--}}
+{{--        @endif--}}
+{{--    </div>--}}
     <table>
         <tr>
-            <td style="text-align: center; vertical-align: middle; font-size: 9pt;  font-weight: bold;padding-left: 50px">
+            <td style="text-align: center; vertical-align: middle; font-size: 8pt;">
                 {{mb_strtoupper($director[0]->nameDirector, 'UTF-8')}}
             </td>
-            <td style="text-align: center; vertical-align: middle; font-size: 9pt;  font-weight: bold; padding-right: 70px">
+            <td style="text-align: center; vertical-align: middle; font-size: 8pt;">
                             @if(count($facilitador) != 0)
                                 {{mb_strtoupper($facilitador[0]->nombre_completo, 'UTF-8')}}
                             @else
                                 {{mb_strtoupper($curso->facilitador_externo, 'UTF-8')}}
                             @endif
             </td>
-            @if (count($facilitador) == 2)
-                <td style="text-align: center; vertical-align: middle; font-size: 9pt;  font-weight: bold;padding-right: 70px">
-                    {{mb_strtoupper($facilitador[1]->nombre_completo, 'UTF-8')}}
+            @if (count($facilitador) > 1)
+                <td style="text-align: center; vertical-align: middle; font-size: 8pt;">
+                    {{ mb_strtoupper($facilitador[1]->nombre_completo, 'UTF-8') }}
+                </td>
+            @endif
+            @if (count($facilitador) > 2)
+                <td style="text-align: center; vertical-align: middle; font-size: 8pt;">
+                    {{ mb_strtoupper($facilitador[2]->nombre_completo, 'UTF-8') }}
                 </td>
             @endif
         </tr>
         <tr>
-            <td style="text-align: center; vertical-align: middle; font-size: 9pt;  font-weight: bold;padding-left: 50px">
+            <td style="text-align: center; vertical-align: middle; font-size: 7pt;  font-weight: bold;">
                 DIRECTOR
             </td>
-            <td style="text-align: center; vertical-align: middle; font-size: 9pt;  font-weight: bold;padding-right: 70px" >
+            <td style="text-align: center; vertical-align: middle; font-size: 7pt;  font-weight: bold;" >
                 FACILITADOR (A)
             </td>
-            @if (count($facilitador) == 2)
-                <td style="text-align: center; vertical-align: middle; font-size: 9pt;  font-weight: bold;padding-right: 70px">
+            @if (count($facilitador) > 1)
+                <td style="text-align: center; vertical-align: middle; font-size: 7pt;  font-weight: bold;">
+                    <!-- Firma del facilitador -->
+                    FACILITADOR (A)
+                    <!-- Puedes agregar la imagen de la firma u otro contenido aquí -->
+                </td>
+            @endif
+            @if (count($facilitador) > 2)
+                <td style="text-align: center; vertical-align: middle; font-size: 7pt;  font-weight: bold;">
                     <!-- Firma del facilitador -->
                     FACILITADOR (A)
                     <!-- Puedes agregar la imagen de la firma u otro contenido aquí -->

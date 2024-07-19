@@ -15,7 +15,7 @@ import Calificaciones from "@/Components/Calificaciones.vue";
 import CalificacionesUpdate from "@/Components/CalificacionesUpdate.vue";
 import Modal from "@/Components/Modal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import {notify} from "@/jsfields/alertas.js";
+import {errorMsg, notify, success_alert} from "@/jsfields/alertas.js";
 import {no} from "vuetify/locale";
 
 const store = Curso();
@@ -205,14 +205,25 @@ const submitConstancia = (docente_id) => {
             },
         })
         .then((res) => {
-            const url = "/storage/constancia.pdf";
-            const link = document.createElement("a");
-            link.href = url;
-            link.setAttribute("download", "constancia.pdf");
-            document.body.appendChild(link);
-            link.click();
-            loading.value = false;
-            snackSuccessActivator();
+            if(res.data[1] === 0){
+                const url = "/storage/constancia.pdf";
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", "constancia.pdf");
+                document.body.appendChild(link);
+                link.click();
+                loading.value = false;
+                success_alert('Exito', 'Se ha descargado la contancia con exito')
+            }else{
+                loading.value = false;
+                // console.log(res.data[0].length)
+                for(let i = 0; i<res.data[0].length;i++){
+                    errorMsg('Parece que hacen falta estos parametros: ', `${res.data[0][i]}`)
+                    // console.log(res.data[0][i])
+
+                }
+                // errorMsg('Parece que hacen falta estos parametros: ', `${}`)
+            }
         })
         .catch((error) => {
             loading.value = false;

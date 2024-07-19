@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\In;
@@ -360,9 +361,14 @@ class   GestionParametrosController extends Controller
         $request->validate([
             'file' => ['required', 'mimes:jpg,jpeg,png'],
         ]);
+        $file = $request->file('file');
+        $extension = $file->getClientOriginalExtension();
         $year = date('Y');
         $path = '/Membretado/' . $year;
-        $request->file('file')->storeAs($path, 'img_acta_calificaciones.jpg', 'public');
+        if(Storage::disk('public')->exists($path.'/img_acta_calificaciones.'.$extension)){
+            Storage::disk('public')->delete($path.'/img_acta_calificaciones.'.$extension);
+        }
+        $request->file('file')->storeAs($path, 'img_acta_calificaciones.'.$extension, 'public');
         return redirect()->route('parametros.edit');
     }
     public function subir_img_constancia(Request $request)
@@ -370,9 +376,16 @@ class   GestionParametrosController extends Controller
         $request->validate([
             'file' => ['required', 'mimes:jpg,jpeg,png'],
         ]);
+        $file = $request->file('file');
+        $extension = $file->getClientOriginalExtension();
+//        dd($file, $extension);
         $year = date('Y');
         $path = '/Membretado/' . $year;
-        $request->file('file')->storeAs($path, 'img_constancia.jpg', 'public');
+        if(Storage::disk('public')->exists($path.'/img_constancia.'.$extension)){
+            Storage::disk('public')->delete($path.'/img_constancia.'.$extension);
+        }
+        $request->file('file')->storeAs($path, 'img_constancia.'.$extension, 'public');
+
         return redirect()->route('parametros.edit');
     }
     public function subir_img_constancia_2(Request $request)

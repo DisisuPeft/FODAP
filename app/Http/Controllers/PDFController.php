@@ -208,10 +208,124 @@ class PDFController extends Controller
         $curso = DeteccionNecesidades::with('deteccion_facilitador',  'clave_curso', 'clave_validacion')->find($request->id);
         $coordinacion = User::with('docente')->where('email', 'cformacion@tuxtla.tecnm.mx')->first();
         $ficha = FichaTecnica::where('id_curso', $curso->id)->first();
-
+        $band = 0;
+        $errors = [];
 
         $facilitador = $curso->deteccion_facilitador;
+        $instituto = DB::table('nombre_instituto')->get();
+        if ($instituto->isEmpty()) {
+            $band++;
+            $errors[] = 'La consulta $instituto no retornó ningún resultado.';
+        }
 
+// Verificar la consulta $docente
+        $docente = Docente::with('inscrito', 'posgrado', 'carrera', 'puesto')->find($request->id_docente);
+        if (is_null($docente)) {
+            $band++;
+            $errors[] = 'La consulta del docente retornó un valor vacio. Notifique al administrador del sistema.';
+        } else {
+            foreach ($docente->getAttributes() as $key => $value) {
+                if (is_null($value)) {
+                    if ($key != "interno" && "clavePresup" && "horarioEntrada" && "horarioSalida" && "prodep" && "empresa" && "tipodecurso"){
+                        $band++;
+                        $errors[] = 'La propiedad ' . $key . ' del docente está vacía. Notifique al administrador del sistema.';
+                    }
+                    break;
+                }
+            }
+            foreach (['inscrito', 'posgrado', 'carrera', 'puesto'] as $relation) {
+                if (is_null($docente->{$relation})) {
+                    $band++;
+                    $errors[] = 'La relación ' . $relation . ' del docente está vacía. Notifique al administrador del sistema.';
+                }
+            }
+        }
+
+// Verificar la consulta $curso
+        $curso = DeteccionNecesidades::with('deteccion_facilitador', 'clave_curso', 'clave_validacion')->find($request->id);
+        if (is_null($curso)) {
+            $band++;
+            $errors[] = 'La consulta al curso retornó un valor vacio. Notifique al administrador del sistema.';
+        } else {
+            foreach ($curso->getAttributes() as $key => $value) {
+                if (is_null($value)) {
+                    if ($key != "anio_realizacion" && $key != "observaciones" && $key != "facilitador_externo"){
+                        $band++;
+                        $errors[] = 'La propiedad ' . $key . ' del curso está vacía. Notifique al administrador del sistema.';
+                    }
+                    break;
+                }
+            }
+            foreach (['deteccion_facilitador', 'clave_curso', 'clave_validacion'] as $relation) {
+                if (is_null($curso->{$relation})) {
+                    $band++;
+                    $errors[] = 'La relación ' . $relation . ' del curso retorno un valor vacío. Notifique al administrador del sistema.';
+                }
+            }
+        }
+
+// Verificar la consulta $coordinacion
+        $coordinacion = User::with('docente')->where('email', 'cformacion@tuxtla.tecnm.mx')->first();
+        if (is_null($coordinacion)) {
+            $band++;
+            $errors[] = 'La consulta al usuario que pertenece a la coordinacion del departamento de desarrollo académico retornó un valor vacio. Notifique al administrador del sistema.';
+        } else {
+            foreach ($coordinacion->getAttributes() as $key => $value) {
+                if (is_null($value)) {
+                    if ($key != "name" && "email_verified_at" && "created_at"){
+                        $band++;
+                        $errors[] = 'La propiedad ' . $key . ' del usuario del departamento de desarrollo académico retornó un valor vacio. Notifique al administrador del sistema.';
+                    }
+                    break;
+                }
+            }
+            if (is_null($coordinacion->docente)) {
+                $band++;
+                $errors[] = 'La relación del usuario con el docente está vacía.';
+            }
+        }
+
+// Verificar la consulta $ficha
+        if (!is_null($curso)) {
+            $ficha = FichaTecnica::where('id_curso', $curso->id)->first();
+            if (is_null($ficha)) {
+                $band++;
+                $errors[] = 'La consulta a la ficha tecnica relacionada con el curso retornó vacia. Es probable que no ha sido creada, verifique el icono en forma de documento ubicado en la parte superior derecha. Si persisite, notifique al administrador del sistema.';
+            } else {
+                foreach ($ficha->getAttributes() as $key => $value) {
+                    if (is_null($value)) {
+                        if ($key != "descripcion_servicio"){
+                            $band++;
+                            $errors[] = 'La propiedad ' . $key . ' de la ficha tecnica está vacía. Notifique al administrador del sistema.';
+                        }
+                        break;
+                    }
+                }
+            }
+        }else {
+            $band++;
+            $errors[] = 'La consulta al curso  retornó vacia. Si persisite, notifique al administrador del sistema.';
+        }
+        $director = DB::table('director')->where('id', 1)->get();
+//        dd($director);
+        if (is_null($director)){
+            $band++;
+            $errors[] = 'La consulta al director de la institucion retorno vacia, Notifique al departamento de desarrollo académico.';
+        }else {
+            foreach ($director as $key => $value) {
+                if (is_null($value)) {
+//                    if ($key != "descripcion_servicio"){
+                        $band++;
+                        $errors[] = 'La propiedad ' . $key . ' de la ficha tecnica está vacía. Notifique al administrador del sistema.';
+//                    }
+                    break;
+                }
+            }
+        }
+//        dd($band);
+        if ($band != 0) {
+            return [$errors, $band];
+        }
         $actual_date = date('Y-m-d');
         $day = date('d');
         $anio = date('Y');
@@ -221,7 +335,7 @@ class PDFController extends Controller
         $fecha2 = $docente->inscrito[0]->fecha_F;
         $formatFechasI = explode("-", $fecha);
         $formatFechasF = explode("-", $fecha2);
-        $director = Director::all();
+//            $director = Director::all();
         $month = $this->parse_date($fecha);
 
         $pdf_1 = Pdf::loadView('pdf.constancia', compact('year', 'instituto', 'docente', 'formatFechasI', 'formatFechasF', 'month', 'facilitador', 'director', 'curso'))
@@ -242,13 +356,16 @@ class PDFController extends Controller
         $this->save_file($pdf_2, $path_2);
 
         $this->merge_pdf('constancia1', 'constancia2');
-
-        return response()->json([
-            'docente' => $docente,
-            'year' => $year,
-            'facilitador' => $facilitador,
-            'coordinacion' => $coordinacion,
-        ]);
+        return [$errors, $band];
+//        return response()->json([
+//            'docente' => $docente,
+//            'year' => $year,
+//            'facilitador' => $facilitador,
+//            'coordinacion' => $coordinacion,
+//        ]);
+//        }else{
+//            return [$errors, $band];
+//        }
     }
 
     public static function merge_pdf($pdf1, $pdf2)
@@ -260,7 +377,7 @@ class PDFController extends Controller
 
         if (!file_exists($pdf_1) || !file_exists($pdf_2)) {
             // Manejar la falta de archivos, lanzar excepción o generar los PDFs previamente si es necesario
-            return null;
+            return "Los archivos no existen, notifica al administrador del sistema.";
         } else {
             $pdf = new Fpdi();
 

@@ -18,6 +18,8 @@ import DialogDirector from "@/Pages/Views/dialogs/DialogDirector.vue";
 import CustomSnackBar from "@/Components/CustomSnackBar.vue";
 import NombreInstitutoTable from "@/Pages/Views/desarrollo/tablas/NombreInstitutoTable.vue";
 import DialogNombreInstituto from "@/Pages/Views/dialogs/DialogNombreInstituto.vue";
+import Swal from "sweetalert2";
+import {errorMsg, success_alert} from "@/jsfields/alertas.js";
 
 const search = ref("");
 const dialogSub = ref(false);
@@ -122,41 +124,88 @@ const upload_cvu = () => {
     });
 };
 const upload_acta = () => {
-    form_file_acta_img.post(route("subir.actacalificaciones"), {
-        forceFormData: true,
-        onSuccess: () => {
-            form_file_acta_img.reset();
-            snackSuccessActivator();
-        },
-        onError: () => {
-            snackErrorActivator();
-        },
-    });
+    Swal.fire({
+        title: '¿Esta seguro que desea subir la imagen?',
+        text: 'Esta accion se puede revertir',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar'
+    }).then(res => {
+        if (res.isConfirmed){
+            form_file_acta_img.post(route("subir.actacalificaciones"), {
+                forceFormData: true,
+                onSuccess: () => {
+                    form_file_acta_img.reset();
+                    success_alert('Exito', 'La hoja membretada se ha subido con exito');
+                },
+                onError: () => {
+                    form_file_acta_img.reset();
+                    let msg = "";
+                    if (props.errors){
+                        msg = "El archivo debe ser de tipo jpg, png"
+                    }
+                    errorMsg('Error', `${msg}`)
+                },
+            });
+            // form_file_constancia_img.post(route("subir.constancia"), {
+            //     forceFormData: true,
+            //     onSuccess: () => {
+            //         form_file_constancia_img.reset();
+            //         success_alert('Exito', 'La hoja membretada se ha subido con exito');
+            //     },
+            //     onError: () => {
+            //         form_file_constancia_img.reset();
+            //         let msg = "";
+            //         if (props.errors){
+            //             msg = "El archivo debe ser de tipo jpg, png"
+            //         }
+            //         errorMsg('Error', `${msg}`)
+            //     },
+            // });
+        }
+    })
 };
 const upload_constancia = () => {
-    form_file_constancia_img.post(route("subir.constancia"), {
-        forceFormData: true,
-        onSuccess: () => {
-            form_file_constancia_img.reset();
-            snackSuccessActivator();
-        },
-        onError: () => {
-            snackErrorActivator();
-        },
-    });
+    Swal.fire({
+        title: '¿Esta seguro que desea subir la imagen?',
+        text: 'Esta accion se puede revertir',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar'
+    }).then(res => {
+        if (res.isConfirmed){
+            form_file_constancia_img.post(route("subir.constancia"), {
+                forceFormData: true,
+                onSuccess: () => {
+                    form_file_constancia_img.reset();
+                    success_alert('Exito', 'La hoja membretada se ha subido con exito');
+                },
+                onError: () => {
+                    form_file_constancia_img.reset();
+                    let msg = "";
+                    if (props.errors){
+                        msg = "El archivo debe ser de tipo jpg, png"
+                    }
+                    errorMsg('Error', `${msg}`)
+                },
+            });
+        }
+    })
 };
-const upload_constancia_2 = () => {
-    form_file_constancia_img_2.post(route("subir.constancia.2"), {
-        forceFormData: true,
-        onSuccess: () => {
-            form_file_constancia_img_2.reset();
-            snackSuccessActivator();
-        },
-        onError: () => {
-            snackErrorActivator();
-        },
-    });
-};
+// const upload_constancia_2 = () => {
+//     form_file_constancia_img_2.post(route("subir.constancia.2"), {
+//         forceFormData: true,
+//         onSuccess: () => {
+//             form_file_constancia_img_2.reset();
+//             snackSuccessActivator();
+//         },
+//         onError: () => {
+//             snackErrorActivator();
+//         },
+//     });
+// };
 const upload_logotec = () => {
     img_logo_ittg.post(route("subir.logoTec"), {
         forceFormData: true,
@@ -483,9 +532,32 @@ onMounted(() => {
                     </h2>
                 </header>
                 <div class="mt-3">
-                    <strong class="text-lg text-gray-600">
-                        Subir membretado.
-                    </strong>
+                    <div class="flex justify-start items-center">
+                        <div class="grid grid-cols-1 md:grid-cols-2">
+                            <div class="flex justify-start">
+                                <strong class="text-lg text-gray-600">
+                                    Subir membretado.
+                                </strong>
+                            </div>
+                            <div class="flex justify-start ml-10 mb-2">
+                                <v-tooltip location="bottom">
+                                    <template v-slot:activator="{ props }">
+                                        <v-btn
+                                            icon
+                                            v-bind="props"
+                                            size="normal"
+                                            color="blue-darken-1"
+                                        >
+                                            <v-icon> mdi-help </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span
+                                    >La imagen debe tener la mejor calidad posible para que se vea bien al momento de la impresión.</span
+                                    >
+                                </v-tooltip>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <form @submit.prevent="upload_acta">
                     <div class="grid grid-cols-1">
@@ -509,24 +581,6 @@ onMounted(() => {
                         </div>
                     </div>
                 </form>
-                <div class="flex justify-start ml-10 mb-2">
-                    <v-tooltip location="right">
-                        <template v-slot:activator="{ props }">
-                            <v-btn
-                                icon
-                                v-bind="props"
-                                size="normal"
-                                color="blue-darken-1"
-                            >
-                                <v-icon> mdi-help </v-icon>
-                            </v-btn>
-                        </template>
-                        <span
-                            >En el caso de las constancias deben agregarse el
-                            membretado y la imagen.</span
-                        >
-                    </v-tooltip>
-                </div>
                 <form @submit.prevent="upload_constancia">
                     <div class="grid grid-cols-1">
                         <div class="flex justify-center">
@@ -537,6 +591,7 @@ onMounted(() => {
                                     form_file_constancia_img.file =
                                         $event.target.files[0]
                                 "
+                                ref="file_input_c"
                             ></v-file-input>
                             <div class="flex justify-end mt-2 ml-5 w-11">
                                 <v-btn
@@ -549,28 +604,28 @@ onMounted(() => {
                         </div>
                     </div>
                 </form>
-                <form @submit.prevent="upload_constancia_2">
-                    <div class="grid grid-cols-1">
-                        <div class="flex justify-center">
-                            <v-file-input
-                                label="Constancia imagen del reverso"
-                                variant="solo"
-                                @input="
-                                    form_file_constancia_img_2.file =
-                                        $event.target.files[0]
-                                "
-                            ></v-file-input>
-                            <div class="flex justify-end mt-2 ml-5 w-11">
-                                <v-btn
-                                    type="submit"
-                                    color="blue-darken-1"
-                                    width="500"
-                                    icon="mdi-content-save-check-outline"
-                                ></v-btn>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+<!--                <form @submit.prevent="upload_constancia_2">-->
+<!--                    <div class="grid grid-cols-1">-->
+<!--                        <div class="flex justify-center">-->
+<!--                            <v-file-input-->
+<!--                                label="Constancia imagen del reverso"-->
+<!--                                variant="solo"-->
+<!--                                @input="-->
+<!--                                    form_file_constancia_img_2.file =-->
+<!--                                        $event.target.files[0]-->
+<!--                                "-->
+<!--                            ></v-file-input>-->
+<!--                            <div class="flex justify-end mt-2 ml-5 w-11">-->
+<!--                                <v-btn-->
+<!--                                    type="submit"-->
+<!--                                    color="blue-darken-1"-->
+<!--                                    width="500"-->
+<!--                                    icon="mdi-content-save-check-outline"-->
+<!--                                ></v-btn>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </form>-->
             </div>
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <header>
@@ -669,13 +724,13 @@ onMounted(() => {
                     </v-row>
                 </header>
             </div>
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <header>
-                    <h2 class="text-lg font-medium text-gray-900">
-                        Subir imagenes (iconos,etc)
-                    </h2>
-                </header>
-            </div>
+<!--            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">-->
+<!--                <header>-->
+<!--                    <h2 class="text-lg font-medium text-gray-900">-->
+<!--                        Subir imagenes (iconos,etc)-->
+<!--                    </h2>-->
+<!--                </header>-->
+<!--            </div>-->
         </div>
 
         <CustomSnackBar

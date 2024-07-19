@@ -12,7 +12,7 @@ export function AlertLoading(titulo,mensaje){
         title: titulo,
         text: mensaje,
         allowOutsideClick: false,
-        imageUrl: 'assets/images/loading.gif',
+        imageUrl: 'assets/images/cloud-upload.gif',
         allowEscapeKey: false,
         allowEnterKey:false,
         showConfirmButton: false,
@@ -43,12 +43,13 @@ export function errorMsg(titulo,mensaje){
         text: mensaje,
         allowOutsideClick: false,
         icon: 'error',
-        timer: 3000,
+        // timer: 3000,
         allowEscapeKey: false,
         allowEnterKey:false,
-        showConfirmButton: false,
+        showConfirmButton: true,
         showDenyButton: false,
-        showCancelButton: false
+        showCancelButton: false,
+        confirmButtonText: 'Ok',
     })
 }
 
