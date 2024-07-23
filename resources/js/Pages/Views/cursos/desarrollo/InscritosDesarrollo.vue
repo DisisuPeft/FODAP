@@ -792,7 +792,7 @@ const IfEditFicha = () => {
                             </NavLink>
                         </template>
                         <template v-else>
-                            <v-btn color="blue-darken-1" @click="errorMsg('¡Atención!', `El id del docente que tiene iniciada la sesión: ${props.auth?.user?.docente_id} y el curso relacionado con el mismo con ID: ${props.curso?.id}. Si falta el ID del docente o del curso no se generara el documento, pero si ambos valores están presentes significa que no existe o no ha sido capturada. Notificar a la coordinación de formación docente`)">
+                            <v-btn color="blue-darken-1" @click="errorMsg('¡Atención!', `El id del docente que tiene iniciada la sesión: ${props.auth?.user?.docente_id} y el curso relacionado con el mismo con ID: ${props.curso?.id}, ambos se requieren para generar el PDF de la ficha técnica. Si falta un ID no se generara el documento, pero si ambos valores están presentes significa que no existe o no ha sido capturada. Notificar a la coordinación de formación docente`)">
                                 Editar ficha técnica
                             </v-btn>
                         </template>
