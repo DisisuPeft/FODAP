@@ -169,7 +169,7 @@ const generar_ficha = () => {
             });
     } catch (e) {
         loading.value = false;
-        errorMsg('¡Atención!', 'La ficha técnica no ha sido capturada, hace falta el ID')
+        errorMsg('¡Atención!', 'La ficha técnica no ha sido capturada, hace falta el ID. Notificar a la coordinación de formación docente')
     }
 };
 const submitActa = () => {
