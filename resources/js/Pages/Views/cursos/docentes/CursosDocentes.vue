@@ -69,7 +69,6 @@ const confirm_inscripcion = (item) => {
         confirmButtonText: "Inscribirse",
         denyButtonText: `Cancelar`,
         icon: 'info',
-        confirmButtonColor: 'green'
     }).then(res => {
         if (res.isConfirmed){
             submit(item)
