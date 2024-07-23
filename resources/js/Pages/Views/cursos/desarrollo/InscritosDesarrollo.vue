@@ -169,7 +169,7 @@ const generar_ficha = () => {
             });
     } catch (e) {
         loading.value = false;
-        errorMsg('Atencion', 'La ficha tecnica no existe')
+        errorMsg('¡Atención!', 'La ficha técnica no ha sido capturada')
     }
 };
 const submitActa = () => {
