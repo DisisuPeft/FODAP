@@ -169,7 +169,7 @@ const generar_ficha = () => {
             });
     } catch (e) {
         loading.value = false;
-        snackErrorActivator();
+        errorMsg('Atencion', 'La ficha tecnica no existe')
     }
 };
 const submitActa = () => {
