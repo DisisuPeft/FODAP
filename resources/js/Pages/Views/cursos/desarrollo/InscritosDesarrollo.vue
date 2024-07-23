@@ -779,7 +779,7 @@ const IfEditFicha = () => {
                         </Modal>
                     </div>
                     <div class="flex justify-center">
-                        <template v-if="IfEditFicha === true">
+                        <template v-if="props.auth.user.docente_id && props.curso.id">
                             <NavLink
                                 :href="route('edit.ficha', [
                                         props.auth.user.docente_id,
