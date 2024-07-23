@@ -173,7 +173,7 @@ const upload_constancia = () => {
         showCancelButton: true,
         showConfirmButton: true,
         confirmButtonText: 'Confirmar',
-        cancelButtonText: 'Cancelar'
+        cancelButtonText: 'Cancelar',
     }).then(res => {
         if (res.isConfirmed){
             form_file_constancia_img.post(route("subir.constancia"), {

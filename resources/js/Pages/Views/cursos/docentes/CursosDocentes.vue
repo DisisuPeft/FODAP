@@ -65,6 +65,7 @@ const confirm_inscripcion = (item) => {
         title: "¿Esta seguro que desea inscribirse a este curso?",
         text: "Esta accion no se puede revertir",
         showDenyButton: true,
+        showConfirmButton: true,
         confirmButtonText: "Inscribirse",
         denyButtonText: `Cancelar`,
         icon: 'info',
