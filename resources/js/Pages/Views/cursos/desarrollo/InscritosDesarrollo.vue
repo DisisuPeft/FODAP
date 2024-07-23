@@ -165,11 +165,11 @@ const generar_ficha = () => {
             })
             .catch((error) => {
                 loading.value = false;
-                snackErrorActivator();
+                errorMsg('¡Atención!', `El servidor respondio: ${error.response?.data}`)
             });
     } catch (e) {
         loading.value = false;
-        errorMsg('¡Atención!', 'La ficha técnica no ha sido capturada')
+        errorMsg('¡Atención!', 'La ficha técnica no ha sido capturada, hace falta el ID')
     }
 };
 const submitActa = () => {

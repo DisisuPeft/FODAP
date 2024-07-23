@@ -171,21 +171,29 @@ class PDFController extends Controller
     public function ficha_tecnica_pdf(Request $request)
     {
         $ficha = FichaTecnica::find($request->id_ficha);
-        $name_instituto = NombreInstituto::all();
-        $departamento = Departamento::with('jefe_docente')->where('nameDepartamento', '=', 'Departamento de Desarrollo Académico')->first();
-        $pdf = Pdf::loadView('pdf.fichatecnica', compact('ficha', 'name_instituto', 'departamento'))
-            ->output();
-        //
-        $path = 'ficha.pdf';
-
-        return $this->save_file($pdf, $path);
-
-        //        return response()->json([
-        //            'chinga tu puta madre' => $ficha,
-        //            'ya me tienes hasta la verga' => $name_instituto,
-        //            'hijo de tu puta madre' => $departamento,
-        ////            'pdf' => $pdf
-        //        ]);
+        if ($ficha){
+            $name_instituto = NombreInstituto::all();
+            if ($name_instituto){
+                $departamento = Departamento::with('jefe_docente')->where('nameDepartamento', '=', 'Departamento de Desarrollo Académico')->first();
+                if($departamento){
+                    $pdf = Pdf::loadView('pdf.fichatecnica', compact('ficha', 'name_instituto', 'departamento'))
+                        ->output();
+                    if ($pdf){
+                        $path = 'ficha.pdf';
+                        $this->save_file($pdf, $path);
+                    }else{
+                        return "No se genero el PDF de la ficha técnica. Notificar a la coordinación de formación docente";
+                    }
+                }else{
+                    return "No existe un departamento académico relacionado con la ficha técnica. Notificar a la coordinación de formación docente";
+                }
+            }else{
+                return "No existe un nombre de instituto tecnologico por lo que no se puede generar el PDF de la ficha técnica. Notificar a la coordinación de formación docente";
+            }
+        } else{
+            return "No existe la ficha técnica. Notificar a la coordinación de formación docente";
+        }
+//        return $this->save_file($pdf, $path);
     }
     public function acta_calificaciones_pdf(Request $request)
     {
