@@ -26,6 +26,7 @@ const props = defineProps({
     docente: Array,
     inscritos: Array,
     errors: Object,
+    ziggy: Object
 });
 const timeout = ref(0);
 
@@ -373,6 +374,12 @@ function submit_inscripcion(form) {
             form.reset();
         },
     });
+}
+
+const IfEditFicha = () => {
+    if(props.auth.user.docente_id && props.curso.id) {
+        return true;
+    }
 }
 </script>
 
@@ -772,18 +779,23 @@ function submit_inscripcion(form) {
                         </Modal>
                     </div>
                     <div class="flex justify-center">
-                        <NavLink
-                            :href="
-                                    route('edit.ficha', [
+                        <template v-if="IfEditFicha === true">
+                            <NavLink
+                                :href="route('edit.ficha', [
                                         props.auth.user.docente_id,
                                         props.curso.id,
-                                    ])
-                                "
-                        >
-                            <v-btn color="blue-darken-1">
+                            ])"
+                            >
+                                <v-btn color="blue-darken-1">
+                                    Editar ficha técnica
+                                </v-btn>
+                            </NavLink>
+                        </template>
+                        <template v-else>
+                            <v-btn color="blue-darken-1" @click="errorMsg('¡Atención!', `El id del docente que tiene iniciada la sesión: ${props.auth?.user?.docente_id} y el curso relacionado con el mismo con ID: ${props.curso?.id}. Si falta el ID del docente o del curso no se generara el documento, pero si ambos valores están presentes significa que no existe o no ha sido capturada. Notificar a la coordinación de formación docente`)">
                                 Editar ficha técnica
                             </v-btn>
-                        </NavLink>
+                        </template>
                     </div>
                     <div class="flex justify-center">
                         <v-btn
