@@ -52,7 +52,7 @@ function addTeachers(teacher) {
 
 <template>
     <v-dialog width="auto" v-model="props.modelValue">
-        <v-card width="700" height="700">
+        <v-card width="auto" height="700">
             <v-row justify="center">
                 <v-col cols="2" align="start">
                     <v-btn
@@ -64,7 +64,7 @@ function addTeachers(teacher) {
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
                 </v-col>
-                <v-col cols="10" align="start">
+                <v-col cols="10">
                     <v-card-title class="text-center"
                         >Inscribir Docentes</v-card-title
                     >

@@ -117,4 +117,7 @@ Route::middleware(['auth', 'role:Jefe del Departamento de Desarrollo Academico|C
     Route::get('/exportar/periodos', [ExcelExportsController::class, 'export_cursos_periodo'])->name('reporte.periodos');
     Route::get('/formato/export', [ExcelExportsController::class, 'export_formato_constancia'])->name('formato.constancia');
     Route::get('/formato/export/reconocimiento', [ExcelExportsController::class, 'export_formato_constancia_reconocimiento'])->name('formato.constancia.reconocimiento');
+
+
+
 });

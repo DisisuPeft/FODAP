@@ -379,96 +379,102 @@ function submit_inscripcion(form) {
 <template>
     <AuthenticatedLayout>
         <template #header>
-            <div class="grid grid-cols-1 md:grid-cols-3">
-                <div class="flex justify-center ma-5">
-                    <h2 class="text-h5 font-medium text-gray-900">
-                        {{ props.curso.nombreCurso }}
-                    </h2>
-                </div>
-                <template v-if="props.curso.clave_curso !== null">
-                    <div class="flex justify-center">
-                        <h2 class="font-medium text-gray-900">
-                            Clave del curso: {{ props.curso.clave_curso.clave }}
+            <div class="grid grid-rows-2">
+                <div class="grid grid-cols-1 md:grid-cols-3">
+                    <div class="flex justify-center ma-5">
+                        <h2 class="text-h5 font-medium text-gray-900">
+                            {{ props.curso.nombreCurso }}
                         </h2>
                     </div>
-                </template>
-                <template v-if="props.curso.clave_validacion !== null">
-                    <div class="flex justify-center">
-                        <h2 class="font-medium text-gray-900">
-                            Clave de validación:
-                            {{ props.curso.clave_validacion.clave }}
-                        </h2>
-                    </div>
-                </template>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-4">
-                <template
-                    v-if="props.curso.estado === 0 || props.curso.estado === 1"
-                >
-                    <div class="flex justify-start ml-5">
-                        <NavLink
-                            :href="route('index.desarrollo.cursos')"
-                            as="button"
-                            type="button"
-                        >
-                            <v-btn icon color="blue-darken-1">
-                                <v-icon>mdi-arrow-left</v-icon>
-                            </v-btn>
-                        </NavLink>
-                    </div>
-                </template>
-                <template v-if="props.curso.estado === 2">
-                    <div class="flex justify-start">
-                        <NavLink
-                            :href="route('index.registros.c')"
-                            as="button"
-                            type="button"
-                        >
-                            <v-btn icon color="blue-darken-1">
-                                <v-icon>mdi-arrow-left</v-icon>
-                            </v-btn>
-                        </NavLink>
-                    </div>
-                </template>
-                <div class="flex justify-end mr-3">
-                    <NavLink
-                        :href="route('curso.editar', props.curso.id)"
-                        as="button"
-                    >
-                        <v-btn color="blue-darken-1" class="mt-5">Editar</v-btn>
-                    </NavLink>
+                    <template v-if="props.curso.clave_curso !== null">
+                        <div class="flex justify-center">
+                            <h2 class="font-medium text-gray-900">
+                                Clave del curso: {{ props.curso.clave_curso.clave }}
+                            </h2>
+                        </div>
+                    </template>
+                    <template v-if="props.curso.clave_validacion !== null">
+                        <div class="flex justify-center">
+                            <h2 class="font-medium text-gray-900">
+                                Clave de validación:
+                                {{ props.curso.clave_validacion.clave }}
+                            </h2>
+                        </div>
+                    </template>
                 </div>
-                <div class="flex justify-start mr-16 pr-16">
-                    <DangerButton @click="dialog = true" class="mt-5"
-                        >Eliminar curso</DangerButton
+                <div class="grid grid-cols-1 md:grid-cols-4">
+                    <template
+                        v-if="props.curso.estado === 0 || props.curso.estado === 1"
                     >
-                    <EliminarDeteccionConfirmation
-                        v-model="dialog"
-                        :curso="props.curso.id"
-                        @update:modelValue="dialog = $event"
-                    ></EliminarDeteccionConfirmation>
-                </div>
-                <div class="flex justify-center ma-3">
-                    <v-tooltip location="right">
-                        <template v-slot:activator="{ props }">
-                            <v-btn
-                                icon="mdi-file"
-                                :color="color_ficha"
-                                v-bind="props"
-                                size="large"
+                        <div class="flex justify-center sm:justify-start">
+                            <NavLink
+                                :href="route('index.desarrollo.cursos')"
+                                as="button"
+                                type="button"
                             >
-                            </v-btn>
-                        </template>
-                        <template v-if="color_ficha === 'success'">
-                            <span>Este curso cuenta con su ficha técnica.</span>
-                        </template>
-                        <template v-if="color_ficha === 'error'">
+                                <v-btn icon color="blue-darken-1">
+                                    <v-icon>mdi-arrow-left</v-icon>
+                                </v-btn>
+                            </NavLink>
+                        </div>
+                    </template>
+                    <template v-if="props.curso.estado === 2">
+                        <div class="flex justify-center sm:justify-start">
+                            <NavLink
+                                :href="route('index.registros.c')"
+                                as="button"
+                                type="button"
+                            >
+                                <v-btn icon color="blue-darken-1">
+                                    <v-icon>mdi-arrow-left</v-icon>
+                                </v-btn>
+                            </NavLink>
+                        </div>
+                    </template>
+                    <div class="flex justify-center md:justify-end mr-3 p-2">
+                        <NavLink
+                            :href="route('curso.editar', props.curso.id)"
+                            as="button"
+                        >
+                            <button class="rounded-lg text-center bg-blue-500 text-white p-4 hover:bg-blue-800">
+                                Editar
+                            </button>
+                        </NavLink>
+                    </div>
+                    <div class="flex justify-center md:justify-start mr-3">
+                        <div class="flex items-center">
+                            <button class="rounded-lg text-center bg-red-500 text-white p-4 hover:bg-blue-800" @click="dialog = true">
+                                Eliminar
+                            </button>
+                        </div>
+                        <EliminarDeteccionConfirmation
+                            v-model="dialog"
+                            :curso="props.curso.id"
+                            @update:modelValue="dialog = $event"
+                        ></EliminarDeteccionConfirmation>
+                    </div>
+                    <div class="flex justify-center items-center ma-3">
+                        <v-tooltip location="right">
+                            <template v-slot:activator="{ props }">
+                                <v-btn
+                                    icon="mdi-file"
+                                    :color="color_ficha"
+                                    v-bind="props"
+                                    size="large"
+                                >
+                                </v-btn>
+                            </template>
+                            <template v-if="color_ficha === 'success'">
+                                <span>Este curso cuenta con su ficha técnica.</span>
+                            </template>
+                            <template v-if="color_ficha === 'error'">
                             <span
-                                >Este curso no cuenta con su ficha
+                            >Este curso no cuenta con su ficha
                                 técnica.</span
                             >
-                        </template>
-                    </v-tooltip>
+                            </template>
+                        </v-tooltip>
+                    </div>
                 </div>
             </div>
         </template>
@@ -485,7 +491,7 @@ function submit_inscripcion(form) {
                             Formato de constancia
                         </v-btn>
                     </template>
-                    <span>Descargar formato de constancia</span>
+                    <span>Descargar</span>
                 </v-tooltip>
             </div>
             <div class="flex justify-center">
@@ -500,7 +506,7 @@ function submit_inscripcion(form) {
                             Formato de reconocimiento
                         </v-btn>
                     </template>
-                    <span>Descargar formato de reconocimiento</span>
+                    <span>Descargar</span>
                 </v-tooltip>
             </div>
         </div>
@@ -652,89 +658,86 @@ function submit_inscripcion(form) {
         </div>
         <div class="mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-4 mt-7 sm:p-8 bg-white shadow sm:rounded-lg">
-                <v-card elevation="0">
-                    <v-card-title class="text-center"
-                        >Ficha Técnica</v-card-title
-                    >
-                    <v-row justify="center">
-                        <v-col cols="6" align="center">
-                            <v-tooltip location="left">
-                                <template v-slot:activator="{ props }">
-                                    <v-btn
-                                        icon
-                                        v-bind="props"
-                                        color="blue-darken-1"
-                                        size="normal"
-                                    >
-                                        <v-icon> mdi-help </v-icon>
-                                    </v-btn>
-                                </template>
-                                <span
-                                    >Indicar el periodo en el que se requiere la
-                                    formación docente o actualización profesiona
-                                    (enero-junio o agosto-diciembre)</span
-                                >
-                            </v-tooltip>
-                            <NavLink
-                                :href="
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="flex justify-center">
+<!--                        <div class="flex justify-center items-center">-->
+<!--                            <v-tooltip location="bottom">-->
+<!--                                <template v-slot:activator="{ props }">-->
+<!--                                    <v-btn-->
+<!--                                        icon-->
+<!--                                        v-bind="props"-->
+<!--                                        color="blue-darken-1"-->
+<!--                                        size="small"-->
+<!--                                    >-->
+<!--                                        <v-icon> mdi-help </v-icon>-->
+<!--                                    </v-btn>-->
+<!--                                </template>-->
+<!--                                <span-->
+<!--                                >Indicar el periodo en el que se requiere la-->
+<!--                                    formación docente o actualización profesiona-->
+<!--                                    (enero-junio o agosto-diciembre)</span-->
+<!--                                >-->
+<!--                            </v-tooltip>-->
+<!--                        </div>-->
+                        <NavLink
+                            :href="
                                     route('crear.ficha', [
                                         props.auth.user.docente_id,
                                         props.curso.id,
                                     ])
                                 "
-                                as="button"
-                            >
-                                <v-btn color="blue-darken-1">
-                                    Crear ficha técnica
-                                </v-btn>
-                            </NavLink>
-                        </v-col>
-                        <v-col cols="6" align="center">
-                            <!--                            :href="route('edit.ficha', [props.auth.user.id, props.curso.id])"-->
-                            <v-btn
-                                color="blue-darken-1"
-                                @click="show_ficha = true"
-                            >
-                                Ver ficha técnica
+                            as="button"
+                        >
+                            <v-btn color="blue-darken-1">
+                                Crear ficha técnica
                             </v-btn>
-                            <Modal :show="show_ficha" @close="closeModal">
-                                <template v-if="props.curso.ficha_tecnica">
-                                    <div class="grid grid-rows-3">
-                                        <div
-                                            class="flex justify-center items-center pa-4"
-                                        >
-                                            {{
-                                                props.curso.ficha_tecnica
-                                                    .competencias_desarrollar
-                                            }}
-                                        </div>
-                                        <div
-                                            class="flex justify-center items-center pa-4"
-                                        >
-                                            {{
-                                                props.curso.ficha_tecnica
-                                                    .objetivo_general
-                                            }}
-                                        </div>
-                                        <div
-                                            class="flex justify-end items-center pa-4"
-                                        >
-                                            <div class="grid grid-cols-2">
-                                                <div
-                                                    class="flex justify-center"
-                                                >
-                                                    <SecondaryButton
-                                                        @click="
+                        </NavLink>
+                    </div>
+                    <div class="flex justify-center">
+                        <v-btn
+                            color="blue-darken-1"
+                            @click="show_ficha = true"
+                        >
+                            Ver ficha técnica
+                        </v-btn>
+                        <Modal :show="show_ficha" @close="closeModal">
+                            <template v-if="props.curso.ficha_tecnica">
+                                <div class="grid grid-rows-3">
+                                    <div
+                                        class="flex justify-center items-center pa-4"
+                                    >
+                                        {{
+                                            props.curso.ficha_tecnica
+                                                .competencias_desarrollar
+                                        }}
+                                    </div>
+                                    <div
+                                        class="flex justify-center items-center pa-4"
+                                    >
+                                        {{
+                                            props.curso.ficha_tecnica
+                                                .objetivo_general
+                                        }}
+                                    </div>
+                                    <div
+                                        class="flex justify-end items-center pa-4"
+                                    >
+                                        <div class="grid grid-cols-2">
+                                            <div
+                                                class="flex justify-center"
+                                            >
+                                                <SecondaryButton
+                                                    @click="
                                                             show_ficha = false
                                                         "
-                                                        >Cerrar</SecondaryButton
-                                                    >
-                                                </div>
-                                                <div
-                                                    class="flex justify-center"
+                                                >Cerrar</SecondaryButton
                                                 >
-                                                    <NavLink
-                                                        :href="
+                                            </div>
+                                            <div
+                                                class="flex justify-center"
+                                            >
+                                                <NavLink
+                                                    :href="
                                                             route(
                                                                 'eliminar.ficha',
                                                                 props.curso
@@ -742,58 +745,56 @@ function submit_inscripcion(form) {
                                                                     .id
                                                             )
                                                         "
-                                                        as="button"
-                                                        method="delete"
+                                                    as="button"
+                                                    method="delete"
+                                                >
+                                                    <danger-button
+                                                    >Eliminar</danger-button
                                                     >
-                                                        <danger-button
-                                                            >Eliminar</danger-button
-                                                        >
-                                                    </NavLink>
-                                                </div>
+                                                </NavLink>
                                             </div>
                                         </div>
                                     </div>
-                                </template>
-                                <template
-                                    v-else-if="
+                                </div>
+                            </template>
+                            <template
+                                v-else-if="
                                         props.curso.ficha_tecnica === null
                                     "
-                                >
-                                    <v-alert
-                                        density="compact"
-                                        type="warning"
-                                        title="Alerta"
-                                        text="Este curso no posee una ficha tecnica"
-                                    ></v-alert>
-                                </template>
-                            </Modal>
-                        </v-col>
-                        <v-col cols="6" align="center">
-                            <!--                            :href="route('edit.ficha', [props.auth.user.id, props.curso.id])"-->
-                            <NavLink
-                                :href="
+                            >
+                                <v-alert
+                                    density="compact"
+                                    type="warning"
+                                    title="Alerta"
+                                    text="Este curso no posee una ficha tecnica"
+                                ></v-alert>
+                            </template>
+                        </Modal>
+                    </div>
+                    <div class="flex justify-center">
+                        <NavLink
+                            :href="
                                     route('edit.ficha', [
                                         props.auth.user.docente_id,
                                         props.curso.id,
                                     ])
                                 "
-                            >
-                                <v-btn color="blue-darken-1">
-                                    Editar ficha técnica
-                                </v-btn>
-                            </NavLink>
-                        </v-col>
-                        <v-col cols="6" align="center" class="mt-2">
-                            <v-btn
-                                @click="generar_ficha"
-                                color="blue-darken-1"
-                                prepend-icon="mdi-file-pdf-box"
-                            >
-                                Descargar PDF
+                        >
+                            <v-btn color="blue-darken-1">
+                                Editar ficha técnica
                             </v-btn>
-                        </v-col>
-                    </v-row>
-                </v-card>
+                        </NavLink>
+                    </div>
+                    <div class="flex justify-center">
+                        <v-btn
+                            @click="generar_ficha"
+                            color="blue-darken-1"
+                            prepend-icon="mdi-file-pdf-box"
+                        >
+                            Descargar PDF
+                        </v-btn>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="mx-auto sm:px-6 lg:px-8 space-y-6">
@@ -943,8 +944,8 @@ function submit_inscripcion(form) {
                                     o evento:
                                 </strong>
                                 <span
-                                    >Del {{ props.curso.fecha_I }} al
-                                    {{ props.curso.fecha_F }}</span
+                                    >Del {{ props.curso.fecha_I.split('-').reverse().join('/') }} al
+                                    {{ props.curso.fecha_F.split('-').reverse().join('/') }}</span
                                 >
                             </div>
                             <div class="flow-root ... pt-5">

@@ -81,6 +81,15 @@ onMounted(() => {
                     </template>
                 </div>
                 <div class="flow-root ... pt-5">
+                    <strong>Horario: </strong>
+                    <span class="text-sm">{{curso.hora_I}} a {{curso.hora_F}}</span>
+                </div>
+                <div class="flow-root ... pt-5">
+                    <strong>Lugar: </strong>
+                    <span v-if="curso.lugar" class="text-sm">{{curso.lugar?.nombre}}</span>
+                    <span v-if="curso.aula" class="text-sm">{{curso.aula}}</span>
+                </div>
+                <div class="flow-root ... pt-5">
                     <strong class="text-sm"
                     >Tipo de curso, taller,
                         conferencias, etc:

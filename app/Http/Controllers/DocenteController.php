@@ -29,7 +29,7 @@ class DocenteController extends Controller
         date_default_timezone_set('America/Mexico_City');
         CoursesController::state_curso();
 
-        $cursos = DeteccionNecesidades::with(['carrera', 'deteccion_facilitador', 'docente_inscrito'])
+        $cursos = DeteccionNecesidades::with(['carrera', 'deteccion_facilitador', 'docente_inscrito', 'lugar'])
             ->where('aceptado', '=', 1)
             ->where('id_departamento', '=', auth()->user()->departamento_id)
             ->orWhere('carrera_dirigido', '=', 13)
@@ -102,14 +102,14 @@ class DocenteController extends Controller
         $misCursos = DB::table('inscripcion')
             ->join('deteccion_necesidades', 'inscripcion.curso_id', '=', 'deteccion_necesidades.id')
 //            ->leftjoin('deteccion_has_facilitadores', 'deteccion_necesidades.id', '=', 'deteccion_has_facilitadores.deteccion_id')
-//            ->leftjoin('docente','deteccion_has_facilitadores.docente_id','=','docente.id')
+            ->leftjoin('lugar','deteccion_necesidades.id_lugar','=','lugar.id')
             ->leftJoin('calificaciones', function ($join) {
                 $join->on('calificaciones.curso_id', '=', 'inscripcion.curso_id')
                     ->where('calificaciones.docente_id', '=', auth()->user()->docente_id);
             })
             ->where('inscripcion.docente_id', '=', auth()->user()->docente_id)
             ->orderByRaw('deteccion_necesidades.estado ASC, ABS(DATEDIFF(NOW(), deteccion_necesidades.fecha_I)) ASC')
-            ->select('deteccion_necesidades.*', 'inscripcion.id AS InscripcionID', 'calificaciones.calificacion AS calificacion', 'calificaciones.id AS calificacionID')
+            ->select('deteccion_necesidades.*', 'inscripcion.id AS InscripcionID', 'calificaciones.calificacion AS calificacion', 'calificaciones.id AS calificacionID', 'lugar.nombreAula AS aula')
             ->get();
 
 //        dd($misCursos);
