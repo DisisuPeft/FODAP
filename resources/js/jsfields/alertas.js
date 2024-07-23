@@ -49,7 +49,7 @@ export function errorMsg(titulo,mensaje){
         showConfirmButton: true,
         showDenyButton: false,
         showCancelButton: false,
-        confirmButtonText: 'Ok',
+        confirmButtonText: 'OK',
     })
 }
 
