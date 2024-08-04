@@ -46,11 +46,6 @@ onMounted(() => {
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Tablero
                                 </NavLink>
-                                <template v-if="user.role === 1 || user.role === 2 || user.role === 5">
-                                    <NavLink :href="route('parametros.edit')" :active="route().current('parametros.edit')">
-                                        Configuración
-                                    </NavLink>
-                                </template>
                                 <template v-if="user.role === 1 || user.role === 2">
                                     <NavLink :href="route('index.docentes')" :active="route().current('index.docentes')">
                                         Docentes
@@ -115,6 +110,11 @@ onMounted(() => {
                                 <NavLink :href="route('profile.edit')" :active="route().current('profile.edit')">
                                     Perfil
                                 </NavLink>
+                                <template v-if="user.role === 1 || user.role === 2 || user.role === 5">
+                                    <NavLink :href="route('parametros.edit')" :active="route().current('parametros.edit')">
+                                        Configuración
+                                    </NavLink>
+                                </template>
                                 <NavLink :href="route('logout')" method="post" :active="route().current('logout')" as="button">
                                     Cerrar Sesión
                                 </NavLink>

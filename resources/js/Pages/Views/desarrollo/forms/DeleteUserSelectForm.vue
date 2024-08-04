@@ -65,6 +65,7 @@ const closeModal = () => {
                         class="mt-1 block w-3/4"
                         placeholder="Correo Institucional"
                         @keyup.enter="deleteUser"
+                        disabled
                     />
 
                     <InputError :message="form.errors.id" class="mt-2" />

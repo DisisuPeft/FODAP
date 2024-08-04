@@ -10,11 +10,11 @@ import zxcvbn from 'zxcvbn';
 const props = defineProps({
     user: Object
 })
+const passwordFielType = ref("password");
 const passwordInput = ref(null);
 const currentPasswordInput = ref(null);
 const snackbarSuccess = ref(false);
 const snackbarError = ref(false);
-const passwordFielType = ref("password");
 
 const form = useForm({
     current_password: '',

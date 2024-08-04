@@ -41,7 +41,7 @@ const props = defineProps({
             </v-alert>
         </template>
         <template v-slot:item.options="{ item }">
-            <NavLink :href="route('edit.carrera', item.id)">
+            <NavLink :href="route('edit.carrera', item.id)" as="button" type="button">
                 <v-btn class="" color="success" icon>
                     <v-icon>mdi-pencil</v-icon>
                 </v-btn>

@@ -6,46 +6,54 @@ import UpdatePasswordFormSelected from "@/Pages/Views/desarrollo/forms/UpdatePas
 import NavLink from "@/Components/NavLink.vue";
 import {ref} from "vue";
 import CustomSnackBar from "@/Components/CustomSnackBar.vue";
+import Swal from "sweetalert2";
+import {AlertLoading, notify, success_alert} from "@/jsfiels/alertas.js";
 
 const props = defineProps({
     user: Object,
     docente: Array,
     departamento: Array,
     rol: Array,
+    errors: {}
 })
 const message = ref("")
-const timeout = ref()
-const color = ref("")
-const snackbar = ref(false)
 
-function suceess(){
-    message.value = "Actualizado con exito"
-    color.value = "success"
-    timeout.value = 2000;
-    snackbar.value = true
-    setTimeout(() => {
-        snackbarSuccess.value = false;
-    }, timeout.value);
-}
-function error_form() {
-    message.value = "Error al actualizar este recurso"
-    color.value = "error"
-    timeout.value = 2000;
-    snackbar.value = true
-    setTimeout(() => {
-        snackbar.value = false;
-    }, timeout.value);
-}
+
 
 const submit = (form) => {
-        form.patch(route('update.user', props.user.id), {
-            onSuccess: () => {
-                suceess()
-            },
-            onError: () => {
-                error_form()
-            },
-        })
+    Swal.fire({
+        title: '¿Ingreso la información correcta?',
+        text: 'Esta acción se puede revertir',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        icon: "info",
+        timerProgressBar: true
+    }).then(res => {
+        if (res.isConfirmed){
+            AlertLoading('Guardando los datos...', 'Esta accion puede tardar unos minutos')
+            form.patch(route('update.user', props.user.id), {
+                onSuccess: () => {
+                    form.reset();
+                    success_alert('Exito', 'El usuario fue editado con exito.')
+                    // router.reload()
+                },
+                onError: () => {
+                    // console.log(props.errors)
+                    notify('Alerta','warning', `${format_errors(props.errors)}`)
+                    message.value = ""
+                },
+            });
+        }
+    })
+}
+
+const format_errors = (errors) => {
+    for (const errorsKey in errors) {
+        message.value += errors[errorsKey]
+    }
+    return message.value.split('.').join('. ');
 }
 </script>
 <template>
@@ -69,7 +77,6 @@ const submit = (form) => {
                 <UpdatePasswordFormSelected :user="props.user"></UpdatePasswordFormSelected>
             </div>
         </div>
-        <CustomSnackBar v-model="snackbar" :message="message" :color="color" @update:modelValue="snackbar = $event"></CustomSnackBar>
     </AuthenticatedLayout>
 </template>
 

@@ -54,13 +54,13 @@ const wich_user = (user) => {
             </v-alert>
         </template>
 
-        <template v-slot:item.options="{item}">
-            <NavLink  :href="route('edit.lugar', item.id)">
-                <PrimaryButton class="bg-blue-accent-4">
-                    <v-icon>mdi-pencil</v-icon>
-                </PrimaryButton>
-            </NavLink>
-        </template>
+<!--        <template v-slot:item.options="{item}">-->
+<!--            <NavLink  :href="route('edit.lugar', item.id)">-->
+<!--                <PrimaryButton class="bg-blue-accent-4">-->
+<!--                    <v-icon>mdi-pencil</v-icon>-->
+<!--                </PrimaryButton>-->
+<!--            </NavLink>-->
+<!--        </template>-->
         <template v-slot:item.edit="{item}">
             <NavLink :href="route('edit.user', item.id)" as="button">
                 <v-btn icon color="success"><v-icon>mdi-pencil</v-icon></v-btn>

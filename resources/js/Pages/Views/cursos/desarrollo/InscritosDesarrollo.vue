@@ -15,7 +15,7 @@ import Calificaciones from "@/Components/Calificaciones.vue";
 import CalificacionesUpdate from "@/Components/CalificacionesUpdate.vue";
 import Modal from "@/Components/Modal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import {errorMsg, notify, success_alert} from "@/jsfields/alertas.js";
+import {errorMsg, notify, success_alert} from "@/jsfiels/alertas.js";
 import {no} from "vuetify/locale";
 
 const store = Curso();
@@ -279,7 +279,7 @@ onMounted(() => {
             snackEventActivator();
         }
     );
-    store.inscritos_curso_desarrollo(props.curso.id);
+    store.inscritos_curso_desarrollo(props.curso?.id);
     axios
         .get(route("count.cursos"))
         .then((res) => {
@@ -288,7 +288,7 @@ onMounted(() => {
         .catch((err) => {
             // console.log(err.response.data);
         });
-    if (props.curso.ficha_tecnica) {
+    if (props.curso?.ficha_tecnica) {
         color_ficha.value = "success";
     } else {
         color_ficha.value = "error";
@@ -308,7 +308,7 @@ function descargar_formato_constancia() {
     axios
         .get(route("formato.constancia"), {
             params: {
-                id: props.curso.id,
+                id: props.curso?.id,
             },
         })
         .then((res) => {
@@ -690,7 +690,7 @@ const IfEditFicha = () => {
                             :href="
                                     route('crear.ficha', [
                                         props.auth.user.docente_id,
-                                        props.curso.id,
+                                        props.curso?.id,
                                     ])
                                 "
                             as="button"
@@ -708,13 +708,13 @@ const IfEditFicha = () => {
                             Ver ficha técnica
                         </v-btn>
                         <Modal :show="show_ficha" @close="closeModal">
-                            <template v-if="props.curso.ficha_tecnica">
+                            <template v-if="props.curso?.ficha_tecnica">
                                 <div class="grid grid-rows-3">
                                     <div
                                         class="flex justify-center items-center pa-4"
                                     >
                                         {{
-                                            props.curso.ficha_tecnica
+                                            props.curso?.ficha_tecnica
                                                 .competencias_desarrollar
                                         }}
                                     </div>
@@ -722,7 +722,7 @@ const IfEditFicha = () => {
                                         class="flex justify-center items-center pa-4"
                                     >
                                         {{
-                                            props.curso.ficha_tecnica
+                                            props.curso?.ficha_tecnica
                                                 .objetivo_general
                                         }}
                                     </div>
@@ -747,8 +747,7 @@ const IfEditFicha = () => {
                                                     :href="
                                                             route(
                                                                 'eliminar.ficha',
-                                                                props.curso
-                                                                    .ficha_tecnica
+                                                                props.curso?.ficha_tecnica
                                                                     .id
                                                             )
                                                         "
@@ -766,7 +765,7 @@ const IfEditFicha = () => {
                             </template>
                             <template
                                 v-else-if="
-                                        props.curso.ficha_tecnica === null
+                                        props.curso?.ficha_tecnica === null
                                     "
                             >
                                 <v-alert
@@ -779,7 +778,7 @@ const IfEditFicha = () => {
                         </Modal>
                     </div>
                     <div class="flex justify-center">
-                        <template v-if="props.auth.user.docente_id && props.curso.id">
+                        <template v-if="props.auth?.user?.docente_id && props.curso?.id">
                             <NavLink
                                 :href="route('edit.ficha', [
                                         props.auth.user.docente_id,

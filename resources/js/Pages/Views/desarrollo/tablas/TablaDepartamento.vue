@@ -37,7 +37,7 @@ const header = [
             </v-alert>
         </template>
         <template v-slot:item.options="{item}">
-            <NavLink :href="route('edit.departamento', item.id)">
+            <NavLink :href="route('edit.departamento', item.id)" as="button" type="button">
                 <v-btn class="" color="success" icon>
                     <v-icon>mdi-pencil</v-icon>
                 </v-btn>

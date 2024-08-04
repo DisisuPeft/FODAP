@@ -12,7 +12,7 @@ export function AlertLoading(titulo,mensaje){
         title: titulo,
         text: mensaje,
         allowOutsideClick: false,
-        imageUrl: 'assets/images/cloud-upload.gif',
+        imageUrl: 'http://127.0.0.1:8000/storage/gift/loading.gif',
         allowEscapeKey: false,
         allowEnterKey:false,
         showConfirmButton: false,
@@ -22,6 +22,20 @@ export function AlertLoading(titulo,mensaje){
     })
 }
 
+export function AlertUploadingImage(titulo,mensaje){
+    Swal.fire({
+        title: titulo,
+        text: mensaje,
+        allowOutsideClick: false,
+        imageUrl: 'http://127.0.0.1:8000/storage/gift/cloud-upload.gif',
+        allowEscapeKey: false,
+        allowEnterKey:false,
+        showConfirmButton: false,
+        showDenyButton: false,
+        showCancelButton: false,
+        imageWidth: 300
+    })
+}
 export function success_alert(titulo, mensaje){
     Swal.fire({
         title: titulo,

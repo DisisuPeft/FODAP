@@ -211,7 +211,7 @@ watch(() => curso_selected.value, (newID) => {
                                     </div>
                                     <div class="p-8">
                                         <div class="uppercase tracking-wide text-sm font-semibold">{{ item.nombreCurso }}</div>
-                                        <p class="block mt-1 text-sm leading-tight font-medium text-black hover:text-blue-400 hover:underline" @click="openDialog(item)">CLICK PARA CONOCER MAS DEL CURSO…</p>
+                                        <p class="block mt-1 text-sm leading-tight font-medium text-blue-400 hover:underline" @click="openDialog(item)">CLICK PARA CONOCER MAS DEL CURSO…</p>
                                         <p class="mt-2 text-black">Fecha de realizacion: {{item.fecha_I}}</p>
                                     </div>
                                 </div>

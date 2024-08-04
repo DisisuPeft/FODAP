@@ -2,8 +2,12 @@
 
 namespace App\Exceptions;
 
+use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -18,14 +22,52 @@ class Handler extends ExceptionHandler
         'password',
         'password_confirmation',
     ];
+//
+//    /**
+//     * Register the exception handling callbacks for the application.
+//     */
+//    public function register(): void
+//    {
+//        $this->reportable(function (Throwable $e) {
+//            $status = $e->getStatusCode() ?? 500;
+//
+//            return response()->json([
+//                'message' => $e->getMessage(),
+//                'status' => $status,
+//            ], $status);
+//        });
+//    }
+
 
     /**
-     * Register the exception handling callbacks for the application.
+     * Report or log an exception.
+     *
+     * @param Throwable $e
+     * @return void
+     *
+     * @throws Exception|Throwable
      */
-    public function register(): void
+    public function report(Throwable $e): void
     {
-        $this->reportable(function (Throwable $e) {
-            return $e->getMessage();
-        });
+        parent::report($e);
+    }
+
+    /**
+     * Render an exception into an HTTP response.
+     *
+     * @param  Request  $request
+     * @param Throwable $e
+     * @return JsonResponse
+     */
+    public function render($request, Throwable $e): JsonResponse
+    {
+        // Obtener el código de estado de la excepción
+        $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500;
+
+        // Devolver siempre una respuesta JSON con el mensaje de error y el código de estado
+        return response()->json([
+            'message' => $e->getMessage(),
+            'status' => $status,
+        ], $status);
     }
 }

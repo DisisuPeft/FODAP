@@ -9,7 +9,7 @@ import CustomSnackBar from "@/Components/CustomSnackBar.vue";
 import DangerButton from "@/Components/DangerButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Swal from "sweetalert2";
-import {notify, success_alert, errorMsg} from "@/jsfields/alertas.js";
+import {notify, success_alert, errorMsg} from "@/jsfiels/alertas.js";
 // import 'sweetalert2/src/sweetalert2.scss'
 import InfoDialog from "@/Components/InfoDialog.vue";
 import {Curso} from "@/store/curso.js";
@@ -63,7 +63,7 @@ const snackSuccessActivator = () => {
 const confirm_inscripcion = (item) => {
     Swal.fire({
         title: "¿Esta seguro que desea inscribirse a este curso?",
-        text: "Esta accion no se puede revertir",
+        text: "Esta accion no se puede revertir, si requiere lo contrario informar a la coordinación de formacion docente",
         showDenyButton: true,
         showConfirmButton: true,
         confirmButtonText: "Inscribirse",
