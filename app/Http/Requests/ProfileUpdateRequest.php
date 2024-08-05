@@ -8,6 +8,10 @@ use Illuminate\Validation\Rule;
 
 class ProfileUpdateRequest extends FormRequest
 {
+    public function authorize(): bool
+    {
+        return true;
+    }
     /**
      * Get the validation rules that apply to the request.
      *
@@ -16,7 +20,15 @@ class ProfileUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
+            'email' => ['email', 'max:255', 'unique:users'],
+        ];
+    }
+
+    public function message(): array
+    {
+        return [
+            'email.email' => 'No es valido el correo institucional',
+            'email.unique' => 'El correo ya se encuentra registrado',
         ];
     }
 }

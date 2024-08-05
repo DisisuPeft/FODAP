@@ -5,7 +5,10 @@ import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
 import {Head, usePage} from '@inertiajs/vue3';
 import DocenteInfo from "@/Pages/Profile/Partials/DocenteInfo.vue";
-import {computed, onMounted} from "vue";
+import {computed, onMounted, ref} from "vue";
+import UpdatePasswordFormSelected from "@/Pages/Views/desarrollo/forms/UpdatePasswordFormSelected.vue";
+import Swal from "sweetalert2";
+import {errorMsg, success_alert} from "@/jsfiels/alertas.js";
 
 const props = defineProps({
     mustVerifyEmail: {
@@ -40,6 +43,7 @@ const props = defineProps({
     }
 });
 const user = computed(() => usePage().props.auth.user);
+const message = ref("");
 // console.log(props.permiso_to_edit)
 onMounted(() => {
     window.Echo.private(`App.Models.User.${props.auth.user.id}`).notification((notification) => {
@@ -59,6 +63,47 @@ onMounted(() => {
         }
     })
 });
+const submit_passwordform = (form) => {
+    Swal.fire({
+        title: '¿Ingreso la información correcta?',
+        text: 'Esta acción se puede revertir',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        icon: "info",
+        timerProgressBar: true
+    }).then(res => {
+        if (res.isConfirmed){
+            form.put(route('update.password', user.value.id), {
+                preserveScroll: true,
+                onSuccess: () => {
+                    form.reset()
+                    success_alert('Exito', 'Debes iniciar sesión nuevamente con tu nueva contraseña.')
+                },
+                onError: () => {
+                    if (form.errors.password) {
+                        form.reset('password', 'password_confirmation');
+                        // passwordInput.value.focus();
+                    }
+                    if (form.errors.current_password) {
+                        form.reset('current_password');
+                        // currentPasswordInput.value.focus();
+                    }
+                    errorMsg('Atención', `${format_errors(props.errors)}`)
+                    message.value = ""
+                },
+            });
+        }
+    })
+}
+
+const format_errors = (errors) => {
+    for (const errorsKey in errors) {
+        message.value += errors[errorsKey]
+    }
+    return message.value.split('.').join('. ')
+}
 </script>
 
 <template>
@@ -87,7 +132,7 @@ onMounted(() => {
                 </div>
                 <template v-if="user.role === 1 || permiso_to_edit === true">
                     <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                        <UpdatePasswordForm class="max-w-xl" />
+                        <UpdatePasswordFormSelected :user="props.user" @form:password="submit_passwordform"></UpdatePasswordFormSelected>
                     </div>
                 </template>
 

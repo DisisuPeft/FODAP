@@ -76,7 +76,7 @@ Route::middleware(['auth', 'role:Jefe del Departamento de Desarrollo Academico|C
     //gestión usuarios
     Route::post('/crear/usuario/academico', [GestionParametrosController::class, 'create_user_academico'])->name('create.user.academico');
     Route::get('/editar/user/{id}', [GestionParametrosController::class, 'edit_users'])->name('edit.user');
-    Route::put('/password/update/{id}', [GestionParametrosController::class, 'update_password'])->name('update.password');
+//    Route::put('/password/update/{id}', [GestionParametrosController::class, 'update_password'])->name('update.password');
     Route::patch('/user/editado/{id}', [GestionParametrosController::class, 'update_user'])->name('update.user');
     Route::delete('/eliminar/usuario', [GestionParametrosController::class, 'destoy_users'])->name('destroy.users');
     Route::post('/permiso/{id}', [GestionParametrosController::class, 'set_permission'])->name('permiso.edit');

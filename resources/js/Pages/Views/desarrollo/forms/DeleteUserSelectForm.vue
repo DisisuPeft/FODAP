@@ -7,13 +7,16 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { useForm } from '@inertiajs/vue3';
 import { nextTick, ref } from 'vue';
+import {errorMsg, success_alert} from "@/jsfiels/alertas.js";
+import Swal from "sweetalert2";
 
 const props = defineProps({
-    user: Object
+    user: Object,
+    errors: Object,
 });
 const confirmingUserDeletion = ref(false);
 const EmailInput = ref(null);
-
+const message = ref("")
 const form = useForm({
     id: props.user.id,
 });
@@ -25,19 +28,44 @@ const confirmUserDeletion = () => {
 };
 
 const deleteUser = () => {
-    form.delete(route('destroy.users'), {
-        preserveScroll: true,
-        onSuccess: () => closeModal(),
-        onError: () => "No se logro eliminar al usuario",
-        onFinish: () => form.reset(),
-    });
+    Swal.fire({
+        title: '¿Seguro desea borrar el correo institucional?',
+        text: 'Esta acción no se puede revertir',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        icon: "info",
+        timerProgressBar: true
+    }).then(res => {
+        if (res.isConfirmed){
+            form.delete(route('destroy.users'), {
+                preserveScroll: true,
+                onSuccess: () => {
+                    form.reset();
+                    success_alert('Exito', 'Se elimino el correo institucional.')
+                    closeModal()
+                },
+                onError: () => {
+                    errorMsg('Exito', `${format_errors(props.errors)}`)
+                    message.value = ""
+                },
+                onFinish: () => form.reset(),
+            });
+        }
+    })
 };
 
 const closeModal = () => {
     confirmingUserDeletion.value = false;
-
-    form.reset();
 };
+
+const format_errors = (errors) => {
+    for (const errorsKey in errors) {
+        message.value += errors[errorsKey]
+    }
+    return message.value.split('.').join('. ');
+}
 
 </script>
 

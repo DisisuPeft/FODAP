@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -37,13 +38,27 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+//        $request->authenticate();
+        $request->ensureIsNotRateLimited();
+
+        if (! Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+            RateLimiter::hit($request->throttleKey());
+
+            return back()->withErrors([
+                'email' => 'Las credenciales proporcionadas no coinciden con las que se registro. Por favor, verifica tu correo instituciónal y contraseña e inténtalo de nuevo.',
+            ]);
+        }
+
+        RateLimiter::clear($request->throttleKey());
 
         $request->session()->regenerate();
 
-        DB::table('sessions');
-
         return redirect()->intended(RouteServiceProvider::HOME);
+
+
+//        DB::table('sessions');
+
+//        return redirect()->intended(RouteServiceProvider::HOME);
     }
 
     /**

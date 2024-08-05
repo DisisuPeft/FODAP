@@ -8,6 +8,7 @@ import TextInput from '@/Components/TextInput.vue';
 import { Link, useForm } from '@inertiajs/vue3';
 import {computed, onMounted, ref} from "vue";
 import {FODAPStore} from "@/store/server.js";
+import {errorMsg, success_alert} from "@/jsfiels/alertas.js";
 
 
 const store = FODAPStore()
@@ -24,9 +25,11 @@ const props = defineProps({
     administrator: {
         type: String
     },
-    can_install: Boolean
+    can_install: Boolean,
+    errors: {}
 });
 const alert = ref(false);
+const message = ref("")
 const transform_prop = computed(() => {
     return Boolean(props.administrator)
 })
@@ -40,6 +43,13 @@ const rol = computed(() =>{
 })
 const submit = () => {
     form.post(route('login'), {
+        onSuccess: () => {
+            success_alert('Exito', 'Sesión iniciada')
+        },
+        onError: () => {
+            errorMsg('Atencion', `${format_errors(props.errors)}`)
+            message.value = ""
+        },
         onFinish: () => form.reset('password'),
     });
 };
@@ -53,6 +63,13 @@ const email_rules = [
 onMounted(() => {
     store.admin_get()
 })
+
+const format_errors = (errors) => {
+    for (const errorsKey in errors) {
+        message.value += errors[errorsKey]
+    }
+    return message.value.split('.').join('. ');
+}
 </script>
 
 <template>

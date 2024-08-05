@@ -3,6 +3,10 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import NavLink from "@/Components/NavLink.vue";
 import {computed, ref} from "vue";
 import DeleteUserSelectForm from "@/Pages/Views/desarrollo/forms/DeleteUserSelectForm.vue";
+import {router} from "@inertiajs/vue3";
+import {errorMsg, success_alert} from "@/jsfiels/alertas.js";
+
+const message = ref("")
 
 const props = defineProps({
     users: {
@@ -10,7 +14,8 @@ const props = defineProps({
     },
     search: {
         type: String
-    }
+    },
+    errors: {}
 });
 
 
@@ -32,6 +37,42 @@ const usersA = computed(() => {
 const wich_user = (user) => {
     return user;
 }
+const format_errors = (errors) => {
+    for (const errorsKey in errors) {
+        message.value += errors[errorsKey]
+    }
+    return message.value.split('.').join('. ');
+}
+const submit = (item) => {
+    router.post(route('permiso.edit', item), {}, {
+        // headers: {
+        //     'Custom-Header': 'value',
+        // },
+        onSuccess: () => {
+            success_alert('Exito', 'Se le otorgo el permiso al usuario.')
+        },
+        onError: () => {
+            errorMsg('Exito', `${format_errors(props.errors)}`)
+            message.value = ""
+        }
+    })
+}
+
+const submitRevoke = (item) => {
+    router.post(route('permiso.revoke', item), {}, {
+        // headers: {
+        //     'Custom-Header': 'value',
+        // },
+        onSuccess: () => {
+            success_alert('Exito', 'Se le revoco el permiso al usuario.')
+        },
+        onError: () => {
+            errorMsg('Atención', `${format_errors(props.errors)}`)
+            message.value = ""
+        }
+    })
+}
+
 </script>
 
 <template>
@@ -67,23 +108,23 @@ const wich_user = (user) => {
             </NavLink>
         </template>
         <template v-slot:item.delete="{item}">
-            <DeleteUserSelectForm :user="wich_user(item)"></DeleteUserSelectForm>
+            <DeleteUserSelectForm :user="wich_user(item)" :errors="props.errors"></DeleteUserSelectForm>
         </template>
         <template v-slot:item.permiso="{item}">
-            <NavLink :href="route('permiso.edit', item.id)" as="button" method="post">
-                <v-btn height="35" color="info">
+<!--            <NavLink :href="route('permiso.edit', item.id)" as="button" method="post">-->
+                <v-btn height="35" color="info" @click="submit(item.id)">
                     <v-icon>mdi-check</v-icon>
                 </v-btn>
-            </NavLink>
+<!--            </NavLink>-->
         </template>
         <template v-slot:item.revocar="{item}">
             <div v-if="item.permissions.length > 0">
                 <td class="text-center">
-                    <NavLink :href="route('permiso.revoke', item.id)" as="button" method="post">
-                        <v-btn width="250" height="35" color="error">
+<!--                    <NavLink :href="route('permiso.revoke', item.id)" as="button" method="post">-->
+                        <v-btn width="250" height="35" color="error" @click="submitRevoke(item.id)">
                             <v-icon>mdi-cancel</v-icon>
                         </v-btn>
-                    </NavLink>
+<!--                    </NavLink>-->
                 </td>
             </div>
         </template>

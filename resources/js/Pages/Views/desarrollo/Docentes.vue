@@ -30,7 +30,7 @@ const props = defineProps({
     totales: Array,
 });
 
-console.log(props.data);
+// console.log(props.data);
 
 const search = ref("");
 const dialog = ref(false);
@@ -141,7 +141,20 @@ onMounted(() => {
         }
     );
 });
-console.log(props.totales);
+
+const filter = computed(() => {
+    const docente = search.value.trim().toLowerCase();
+
+    // Si no hay valor en el input, retorna todos los docentes
+    if (!docente) {
+        return props.docentes;
+    }
+
+    // Filtra docentes por el nombre completo
+    return props.docentes.filter((c) => {
+        return c.nombre_completo.toLowerCase().includes(docente);
+    });
+});
 </script>
 
 <template>
@@ -176,14 +189,13 @@ console.log(props.totales);
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <v-text-field
                     v-model="search"
-                    label="Search"
+                    label="Buscar"
                     prepend-icon="mdi-magnify"
                     variant="solo"
                 ></v-text-field>
                 <v-data-table
                     :headers="header"
-                    :items="props.docentes"
-                    :search="search"
+                    :items="filter"
                     fixed-header
                     next-icon="mdi-arrow-right-bold-circle"
                     prev-icon="mdi-arrow-left-bold-circle"

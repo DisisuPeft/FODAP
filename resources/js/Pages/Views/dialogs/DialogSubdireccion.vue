@@ -3,6 +3,7 @@ import {useForm} from "@inertiajs/vue3";
 import InputLabel from "@/Components/InputLabel.vue";
 import {onMounted, ref} from "vue";
 import CustomSnackBar from "@/Components/CustomSnackBar.vue";
+import {errorMsg, success_alert} from "@/jsfiels/alertas.js";
 
 const form = useForm({
     name: ""
@@ -13,48 +14,38 @@ const color = ref()
 const timeout = ref(0)
 const props = defineProps({
     sub: Array,
-    modelValue: Boolean
+    modelValue: Boolean,
+    errors: {}
 });
 
 const emit = defineEmits([
     'update:modelValue'
 ]);
-
-const snackEventActivator = () => {
-    snack.value = true;
-    message.value = "Parece que los recursos se han actualizado, por favor recarga la pagina"
-    color.value = "warning"
-    timeout.value = 5000
-};
-const snackErrorActivator = () => {
-    snack.value = true;
-    message.value = "No se pudo procesar la solicitud"
-    color.value = "error"
-    timeout.value = 5000
-};
-const snackSuccessActivator = () => {
-    snack.value = true;
-    message.value = "Procesado correctamente"
-    color.value = "success"
-    timeout.value = 5000
-};
+const format_errors = (errors) => {
+    for (const errorsKey in errors) {
+        message.value += errors[errorsKey]
+    }
+    return message.value.split('.').join('. ');
+}
 const submit = () => {
     if (props.sub.length === 0){
         return form.post(route('create.sub'), {
             onSuccess: () => {
-                snackSuccessActivator()
+                emit('update:modelValue', false);
+                success_alert('Exito', 'La subdireccion se ha creado con exito')
             },
             onError: () => {
-                snackErrorActivator()
+                errorMsg('Atención', `${format_errors(props.errors)}`)
             }
         })
     }else{
         return form.put(route('update.sub', props.sub[0].id), {
             onSuccess: () => {
-                snackSuccessActivator()
+                emit('update:modelValue', false);
+                success_alert('Exito', 'La subdireccion se ha actualizado con exito')
             },
             onError: () => {
-                snackErrorActivator()
+                errorMsg('Atención', `${format_errors(props.errors)}`)
             }
         })
     }
@@ -98,9 +89,9 @@ onMounted(() => {
             </v-card-actions>
         </v-card>
     </v-dialog>
-    <CustomSnackBar :message="message" :color="color" :timeout="timeout" v-model="snack" @update:modelValue="snack = $event">
+<!--    <CustomSnackBar :message="message" :color="color" :timeout="timeout" v-model="snack" @update:modelValue="snack = $event">-->
 
-    </CustomSnackBar>
+<!--    </CustomSnackBar>-->
 </template>
 
 <style scoped>

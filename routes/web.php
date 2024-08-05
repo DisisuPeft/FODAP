@@ -51,6 +51,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profile/user/{id}', [ProfileController::class, 'update_email'])->name('profile.email.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/profile/docente', [ProfileController::class, 'DocenteProfileCreate'])->name('docente.create');
     Route::put('/profile/docente/actualizado/{id}', [ProfileController::class, 'update_docente'])->name('update.docente');

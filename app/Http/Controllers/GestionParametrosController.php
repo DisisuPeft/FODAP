@@ -449,13 +449,26 @@ class   GestionParametrosController extends Controller
     }
     public function destoy_users(Request $request)
     {
-        $request->validate([
-            'id' => ['required'],
+        $validator = Validator::make($request->all(), [
+            'id' => 'required'
+        ], [
+            'id.required' => 'El id del usuario es requerido'
         ]);
 
-        $user = User::find($request->id);
+        if (!$validator->fails()) {
+            $user = User::find($request->id);
 
-        $user->delete();
+            DB::beginTransaction();
+            if ($user){
+                $user->delete();
+                DB::commit();
+            }else{
+                DB::rollBack();
+                return back()->withErrors('El usuario que intenta borrar no existe.');
+            }
+        }else{
+            return back()->withErrors($validator)->withInput();
+        }
     }
 
     public function edit_users($id)
@@ -541,29 +554,67 @@ class   GestionParametrosController extends Controller
 
     public function update_password(Request $request, $id)
     {
-        $request->validate([
-            'password' => [Password::defaults(), 'confirmed', 'required'],
+        $rules = [
+            'password' => ['min:8', 'confirmed', 'required'],
+        ];
+
+        $validator = Validator::make($request->all(), $rules, [
+            'password.required' => 'La nueva contraseña es requerida para actualizarla.',
+            'password.confirmed' => 'Las contraseñas no coinciden.',
+            'password.min' => 'La contraseña debe contener mas de 8 caracteres.',
         ]);
 
-        $user = User::find($id);
-        $user->password = Hash::make($request->password);
-        $user->save();
-        if (auth()->user()->role == 3 || auth()->user()->role == 4) {
-            Auth::guard('web')->logout();
-            return redirect('/');
+        if(!$validator->fails()){
+            $user = User::find($id);
+
+            if (!$user) {
+                return back()->withErrors('Usuario no encontrado.');
+            }
+
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+
+            if (auth()->user()->role == 3 || auth()->user()->role == 4) {
+                // Cerrar sesión
+                Auth::guard('web')->logout();
+                return redirect()->route('main');
+            }
+
+            return Redirect::route('edit.user', ['id' => $id]);
+        }else{
+            return back()->withErrors($validator)->withInput();
         }
+//        $user = User::find($id);
+//        $user->password = Hash::make($request->password);
+//        $user->save();
+//        if (auth()->user()->role == 3 || auth()->user()->role == 4) {
+//            Auth::guard('web')->logout();
+//            return redirect('/');
+//        }
     }
     //en el instalador preguntar que acepta tener permisos!
     public function set_permission($id)
     {
         $user = User::find($id);
-        $user->givePermissionTo('edit profile');
+
+        if ($user){
+            $user->givePermissionTo('edit profile');
+        }else{
+            return back()->withErrors('Usuario no encontrado.');
+        }
+
     }
 
     public function revoke_permissions($id)
     {
         $user = User::find($id);
-        $user->revokePermissionTo('edit profile');
+        if ($user){
+            $user->revokePermissionTo('edit profile');
+        }else{
+            return back()->withErrors('Usuario no encontrado.');
+        }
+//        $user->revokePermissionTo('edit profile');
     }
 
     public static function admin()

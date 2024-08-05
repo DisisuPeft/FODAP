@@ -7,7 +7,8 @@ import DeleteUserSelectForm from "@/Pages/Views/desarrollo/forms/DeleteUserSelec
 const props = defineProps({
     users: {
         type: Array
-    }
+    },
+    errors: {}
 });
 
 const usersA = computed(() => {

@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -61,6 +62,29 @@ class ProfileController extends Controller
         $request->user()->save();
 
         return Redirect::route('profile.edit');
+    }
+
+    public function update_email(Request $request, $id): RedirectResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => ['email', 'max:255', 'unique:users'],
+        ], [
+            'email.email' => 'No es valido el correo institucional',
+            'email.unique' => 'El correo ya se encuentra registrado, no requiere actualizarce',
+        ]);
+        if (!$validator->fails()) {
+            $user = User::find($id);
+            DB::beginTransaction();
+            if ($user){
+                $user->fill($request->input('email'));
+                DB::commit();
+                return Redirect::route('edit.user', ['id' => $id]);
+            }else{
+                return back()->withErrors('No se encontro al usuario');
+            }
+        }else{
+            return Redirect::back()->withErrors($validator);
+        }
     }
 
     /**

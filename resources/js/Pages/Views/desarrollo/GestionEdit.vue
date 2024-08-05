@@ -569,6 +569,7 @@ const show_visibilty = () => {
                 <TablaUsuariosAcademicos
                     :users="props.users"
                     :search="search"
+                    :errors="props.errors"
                 ></TablaUsuariosAcademicos>
                 <div class="grid grid-rows-1 p-4">
                     <div class="flex justify-end">
@@ -702,7 +703,7 @@ const show_visibilty = () => {
                     </strong>
                 </div>
                 <TablaUsuariosCoordinacion
-                    :users="props.users"
+                    :users="props.users" :errors="props.errors"
                 ></TablaUsuariosCoordinacion>
             </div>
 <!--            -->
@@ -716,7 +717,7 @@ const show_visibilty = () => {
                         Subdirección Académica
                     </h2>
                 </header>
-                <div class="grid grid-cols-2">
+                <div class="grid grid-cols-1 md:grid-cols-2">
                     <div class="flex justify-center">
                         <tabla-sub
                             :sub="props.sub"
@@ -727,6 +728,7 @@ const show_visibilty = () => {
                             :sub="props.sub"
                             v-model="dialogSub"
                             @update:modelValue="dialogSub = $event"
+                            :errors="props.errors"
                         ></form-subdireccion>
                         <template v-if="props.sub.length < 0">
                             <div
@@ -761,7 +763,7 @@ const show_visibilty = () => {
                         </template>
                     </div>
                 </div>
-                <div class="grid grid-cols-2">
+                <div class="grid grid-cols-1">
                     <div class="flex justify-center">
                         <NombreInstitutoTable
                             :instituto="props.instituto"

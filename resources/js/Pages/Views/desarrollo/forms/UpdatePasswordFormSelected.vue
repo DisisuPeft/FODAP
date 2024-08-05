@@ -6,41 +6,29 @@ import TextInput from '@/Components/TextInput.vue';
 import { useForm } from '@inertiajs/vue3';
 import {ref, watch} from 'vue';
 import zxcvbn from 'zxcvbn';
+import {errorMsg, success_alert} from "@/jsfiels/alertas.js";
+import Swal from "sweetalert2";
 
 const props = defineProps({
-    user: Object
+    user: Object,
+    errors: {}
 })
 const passwordFielType = ref("password");
 const passwordInput = ref(null);
 const currentPasswordInput = ref(null);
 const snackbarSuccess = ref(false);
 const snackbarError = ref(false);
-
+const message = ref("");
 const form = useForm({
-    current_password: '',
+    // current_password: '',
     password: '',
     password_confirmation: '',
 });
-
+const emit = defineEmits([
+    'form:password'
+])
 const updatePassword = () => {
-    form.put(route('update.password', props.user.id), {
-        preserveScroll: true,
-        onSuccess: () => {
-            form.reset()
-            snackbarSuccess.value = true
-        },
-        onError: () => {
-            if (form.errors.password) {
-                form.reset('password', 'password_confirmation');
-                passwordInput.value.focus();
-            }
-            if (form.errors.current_password) {
-                form.reset('current_password');
-                currentPasswordInput.value.focus();
-            }
-            snackbarError.value = true
-        },
-    });
+    emit('form:password', form)
 };
 const passwordStrength = ref(0);
 const calculatePasswordStrength = (password) => {
@@ -53,7 +41,7 @@ watch(() => form.password,
     (newValue) => {
         calculatePasswordStrength(newValue)
         startProgress()
-        console.log(passwordStrength.value, )
+        // console.log(passwordStrength.value, )
     })
 
 const progressColor = ref("pink");
@@ -67,6 +55,14 @@ const startProgress = () => {
 
 const show_visibilty = () => {
     passwordFielType.value = passwordFielType.value === "password" ? "text" : "password";
+}
+
+const format_errors = (errors) => {
+    console.log(errors, props.errors)
+    for (const errorsKey in errors) {
+        message.value += errors[errorsKey]
+    }
+    return message.value.split('.').join('. ');
 }
 </script>
 
