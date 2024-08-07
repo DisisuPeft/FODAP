@@ -248,7 +248,7 @@ const format_errors = (errors) => {
                         </div>
                         <div class="grid grid-rows-1 p-10">
                             <div class="flex justify-center">
-                                <div class="grid grid-cols-1 md:grid-cols-2">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div class="flex justify-center">
                                         <v-btn
                                             color="error"
