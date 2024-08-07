@@ -211,7 +211,6 @@ const format_errors = (errors) => {
                                                     item-title="nameCarrera"
                                                     item-value="id"
                                                     variant="solo"
-                                                    class="w-[500px]"
                                                 ></v-select>
                                             </div>
 <!--                                        </div>-->
