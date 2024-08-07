@@ -16,6 +16,7 @@ use App\Models\User;
 use App\Notifications\InscripcionDocente;
 use App\Notifications\NewDeteccionNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -364,60 +365,54 @@ class DocenteController extends Controller
         }
         return null;
     }
-    public static function create_instance_docente($request)
-    {
-        $docente = Docente::create([
-            'rfc' => $request->rfc,
-            'curp' => $request->curp,
-            'nombre' => $request->nombre,
-            'apellidoPat' => $request->apellidoPat,
-            'apellidoMat' => $request->apellidoMat,
-            'sexo' => $request->sexo,
-            'telefono' => $request->telefono,
-            'carrera_id' => $request->carrera_id,
-            'id_puesto' => $request->id_puesto,
-            'tipo_plaza' => $request->tipo_plaza,
-            'departamento_id' => $request->departamento_id,
-            'user_id' => $request->id,
-            'licenciatura' => $request->licenciatura,
-            'id_posgrado' => $request->id_posgrado,
-            'nombre_completo' => $request->nombre . " " . $request->apellidoPat . " " . $request->apellidoMat
-        ]);
+//    public static function create_instance_docente($request)
+//    {
+//        $docente = new Docente();
+//        DB::beginTransaction();
+//        $existe = $docente->docente_existe($request);
+//        if ($existe){
+//            $docente = Docente::create($request->validated() + [
+//                'nombre_completo' => $request->nombre . " " . $request->apellidoPat . " " . $request->apellidoMat,
+//                'user_id' => $docente->usuario->id ?? $request->id,
+//            ]);
+//            if($docente){
+//                DB::commit();
+//            }else{
+//                DB::rollBack();
+//                return back()->withErrors('Error al crear el docente');
+//            }
+//        }else{
+//            return back()->withErrors('El nombre que se ingreso ya existe en la base de datos.');
+//        }
+//    }
 
-        $docente->save();
+//    public static function updated_instance_docente($request, $id)
+//    {
+//        DB::beginTransaction();
+//        $request->validated();
+//        $docente = Docente::with('usuario')->where('id', $id)->first();
+//        if ($docente){
+//            $update = $docente->update($request->validated() + [
+//                    'nombre_completo' => $request->nombre . " " . $request->apellidoPat . " " . $request->apellidoMat,
+//                    'user_id' => $docente->usuario->id ?? $request->id,
+//                ]);
+//            if ($update){
+//                DB::commit();
+//            }else{
+//                DB::rollBack();
+//                return back()->withErrors('El docente no se pudo actualizar');
+//            }
+//        }else{
+//            DB::rollBack();
+//            return back()->withErrors('El docente no existe');
+//        }
+//    }
 
-        return $docente;
-    }
-    public static function updated_instance_docente($request, $id)
-    {
-        $docente = Docente::find($id);
-
-        $docente->rfc = $request->rfc;
-        $docente->curp = $request->curp;
-        $docente->nombre = $request->nombre;
-        $docente->apellidoPat = $request->apellidoPat;
-        $docente->apellidoMat = $request->apellidoMat;
-        $docente->sexo = $request->sexo;
-        $docente->telefono = $request->telefono;
-        $docente->carrera_id = $request->carrera_id;
-        $docente->id_puesto = $request->id_puesto;
-        $docente->tipo_plaza = $request->tipo_plaza;
-        $docente->departamento_id = $request->departamento_id;
-        $docente->user_id = $request->id;
-        $docente->licenciatura = $request->licenciatura;
-        $docente->id_posgrado = $request->id_posgrado;
-        $docente->nombre_completo = $request->nombre . " " . $request->apellidoPat . " " . $request->apellidoMat;
-
-        $docente->save();
-
-        return $docente;
-    }
-
-    public static function delete_docente($id)
-    {
-        $docente = Docente::find($id);
-        $docente->delete();
-    }
+//    public static function delete_docente($id)
+//    {
+//        $docente = Docente::find($id);
+//        $docente->delete();
+//    }
 
     public static function facilitadores_permission($facilitadores)
     {

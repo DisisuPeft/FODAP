@@ -58,7 +58,7 @@ class PDFController extends Controller
         return Storage::download($file);
     }
 
-    public function deteccion_pdf(RequestPDFDeteccion $request): \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\JsonResponse
+    public function deteccion_pdf(RequestPDFDeteccion $request)
     {
         $request->validated();
         $cursos = $this->pdf_request_deteccion($request);
@@ -70,7 +70,7 @@ class PDFController extends Controller
             ->first();
         if (count($cursos) == 0) {
             return response()->json([
-                'mensaje' => 'No se encontro ningun dato con ese criterio de busqueda'
+                'message' => 'No se encontro ningun dato con ese criterio de busqueda'
             ]);
         } else {
             $pdf = Pdf::loadView('pdf.deteccion', compact('cursos', 'subdireccion', 'presidente'))->output();
@@ -78,7 +78,7 @@ class PDFController extends Controller
             $this->save_file($pdf, $path);
             //            return $this->download_file($path);
             return response()->json([
-                'status' => 'Ok'
+                'message' => 'Ok'
             ]);
         }
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\DatesEnableEvent;
 use App\Http\Controllers\API\v1\DataResponseController;
+use App\Http\Requests\StoreFileRequest;
 use App\Http\Requests\StoreImageRequest;
 use App\Mail\PermisosUserEdit;
 use App\Models\Carrera;
@@ -624,31 +625,58 @@ class   GestionParametrosController extends Controller
 
     public function create_subdireccion(Request $request)
     {
-        $request->validate([
-            'name' => 'required'
-        ]);
-
-        $subdireccion = Subdireccion::create([
-            'name' => $request->name
-        ]);
-
-        $subdireccion->save();
+        $validador = Validator::make($request->all(), ['name' => 'required'], ['name.required' => 'El nombre del/la subdirector/a es requerido']);
+        DB::beginTransaction();
+        if (!$validador->fails()) {
+            $subdireccion = Subdireccion::create([
+                'name' => $request->name
+            ]);
+            if ($subdireccion){
+                DB::commit();
+                return Redirect::route('parametros.edit');
+            }else{
+                DB::rollBack();
+                return back()->withErrors('El subdireccion no pudo ser creado.');
+            }
+        }else{
+            return back()->withErrors($validador)->withInput();
+        }
     }
     public function update_subdireccion($id, Request $request)
     {
-        $subdireccion = Subdireccion::find($id);
-
-        $subdireccion->delete();
-
-        $subdireccion->name = $request->name;
-
-        $subdireccion->save();
+        $validador = Validator::make($request->all(), ['name' => 'required'], ['name.required' => 'El nombre del/la subdirector/a es requerido']);
+        if (!$validador->fails()) {
+            $subdireccion = Subdireccion::where('id', $id)->update([
+                'name' => trim($request->name)
+            ]);
+            if ($subdireccion > 0){
+                DB::commit();
+                return Redirect::route('parametros.edit');
+            }else{
+                DB::rollBack();
+                return back()->withErrors('El subdireccion no requirió ser actualizado.');
+            }
+        }else{
+            return back()->withErrors($validador)->withInput();
+        }
     }
 
-    public function subir_cvu(Request $request)
+    public function subir_cvu(StoreFileRequest $request)
     {
-        $request->file('file')->storeAs('/CVUdownload/', 'CVU_editable.docx', 'public');
-        return redirect()->route('parametros.edit');
+        $request->validated();
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            // Almacenar el archivo en la carpeta 'word_documents'
+            $path = $file->storeAs('/CVUdownload/', $filename, 'public');
+
+            // Retornar éxito o hacer algo con la ruta del archivo almacenado
+            return Redirect::route('parametros.edit');
+        }
+//        $request->file('file')->storeAs('/CVUdownload/', 'CVU_editable.docx', 'public');
+//        return redirect()->route('parametros.edit');
+        return back()->withErrors('Error al subir el documento de Word.');
     }
     public function subir_img_acta(StoreImageRequest $request)
     {
@@ -678,74 +706,152 @@ class   GestionParametrosController extends Controller
 
         return redirect()->route('parametros.edit');
     }
-    public function subir_img_constancia_2(Request $request)
-    {
-        $request->validate([
-            'file' => ['required', 'mimes:jpg,jpeg,png'],
-        ]);
-        $year = date('Y');
-        $path = '/Membretado/' . $year;
-        $request->file('file')->storeAs($path, 'logo_constancia_page_2.png', 'public');
-        return redirect()->route('parametros.edit');
-    }
+//    public function subir_img_constancia_2(Request $request)
+//    {
+//        $request->validate([
+//            'file' => ['required', 'mimes:jpg,jpeg,png'],
+//        ]);
+//        $year = date('Y');
+//        $path = '/Membretado/' . $year;
+//        $request->file('file')->storeAs($path, 'logo_constancia_page_2.png', 'public');
+//        return redirect()->route('parametros.edit');
+//    }
 
     public function create_director(Request $request)
     {
-        $request->validate([
+        $validador = Validator::make($request->all(), [
             'nameDirector' => 'required'
+        ], [
+            'nameDirector.required' => 'El nombre del director es requerido.'
         ]);
-
-        $director = Director::create($request->all());
-
-        $director->save();
+        DB::beginTransaction();
+        if (!$validador->fails()) {
+            $director = Director::create($request->all());
+            if ($director){
+                DB::commit();
+                return redirect()->route('parametros.edit');
+            }else{
+                DB::rollBack();
+                return back()->withErrors('El nombre del director no pudo ser establecido');
+            }
+        }else{
+            DB::rollBack();
+            return back()->withErrors($validador)->withInput();
+        }
     }
     public function update_director($id, Request $request)
     {
-        $director = Director::find($id);
-
-        $director->delete();
-
-        $director->nameDirector = $request->nameDirector;
-
-        $director->save();
+        $validador = Validator::make($request->all(), [
+            'nameDirector' => 'required',
+        ], [
+            'nameDirector.required' => 'El nombre del director es requerido.',
+        ]);
+        DB::beginTransaction();
+        if (!$validador->fails()) {
+            $director = Director::where('id', $id)->update($request->all());
+            if ($director > 0){
+                DB::commit();
+                return redirect()->route('parametros.edit');
+            }else{
+                DB::rollBack();
+                return back()->withErrors('El nombre del director no requirió ser actualizado');
+            }
+        }else{
+            DB::rollBack();
+            return back()->withErrors($validador)->withInput();
+        }
     }
 
     public function create_instituto(Request $request)
     {
-        $request->validate([
-            'nameInstituto'
-        ]);
-        $instituto = NombreInstituto::create([
-            'name' => 'nameInstituto'
+        $validador = Validator::make($request->all(), [
+            'nameInstituto' => 'required'
+        ], [
+            'nameInstituto.required' => 'El nombre del instituto es requerido.'
         ]);
 
-        $instituto->save();
+
+        if (!$validador->fails()) {
+            $instituto = NombreInstituto::create([
+                'name' => 'nameInstituto'
+            ]);
+            if ($instituto){
+                DB::commit();
+                return redirect()->route('parametros.edit');
+            }else{
+                DB::rollBack();
+                return back()->withErrors('El nombre del instituto no pudo ser creado');
+            }
+        }else{
+            DB::rollBack();
+            return back()->withErrors($validador)->withInput();
+        }
+
     }
     public function update_instituto($id, Request $request)
     {
-        $instituto = NombreInstituto::find($id);
-
-        $instituto->delete();
-
-        $instituto->name = $request->nameInstituto;
-
-        $instituto->save();
+        $validador = Validator::make($request->all(), [
+            'nameInstituto' => 'required'
+        ], [
+            'nameInstituto.required' => 'El nombre del instituto es requerido.'
+        ]);
+        DB::beginTransaction();
+        if (!$validador->fails()) {
+            $instituto = NombreInstituto::where('id',$id)->update([
+                'name' => trim($request->nameInstituto)
+            ]);
+            if ($instituto){
+                DB::commit();
+                return redirect()->route('parametros.edit');
+            }else{
+                DB::rollBack();
+                return back()->withErrors('El nombre del instituto no requirió ser actualizado');
+            }
+        }else{
+            DB::rollBack();
+            return back()->withErrors($validador)->withInput();
+        }
     }
 
     public function upLogo(StoreImageRequest $request)
     {
         $request->validated();
-        $request->file('file')->storeAs('/img/', 'logo.jpg', 'public');
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+
+            // Almacenar el archivo en la carpeta 'word_documents'
+            $file->storeAs('/img/', time().'_logo.'.$file->getClientOriginalExtension(), 'public');;
+
+            // Retornar éxito o hacer algo con la ruta del archivo almacenado
+            return Redirect::route('parametros.edit');
+        }
+        return back()->withErrors('Error al subir el logo del instituto.');
     }
     public function upLogo_tecnm(StoreImageRequest $request)
     {
         $request->validated();
-        $request->file('file')->storeAs('/img/', 'logoTecnm.jpg', 'public');
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+
+            $file->storeAs('/img/', time().'_logoTecnm.'.$file->getClientOriginalExtension(), 'public');
+
+            return Redirect::route('parametros.edit');
+        }
+        return back()->withErrors('Error al subir el logo del Tecnm.');
+//        $request->file('file')->storeAs('/img/', 'logoTecnm.jpg', 'public');
     }
-    public function upLogo_educacion(StoreImageRequest $request): void
+    public function upLogo_educacion(StoreImageRequest $request)
     {
         $request->validated();
-        $request->file('file')->storeAs('/img/', 'educacion.jpg', 'public');
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+
+            $file->storeAs('/img/', time().'_educacion.'.$file->getClientOriginalExtension(), 'public');
+
+            return Redirect::route('parametros.edit');
+        }
+        return back()->withErrors('Error al subir el logo del Tecnm.');
+//        $request->file('file')->storeAs('/img/', 'educacion.jpg', 'public');
     }
     public function subir_imagen(Request $request): void
     {

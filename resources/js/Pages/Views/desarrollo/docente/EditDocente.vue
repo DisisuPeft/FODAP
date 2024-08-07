@@ -15,6 +15,9 @@ import DangerButton from "@/Components/DangerButton.vue";
 import Modal from "@/Components/Modal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import CustomSnackBar from "@/Components/CustomSnackBar.vue";
+import UpdateProfileEmailForm from "@/Pages/Profile/Partials/UpdateProfileEmailForm.vue";
+import Swal from "sweetalert2";
+import {AlertLoading, errorMsg, success_alert} from "@/jsfiels/alertas.js";
 
 const props = defineProps({
     departamento: {
@@ -38,10 +41,13 @@ const props = defineProps({
     posgrado: {
         type: Array
     },
+    errors: {
+        type: Object,
+    }
 });
 const alert = ref(true)
 const form = useForm({
-    id: null,
+    id: 0,
     rfc: "",
     curp: "",
     nombre: "",
@@ -59,57 +65,57 @@ const form = useForm({
 const sex = [{ value: 1, text: "MASCULINO" }, { value: 2, text: "FEMENINO" }];
 const show_update_password = ref(false)
 const message = ref()
-const color = ref()
-const timeout = ref()
-const snackbar = ref()
-
 const submit = () => {
-    form.put(route('update.docentes', props.docente.id), {
-        onSuccess: () => {
-          suceess()
-        },
-        onError: () => {
-            error_form()
-        }
-    })
+        Swal.fire({
+            title: '¿Ingreso la información correcta?',
+            text: 'Esta acción se puede revertir',
+            showCancelButton: true,
+            showConfirmButton: true,
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar',
+            icon: "info",
+            timerProgressBar: true
+        }).then(res => {
+            if (res.isConfirmed){
+                AlertLoading('Guardando la información...', 'Esto puede tardar unos minutos')
+                form.put(route('update.docentes', [props.docente.id, "desarrollo"]), {
+                    onSuccess: () => {
+                        success_alert('Exito', 'El docente se actualizo con exito')
+                    },
+                    onError: () => {
+                        errorMsg('Atención', `${format_errors(props.errors)}`)
+                        message.value = ""
+                    }
+                })
+            }
+        })
 }
 
 const closeModal = () => {
     show_update_password.value = false;
 };
-function suceess(){
-    message.value = "Actualizado con exito"
-    color.value = "success"
-    timeout.value = 2000;
-    snackbar.value = true
-    setTimeout(() => {
-        snackbarSuccess.value = false;
-    }, timeout.value);
-}
-function error_form() {
-    message.value = "Error al actualizar este recurso"
-    color.value = "error"
-    timeout.value = 2000;
-    snackbar.value = true
-    setTimeout(() => {
-        snackbar.value = false;
-    }, timeout.value);
-}
+
 
 const formUser = useForm({
     email: "",
 })
-const submitUser = () => {
-    formUser.post(route('editar.email', props.docente.usuario.id), {
-        onSuccess: () => {
-            suceess()
-        },
-        onError: () => {
-            error_form()
-        }
-    })
+// const submitUser = () => {
+//     formUser.post(route('profile.email.update', props.docente.usuario.id), {
+//         onSuccess: () => {
+//
+//         },
+//         onError: () => {
+//             error_form()
+//         }
+//     })
+// }
+const format_errors = (errors) => {
+    console.log(errors, props.errors)
+    for (const errorsKey in errors) {
+        message.value += errors[errorsKey]
+    }
+    return message.value.split('.').join('. ');
 }
-
 
 onMounted(() => {
     if (!props.docente) {
@@ -129,7 +135,7 @@ onMounted(() => {
         props.docente.tipo_plaza !== null ? form.tipo_plaza = props.docente.tipo_plaza : form.tipo_plaza
         props.docente.licenciatura !== null ? form.licenciatura = props.docente.licenciatura : form.licenciatura
         props.docente.id_posgrado !== null ? form.id_posgrado = props.docente.id_posgrado : form.id_posgrado
-        props.docente.usuario.email !== null ? formUser.email = props.docente.usuario.email : formUser.email
+        props.docente.usuario?.email !== null ? formUser.email = props.docente.usuario?.email : formUser.email
         // if (props.docente.usuario !== null){
         //     props.docente.usuario.email = formUser.email
         // }else{
@@ -137,6 +143,62 @@ onMounted(() => {
         // }
     }
 })
+const submit_passwordform = (form) => {
+    Swal.fire({
+        title: '¿Ingreso la información correcta?',
+        text: 'Esta acción se puede revertir',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        icon: "info",
+        timerProgressBar: true
+    }).then(res => {
+        if (res.isConfirmed){
+            AlertLoading('Guardando la información...', 'Esto puede tardar unos minutos')
+            form.put(route('update.password', props.user.id), {
+                preserveScroll: true,
+                onSuccess: () => {
+                    form.reset()
+                    success_alert('Exito', 'Contraseña actualizada con exito.')
+                },
+                onError: () => {
+                    // if (form.errors.password) {
+                    //     form.reset('password', 'password_confirmation');
+                    //     // passwordInput.value.focus();
+                    // }
+                    // if (form.errors.current_password) {
+                    //     form.reset('current_password');
+                    //     // currentPasswordInput.value.focus();
+                    // }
+                    errorMsg('Atención', `${format_errors(props.errors)}`)
+                    message.value = ""
+                },
+            });
+        }
+    })
+}
+const numeroTelefonoFormateado = ref('');
+const formatearTelefono = () => {
+    // Eliminar cualquier guión existente
+    form.telefono = form.telefono.replace(/-/g, '');
+
+    // Dividir el número de teléfono en segmentos y agregar guiones
+    const segmento1 = form.telefono.slice(0, 3);
+    const segmento2 = form.telefono.slice(3, 6);
+    const segmento3 = form.telefono.slice(6, 10);
+
+    // Crear el número de teléfono formateado
+    numeroTelefonoFormateado.value = `${segmento1}-${segmento2}-${segmento3}`;
+};
+
+const phone_number_rules = [
+    value => {
+        if (value?.length <= 10 || value?.length <= 10) return true
+
+        return "Error en la logintud del número"
+    }
+];
 </script>
 
 <template>
@@ -171,31 +233,32 @@ onMounted(() => {
                         </v-tooltip>
                 </p>
             </header>
-<!--            <div v-if="props.docente.usuario">-->
-                <div class="mt-5">
-                    <form @submit.prevent="submitUser">
-                        <div class="grid grid-cols-2">
-                            <div>
-                                <InputLabel for="email" value="Correo Institucional" />
+            <div v-if="props.docente?.usuario">
+<!--                <div class="mt-5">-->
+<!--                    <form @submit.prevent="submitUser">-->
+<!--                        <div class="grid grid-cols-2">-->
+<!--                            <div>-->
+<!--                                <InputLabel for="email" value="Correo Institucional" />-->
 
-                                <TextInput
-                                    id="email"
-                                    type="email"
-                                    class="mt-1 block w-full"
-                                    v-model="formUser.email"
-                                    required
-                                    autocomplete="username"
-                                />
+<!--                                <TextInput-->
+<!--                                    id="email"-->
+<!--                                    type="email"-->
+<!--                                    class="mt-1 block w-full"-->
+<!--                                    v-model="formUser.email"-->
+<!--                                    required-->
+<!--                                    autocomplete="username"-->
+<!--                                />-->
 
-                                <InputError class="mt-2" :message="formUser.errors.email" />
-                            </div>
-                            <template v-if="props.docente.usuario">
-                                <div class="flex justify-center">
-                                    <primary-button type="submit">Actualizar email</primary-button>
-                                </div>
-                            </template>
-                        </div>
-                    </form>
+<!--                                <InputError class="mt-2" :message="formUser.errors.email" />-->
+<!--                            </div>-->
+<!--                            <template v-if="props.docente.usuario">-->
+<!--                                <div class="flex justify-center">-->
+<!--                                    <primary-button type="submit">Actualizar email</primary-button>-->
+<!--                                </div>-->
+<!--                            </template>-->
+<!--                        </div>-->
+<!--                    </form>-->
+                        <UpdateProfileEmailForm :user="props.docente?.usuario" :errors="props.errors"></UpdateProfileEmailForm>
                 </div>
             <div class="mt-5">
                 <div>
@@ -208,7 +271,7 @@ onMounted(() => {
                         </div>
                         <div class="container mx-auto">
                             <div class="flex justify-center items-center mb-5">
-                                <UpdatePasswordFormSelected :user="props.docente.usuario"></UpdatePasswordFormSelected>
+                                <UpdatePasswordFormSelected :user="props.docente.usuario" @form:password="submit_passwordform"></UpdatePasswordFormSelected>
                             </div>
                         </div>
                     </Modal>
@@ -358,7 +421,8 @@ onMounted(() => {
                     <InputLabel for="telefono" value="Telefono celular" />
 
                     <!-- <TextInput id="telefono" type="text" class="mt-1 rounded w-full" v-model="form.telefono" required /> -->
-                    <v-text-field v-model="form.telefono" ></v-text-field>
+                    <v-text-field v-model="form.telefono" :rules="phone_number_rules" @input="formatearTelefono" ></v-text-field>
+                    <v-text-field v-model="numeroTelefonoFormateado" disabled></v-text-field>
                     <!-- phone_number_rules -->
                     <InputError class="mt-2" />
                 </div>
@@ -372,7 +436,6 @@ onMounted(() => {
             </form>
         </div>
     </div>
-    <CustomSnackBar :message="message" :color="color" @update:modelValue="snackbar = $event" v-model="snackbar"></CustomSnackBar>
 </AuthenticatedLayout>
 </template>
 

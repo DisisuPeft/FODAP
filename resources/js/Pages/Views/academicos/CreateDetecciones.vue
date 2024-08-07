@@ -4,11 +4,14 @@ import DeteccionesForm from "@/Pages/Views/academicos/forms/DeteccionesForm.vue"
 import {computed, onMounted, ref, watch} from "vue";
 import NavLink from "@/Components/NavLink.vue";
 import ResetForm from "@/Pages/Views/dialogs/ResetForm.vue";
-import {useForm, usePage} from "@inertiajs/vue3";
+import {router, useForm, usePage} from "@inertiajs/vue3";
 import InputLabel from "@/Components/InputLabel.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import CreateDocenteA from "@/Pages/Views/academicos/docentes/CreateDocenteA.vue";
 import CustomSnackBar from "@/Components/CustomSnackBar.vue";
+import {AlertLoading, errorMsg, success_alert} from "@/jsfiels/alertas.js";
+import Swal from "sweetalert2";
+import Modal from "@/Components/Modal.vue";
 
 const props = defineProps({
     base_docente: {
@@ -51,10 +54,7 @@ const emit = defineEmits([
 ]);
 const user = computed(() => usePage().props.auth.user);
 // let dialogReset = ref(false);
-const snackbar = ref(false);
-const timeout = ref(0)
 const message = ref("");
-const color = ref("")
 const dialogDocente = ref(false)
 const dialog = ref(true);
 let horas_totales = ref();
@@ -101,33 +101,7 @@ const period = ref([
     {text: "enero-junio", value: 1},
     {text: "agosto-diciembre", value: 2},
 ]);
-const snackEventActivator = () => {
-    snackbar.value = true;
-    message.value = "Parece que los recursos se han actualizado, por favor recarga la pagina"
-    color.value = "warning"
-    timeout.value = 8000
-    setTimeout(() => {
-        snackbar.value = false;
-    }, timeout.value);
-};
-const snackErrorActivator = () => {
-    snackbar.value = true;
-    message.value = "No se pudo procesar la solicitud"
-    color.value = "error"
-    timeout.value = 5000
-    setTimeout(() => {
-        snackbar.value = false;
-    }, timeout.value);
-};
-const snackSuccessActivator = () => {
-    snackbar.value = true;
-    message.value = "Procesado correctamente"
-    color.value = "success"
-    timeout.value = 5000
-    setTimeout(() => {
-        snackbar.value = false;
-    }, timeout.value);
-};
+
 const carreraFilter = computed(() => {
     let filtro = props.carrera_filtro
     const addTodas = { nameCarrera: "TODAS LAS CARRERAS", id: 13 }
@@ -184,20 +158,32 @@ function totalHoras(fechaInicio, fechaFinal, horaInicio, horaFinal) {
 }
 
 async function submitDocente(form){
-    try {
-        form.post(route('create.docentes.academicos.up'), {
-            onSuccess: () => {
-                dialogDocente.value = false
-                snackSuccessActivator()
-                form.reset()
-            },
-            onError: () => {
-                snackErrorActivator()
-            }
-        })
-    }catch (e) {
-        snackErrorActivator()
-    }
+    dialogDocente.value = false
+    Swal.fire({
+        title: 'Esta por crear un docente.',
+        text: '¿Esta seguro que desea crear este docente?',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        icon: "info",
+        timerProgressBar: true
+    }).then(res => {
+        if (res.isConfirmed){
+            AlertLoading('Guardando la información...', 'Esto puede tardar unos minutos')
+            form.post(route('create.docentes.academicos.up', "academicos"), {
+                onSuccess: () => {
+                    dialogDocente.value = false
+                    form.reset()
+                    success_alert('Exito', 'Docente creado con exito')
+                },
+                onError: () => {
+                    dialogDocente.value = false
+                    errorMsg('Atención', `${format_errors(props.errors)}`)
+                }
+            })
+        }
+    })
 }
 
 watch(() => [form.fecha_I, form.fecha_F, form.hora_I, form.hora_F], ([newFechaI, newFechaF, newHoraI, newHoraF], [oldFechaI, oldFechaF, oldHoraI, oldHoraF]) => {
@@ -215,10 +201,9 @@ const submit = () => {
             form.reset();
             dialogReset.value = true;
             dialog.value = true;
-            snackSuccessActivator()
         },
         onError: () => {
-            snackErrorActivator()
+            errorMsg('Atención', `${format_errors(props.errors)}`)
         },
     })
 }
@@ -242,6 +227,17 @@ onMounted(() => {
         }
     })
 });
+
+const format_errors = (errors) => {
+    for (const errorsKey in errors) {
+        message.value += errors[errorsKey]
+    }
+    return message.value.split('.').join('. ');
+}
+
+const closeModal = () => {
+    dialog.value = false
+}
 </script>
 
 <template>
@@ -259,36 +255,62 @@ onMounted(() => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                 <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                     <form @submit.prevent="submit">
-                        <v-dialog v-model="dialog" width="500" persistent>
-                            <v-card width="500">
-                                <v-card-title class="text-center">Tipo de diagnostico que desea realizar</v-card-title>
-                                <v-divider></v-divider>
-                                <v-card-text>
-                                    <v-container class="mt-6">
-                                        <InputLabel for="tipo_solicitud" value="Tipo de solicitud" />
-                                        <v-row align="center" justify="center" class="mt-2">
-                                            <v-select variant="solo" :items="tipoSolicitud" item-title="text" item-value="value"
-                                                      v-model="form.tipo">
+<!--                        <v-dialog v-model="dialog" width="500" persistent>-->
+<!--                            <v-card width="500">-->
+<!--                                <v-card-title class="text-center">Tipo de diagnostico que desea realizar</v-card-title>-->
+<!--                                <v-divider></v-divider>-->
+<!--                                <v-card-text>-->
+<!--                                    <v-container class="mt-6">-->
+<!--                                        <InputLabel for="tipo_solicitud" value="Tipo de solicitud" />-->
+<!--                                        <v-row align="center" justify="center" class="mt-2">-->
+<!--                                            <v-select variant="solo" :items="tipoSolicitud" item-title="text" item-value="value"-->
+<!--                                                      v-model="form.tipo">-->
 
-                                            </v-select>
-                                        </v-row>
-                                    </v-container>
-                                </v-card-text>
-                                <v-divider></v-divider>
-                                <div class="flex items-center mr-5 mb-7 justify-end gap-4">
-                                    <NavLink :href="route('detecciones.index')" as="button" type="button">
-                                        <v-btn color="error">
-                                            Cancelar
-                                        </v-btn>
-                                    </NavLink>
-                                    <PrimaryButton @click="dialog = false" :disabled="form.processing">Confirmar</PrimaryButton>
+<!--                                            </v-select>-->
+<!--                                        </v-row>-->
+<!--                                    </v-container>-->
+<!--                                </v-card-text>-->
+<!--                                <v-divider></v-divider>-->
+<!--                                <div class="flex items-center mr-5 mb-7 justify-end gap-4">-->
+<!--                                    <NavLink :href="route('detecciones.index')" as="button" type="button">-->
+<!--                                        <v-btn color="error">-->
+<!--                                            Cancelar-->
+<!--                                        </v-btn>-->
+<!--                                    </NavLink>-->
+<!--                                    <PrimaryButton @click="dialog = false" :disabled="form.processing">Confirmar</PrimaryButton>-->
 
-                                    <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out">
-                                        <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Confirmado.</p>
-                                    </Transition>
+<!--                                    <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out">-->
+<!--                                        <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Confirmado.</p>-->
+<!--                                    </Transition>-->
+<!--                                </div>-->
+<!--                            </v-card>-->
+<!--                        </v-dialog>-->
+                        <Modal :show="dialog" @close="closeModal">
+                            <div class="grid grid-rows-1">
+                                <div class="flex justify-center items-center m-5">
+                                    <p class="text-xl ">Tipo de diagnostico que desea realizar</p>
                                 </div>
-                            </v-card>
-                        </v-dialog>
+                                <div class="grid grid-cols-1 p-10">
+                                    <InputLabel for="tipo_solicitud" value="Tipo de solicitud" />
+                                    <v-select variant="solo" :items="tipoSolicitud" item-title="text" item-value="value"
+                                              v-model="form.tipo">
+
+                                    </v-select>
+                                </div>
+                            </div>
+                            <div class="flex items-center mr-5 mb-7 justify-end gap-4">
+                                <NavLink :href="route('detecciones.index')" as="button" type="button">
+                                    <v-btn color="error">
+                                        Cancelar
+                                    </v-btn>
+                                </NavLink>
+                                <PrimaryButton @click="dialog = false" :disabled="form.processing">Confirmar</PrimaryButton>
+
+                                <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out">
+                                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Confirmado.</p>
+                                </Transition>
+                            </div>
+                        </Modal>
 
                         <v-row justify="center">
                             <template v-if="form.tipo != null">
@@ -469,7 +491,7 @@ onMounted(() => {
 
                                             </v-select>
                                         </v-col>
-                                        <v-col cols="6">
+                                        <v-col cols="12" md="6">
                                             <v-row justify="center">
                                                 <v-col align="start" cols="3">
                                                     <InputLabel for="modalidad" value="Modalidad" />
@@ -494,7 +516,7 @@ onMounted(() => {
 
                                             </v-select>
                                         </v-col>
-                                        <v-col cols="6">
+                                        <v-col cols="12" md="6">
                                             <v-row justify="center">
                                                 <v-col align="start" cols="5">
                                                     <InputLabel for="tipo_curso" value="Tipo de curso" />
@@ -675,10 +697,10 @@ onMounted(() => {
                                                 </v-col>
                                             </v-row>
                                             <v-row justify="center">
-                                                <v-col cols="6">
+                                                <v-col cols="12" md="6">
                                                     <v-text-field label="Inicio" required type="date" v-model="form.fecha_I" />
                                                 </v-col>
-                                                <v-col cols="6">
+                                                <v-col cols="12" md="6">
                                                     <v-text-field label="Termino" required type="date" v-model="form.fecha_F" />
                                                 </v-col>
                                             </v-row>
@@ -705,10 +727,10 @@ onMounted(() => {
                                                 </v-col>
                                             </v-row>
                                             <v-row justify="center">
-                                                <v-col cols="6" align="center" class="">
+                                                <v-col cols="12" md="6" align="center" class="">
                                                     <v-text-field label="Inicio" required type="time" v-model="form.hora_I" />
                                                 </v-col>
-                                                <v-col cols="6">
+                                                <v-col cols="12" md="6">
                                                     <!--                                        <InputLabel for="time" valuet="kd"/>-->
                                                     <v-text-field label="Termino" class="" required type="time" v-model="form.hora_F" />
                                                 </v-col>

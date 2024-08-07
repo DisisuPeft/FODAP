@@ -31,9 +31,9 @@ class RequestPDFDeteccion extends FormRequest
     public function messages(): array
     {
         return [
-            'anio.required' => 'El año es requerido!',
-            'carrera.required' => 'Debe indicar a la carrera a la que va dirigido',
-            'periodo.required' => 'Debe indicar el periodo'
+            'anio.required' => 'El año es requerido!.',
+            'carrera.required' => 'Debe indicar a la carrera a la que va dirigido.',
+            'periodo.required' => 'Debe indicar el periodo.'
         ];
     }
 }

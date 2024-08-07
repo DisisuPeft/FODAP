@@ -16,7 +16,8 @@ class StoreImageRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'file.required' => 'El archivo debe ser de tipo jpg, png',
+            'file.required' => 'La imagen es requerida',
+            'file.mimes' => 'El archivo debe ser de tipo jpg, png',
         ];
     }
     public function rules(): array

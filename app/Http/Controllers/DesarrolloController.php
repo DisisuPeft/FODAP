@@ -8,6 +8,7 @@ use App\Events\DeleteDeteccionEvent;
 use App\Events\InscripcionEvent;
 use App\Events\ObservacionEvent;
 use App\Http\Requests\CursoRequest;
+use App\Http\Requests\DocenteRequest;
 use App\Models\Calificaciones;
 use App\Models\Carrera;
 use App\Models\ClaveCurso;
@@ -426,35 +427,20 @@ class DesarrolloController extends Controller
             'posgrado' => $posgrado,
         ]);
     }
-    public function store_docentes(Request $request)
+    public function store_docentes(Request $request, $type)
     {
-        try {
-            $request->validate([
-                'nombre' => 'required',
-                'apellidoPat' => 'required',
-                'apellidoMat' => 'required',
-            ]);
-
-            $docente_find = Docente::where('nombre', $request->nombre)
-                ->where('apellidoPat', $request->apellidoPat)
-                ->where('apellidoMat', $request->apellidoMat)
-                ->first();
-
-            if ($docente_find) {
-                return redirect()->back()->withErrors('Este docente se encuentra registrado.');
-            } else {
-                DocenteController::create_instance_docente($request);
-            }
-            return Redirect::route('index.docentes');
-        } catch (\Exception $exception) {
-            DB::rollBack();
-            return Redirect::route('index.docentes')->withErrors('error', 'Error a la hora de crear el registro: ' . $exception->getMessage());
-        }
+//        dd($request, $type);
+        $docente = new Docente();
+        $docente->create_instance_docente($request, $type);
+        return Redirect::route('index.docentes');
     }
 
     public function delete_docente_desarrollo($id)
     {
-        DocenteController::delete_docente($id);
+        $docente = new Docente();
+        $docente->delete_docente($id);
+        return redirect()->route('index.docentes');
+
     }
     public function edit_docente($id)
     {
@@ -474,10 +460,11 @@ class DesarrolloController extends Controller
         ]);
     }
 
-    public function update_docente(Request $request, $id)
+    public function update_docente(Request $request, $id, $type)
     {
-        DocenteController::updated_instance_docente($request, $id);
-        return Redirect::route('index.docentes');
+        $docente = new Docente();
+        $docente->updated_instance_docente($request, $id, $type);
+        return Redirect::route('edit.docentes', ['id' => $id]);
     }
     //revisar este otro metodo
     public function calificaciones_desarrollo(Request $request)

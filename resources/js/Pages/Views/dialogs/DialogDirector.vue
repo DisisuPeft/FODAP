@@ -3,35 +3,18 @@ import {useForm} from "@inertiajs/vue3";
 import InputLabel from "@/Components/InputLabel.vue";
 import {onMounted, ref} from "vue";
 import CustomSnackBar from "@/Components/CustomSnackBar.vue";
+import {errorMsg, success_alert} from "@/jsfiels/alertas.js";
 
 const form = useForm({
     nameDirector: ""
 });
-const snackbarD = ref(false);
+
 const message = ref("")
-const color = ref()
-const timeout = ref(0)
-const snackEventActivator = () => {
-    snackbarD.value = true;
-    message.value = "Parece que los recursos se han actualizado, por favor recarga la pagina"
-    color.value = "warning"
-    timeout.value = 5000
-};
-const snackErrorActivator = () => {
-    snackbarD.value = true;
-    message.value = "No se pudo procesar la solicitud"
-    color.value = "error"
-    timeout.value = 5000
-};
-const snackSuccessActivator = () => {
-    snackbarD.value = true;
-    message.value = "Procesado correctamente"
-    color.value = "success"
-    timeout.value = 5000
-};
+
 const props = defineProps({
     director: Array,
-    modelValue: Boolean
+    modelValue: Boolean,
+    errors: {}
 });
 
 const emit = defineEmits([
@@ -41,24 +24,33 @@ const submit = () => {
     if (props.director.length === 0){
         return form.post(route('create.director'), {
             onSuccess: () => {
-                snackSuccessActivator()
+                emit('update:modelValue', false)
+                success_alert('Exito', 'Exito al crear el nombre del director')
             },
             onError: () => {
-                snackErrorActivator()
+                emit('update:modelValue', false)
+                errorMsg('Alerta', `${format_errors(props.errors)}`)
             }
         })
     }else{
         return form.put(route('update.director', props.director[0].id), {
             onSuccess: () => {
-                snackSuccessActivator()
+                emit('update:modelValue', false)
+                success_alert('Exito', 'Exito al editar el nombre del director')
             },
             onError: () => {
-                snackErrorActivator()
+                emit('update:modelValue', false)
+                errorMsg('Alerta', `${format_errors(props.errors)}`)
             }
         })
     }
 }
-
+const format_errors = (errors) => {
+    for (const errorsKey in errors) {
+        message.value += errors[errorsKey]
+    }
+    return message.value.split('.').join('. ');
+}
 onMounted(() => {
     if (props.director.length === 0){
         return form.nameDirector

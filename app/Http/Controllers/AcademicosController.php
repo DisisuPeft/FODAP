@@ -207,9 +207,11 @@ class AcademicosController extends Controller
             'posgrado' => $posgrado,
         ]);
     }
-    public function docente_created_from_form(Request $request)
+    public function docente_created_from_form(Request $request, $type)
     {
-        DocenteController::create_instance_docente($request);
+        $docente = new Docente();
+        $docente->create_instance_docente($request, $type);
+//        return redirect()->route('detecciones.create');
     }
 
     public function edit_docente_academico($id)

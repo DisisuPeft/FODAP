@@ -164,16 +164,30 @@ function submit() {
 }
 
 const upload_cvu = () => {
-    form_file.post(route("subir.cvu"), {
-        forceFormData: true,
-        onSuccess: () => {
-            form_file.reset();
-            snackSuccessActivator();
-        },
-        onError: () => {
-            snackErrorActivator();
-        },
-    });
+    Swal.fire({
+        title: '¿Esta seguro que desea subir este documento?',
+        text: 'Esta accion se puede revertir',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        icon: "info"
+    }).then(res => {
+        if (res.isConfirmed){
+            AlertUploadingImage('Subiendo Archivo', 'Esta accion puede tardar unos minutos')
+            form_file.post(route("subir.cvu"), {
+                forceFormData: true,
+                onSuccess: () => {
+                    form_file.reset();
+                    success_alert('Exito', 'La hoja membretada se ha subido con exito');
+                },
+                onError: () => {
+                    errorMsg('Atención', `${format_errors(props.errors)}`)
+                    message.value = "";
+                },
+            });
+        }
+    })
 };
 const upload_acta = () => {
     Swal.fire({
@@ -182,7 +196,8 @@ const upload_acta = () => {
         showCancelButton: true,
         showConfirmButton: true,
         confirmButtonText: 'Confirmar',
-        cancelButtonText: 'Cancelar'
+        cancelButtonText: 'Cancelar',
+        icon: "info"
     }).then(res => {
         if (res.isConfirmed){
             AlertUploadingImage('Subiendo imagen', 'Esta accion puede tardar unos minutos')
@@ -195,6 +210,7 @@ const upload_acta = () => {
                 onError: () => {
                     form_file_acta_img.reset();
                     errorMsg('Error', `${format_errors(props.errors)}`)
+                    message.value = "";
                 },
             });
         }
@@ -208,6 +224,7 @@ const upload_constancia = () => {
         showConfirmButton: true,
         confirmButtonText: 'Confirmar',
         cancelButtonText: 'Cancelar',
+        icon: "info"
     }).then(res => {
         if (res.isConfirmed){
             AlertUploadingImage('Subiendo imagen', 'Esta accion puede tardar unos minutos')
@@ -220,46 +237,90 @@ const upload_constancia = () => {
                 onError: () => {
                     form_file_constancia_img.reset();
                     errorMsg('Error', `${format_errors(props.errors)}`)
+                    message.value = "";
                 },
             });
         }
     })
 };
 const upload_logotec = () => {
-    img_logo_ittg.post(route("subir.logoTec"), {
-        forceFormData: true,
-        onSuccess: () => {
-            img_logo_ittg.reset();
-            snackSuccessActivator();
-        },
-        onError: () => {
-            errorMsg('Error', 'Ha ocurrido un error al subir la ima')
-        },
-    });
+    Swal.fire({
+        title: '¿Esta seguro que desea subir la imagen?',
+        text: 'Esta accion se puede revertir',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        icon: "info"
+    }).then(res => {
+        if (res.isConfirmed){
+            AlertUploadingImage('Subiendo imagen', 'Esta accion puede tardar unos minutos')
+            img_logo_ittg.post(route("subir.logoTec"), {
+                forceFormData: true,
+                onSuccess: () => {
+                    img_logo_ittg.reset();
+                    success_alert('Exito', 'La imagen se ha subido con exito');
+                },
+                onError: () => {
+                    img_logo_ittg.reset();
+                    errorMsg('Error', `${format_errors(props.errors)}`)
+                    message.value = "";
+                },
+            });
+        }
+    })
 };
 const upload_tecnm = () => {
-    img_logo_tecnm.post(route("subir.logoTecnm"), {
-        forceFormData: true,
-        onSuccess: () => {
-            img_logo_tecnm.reset();
-            snackSuccessActivator();
-        },
-        onError: () => {
-            snackErrorActivator();
-        },
-    });
+    Swal.fire({
+        title: '¿Esta seguro que desea subir la imagen?',
+        text: 'Esta accion se puede revertir',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        icon: "info"
+    }).then(res => {
+        if (res.isConfirmed){
+            AlertUploadingImage('Subiendo imagen', 'Esta accion puede tardar unos minutos')
+            img_logo_tecnm.post(route("subir.logoTecnm"), {
+                forceFormData: true,
+                onSuccess: () => {
+                    img_logo_tecnm.reset();
+                    success_alert('Exito', 'La imagen se ha subido con exito');
+                },
+                onError: () => {
+                    errorMsg('Error', `${format_errors(props.errors)}`)
+                    message.value = "";
+                },
+            });
+        }
+    })
 };
 const upload_educacion = () => {
-    img_logo_educacion.post(route("subir.logoEducacion"), {
-        forceFormData: true,
-        onSuccess: () => {
-            img_logo_educacion.reset();
-            snackSuccessActivator();
-        },
-        onError: () => {
-            snackErrorActivator();
-        },
-    });
+    Swal.fire({
+        title: '¿Esta seguro que desea subir la imagen?',
+        text: 'Esta accion se puede revertir',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        icon: "info"
+    }).then(res => {
+        if (res.isConfirmed){
+            AlertUploadingImage('Subiendo imagen', 'Esta accion puede tardar unos minutos')
+            img_logo_educacion.post(route("subir.logoEducacion"), {
+                forceFormData: true,
+                onSuccess: () => {
+                    img_logo_educacion.reset();
+                    success_alert('Exito', 'La imagen se ha subido con exito');
+                },
+                onError: () => {
+                    errorMsg('Error', `${format_errors(props.errors)}`)
+                    message.value = "";
+                },
+            });
+        }
+    })
 };
 onMounted(() => {
     window.Echo.private(`App.Models.User.${props.auth.user.id}`).notification(
@@ -749,6 +810,7 @@ const show_visibilty = () => {
                         ></tabla-director>
                         <dialog-director
                             :director="props.director"
+                            :errors="props.errors"
                             v-model="dialogDirector"
                             @update:modelValue="dialogDirector = $event"
                         ></dialog-director>
@@ -773,6 +835,7 @@ const show_visibilty = () => {
                         <DialogNombreInstituto
                             :instituto="props.instituto"
                             v-model="dialogInstituto"
+                            :errors="props.errors"
                             @update:modelValue="dialogInstituto = $event"
                         ></DialogNombreInstituto>
                         <template v-if="props.instituto.length < 0">
@@ -926,50 +989,36 @@ const show_visibilty = () => {
                     <h2 class="text-lg font-medium text-gray-900">
                         Imagenes del sistema
                     </h2>
-                    <v-row dense justify="center" class="pa-6">
-                        <v-col dense align="center" cols="6">
-                            <div class="d-flex justify-start mb-5">
-                                <v-tooltip location="right">
-                                    <template v-slot:activator="{ props }">
-                                        <v-btn
-                                            icon
-                                            color="blue-darken-1"
-                                            v-bind="props"
-                                            size="normal"
-                                        >
-                                            <v-icon> mdi-help </v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <span>Los archivos deben ser JPG</span>
-                                </v-tooltip>
-                            </div>
-                            <div
-                                class="bg-white overflow-hidden shadow-sm sm:rounded-lg"
-                            >
-                                <div class="grid grid-cols-1">
-                                    <div class="flex justify-center">
-                                        <v-file-input
-                                            label="Ingresar logo del Instituto Tecnológico"
-                                            variant="solo"
-                                            @input="
+                </header>
+                    <div class="grid grid-rows-1">
+<!--                        <div class="flex justify-center">-->
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!--                                    <div class="flex justify-center">-->
+                                        <div class="flex justify-center">
+<!--                                            <div class="flex justify-center">-->
+                                                <v-file-input
+                                                    label="Ingresar logo del Instituto Tecnológico"
+                                                    variant="solo"
+                                                    @input="
                                                 img_logo_ittg.file =
                                                     $event.target.files[0]
                                             "
-                                        ></v-file-input>
-                                        <div
-                                            class="flex justify-end mt-2 ml-5 w-11"
-                                        >
-                                            <v-btn
-                                                @click="upload_logotec"
-                                                type="submit"
-                                                color="blue-darken-1"
-                                                width="500"
-                                                icon="mdi-content-save-check-outline"
-                                            ></v-btn>
+                                                ></v-file-input>
+<!--                                            </div>-->
+                                            <div
+                                                class="flex justify-end mt-2 ml-5 w-11"
+                                            >
+                                                <v-btn
+                                                    @click="upload_logotec"
+                                                    type="submit"
+                                                    color="blue-darken-1"
+                                                    width="500"
+                                                    icon="mdi-content-save-check-outline"
+                                                ></v-btn>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="grid grid-cols-1">
+<!--                                    </div>-->
                                     <div class="flex justify-center">
                                         <v-file-input
                                             label="Ingresar logo del Tecnm"
@@ -990,8 +1039,6 @@ const show_visibilty = () => {
                                             ></v-btn>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="grid grid-cols-1">
                                     <div class="flex justify-center">
                                         <v-file-input
                                             label="Ingresar logo de la SEP"
@@ -1013,10 +1060,9 @@ const show_visibilty = () => {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </v-col>
-                    </v-row>
-                </header>
+<!--                        </div>-->
+
+                    </div>
             </div>
 <!--            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">-->
 <!--                <header>-->

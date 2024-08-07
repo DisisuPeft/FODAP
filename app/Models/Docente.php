@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 
 class Docente extends Model
 {
@@ -86,5 +87,102 @@ class Docente extends Model
     public function calificacion_docente()
     {
         return $this->hasOne(Calificaciones::class, 'docente_id', 'id');
+    }
+
+    public function docente_existe($payload){
+        $nombre = strtolower(trim($payload->nombre));
+        $apellidoPat = strtolower(trim($payload->apellidoPat));
+        $apellidoMat = strtolower(trim($payload->apellidoMat));
+        $q = DB::table("docente")
+            ->where(DB::raw('nombre'), '=', $nombre)
+            ->where(DB::raw('apellidoPat'), '=', $apellidoPat)
+            ->where(DB::raw('apellidoMat'), '=', $apellidoMat)->first();
+        if ($q) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+    public function create_instance_docente($request, $type)
+    {
+        DB::beginTransaction();
+        $existe = $this->docente_existe($request);
+        if ($existe){
+            DB::rollBack();
+            return back()->withErrors('El nombre que se ingreso ya existe en la base de datos.');
+        }else{
+            $docente = null;
+            if (isset($type)){
+                $docente = Docente::create($request->all() + [
+                        'nombre_completo' => $request->nombre . " " . $request->apellidoPat . " " . $request->apellidoMat,
+                    ]);
+            }else{
+                $docente = Docente::create($request->validated() + [
+                        'nombre_completo' => $request->nombre . " " . $request->apellidoPat . " " . $request->apellidoMat,
+                        'user_id' =>  $request->id,
+                ]);
+            }
+            if($docente){
+                DB::commit();
+            }else{
+                DB::rollBack();
+                return back()->withErrors('Error al crear el docente');
+            }
+        }
+    }
+    public static function updated_instance_docente($request, $id, $type)
+    {
+        DB::beginTransaction();
+//        $request->validated();
+        $docente = Docente::with('usuario')->where('id', $id)->first();
+        if ($docente){
+//            $update = $docente->update($request->validated() + [
+//                    'nombre_completo' => $request->nombre . " " . $request->apellidoPat . " " . $request->apellidoMat,
+//                    'user_id' => $docente->usuario->id ?? $request->id,
+//                ]);
+            $update = null;
+            if (isset($type)){
+                $update = $docente->update($request->all() + [
+                        'nombre_completo' => $request->nombre . " " . $request->apellidoPat . " " . $request->apellidoMat,
+                ]);
+            }else{
+                $update = $docente->update($request->validated() + [
+                        'nombre_completo' => $request->nombre . " " . $request->apellidoPat . " " . $request->apellidoMat,
+                        'user_id' => $docente->usuario->id ?? $request->id,
+                    ]);
+            }
+            if ($update){
+                DB::commit();
+            }else{
+                DB::rollBack();
+                return back()->withErrors('El docente no se pudo actualizar');
+            }
+        }else{
+            DB::rollBack();
+            return back()->withErrors('El docente no existe');
+        }
+    }
+
+    public function delete_docente($id)
+    {
+        DB::beginTransaction();
+        if ($id){
+            $docente = Docente::where('id', $id)->first();
+            if ($docente){
+                $delete = $docente->delete();
+                if ($delete){
+                    DB::commit();
+                }else{
+                    DB::rollBack();
+                    return back()->withErrors('El docente no se pudo eliminar');
+                }
+            }else{
+                DB::rollBack();
+                return back()->withErrors('El docente no existe');
+            }
+        }else{
+            DB::rollBack();
+            return back()->withErrors('El ID que se compartió no existe en la base de datos.');
+        }
     }
 }

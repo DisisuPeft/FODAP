@@ -45,9 +45,7 @@ function submit() {
 }
 
 onMounted(() => {
-    setTimeout(() => {
-        snackSuccess.value = false;
-    }, timeout.value);
+
 });
 
 const close = () => {

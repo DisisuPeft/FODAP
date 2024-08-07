@@ -57,13 +57,6 @@ const show_visibilty = () => {
     passwordFielType.value = passwordFielType.value === "password" ? "text" : "password";
 }
 
-const format_errors = (errors) => {
-    console.log(errors, props.errors)
-    for (const errorsKey in errors) {
-        message.value += errors[errorsKey]
-    }
-    return message.value.split('.').join('. ');
-}
 </script>
 
 <template>

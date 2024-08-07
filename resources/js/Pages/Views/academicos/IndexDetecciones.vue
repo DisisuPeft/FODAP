@@ -1,8 +1,8 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head } from "@inertiajs/vue3";
+import {Head, useForm} from "@inertiajs/vue3";
 import NavLink from "@/Components/NavLink.vue";
-import { onMounted, ref } from "vue";
+import {computed, onMounted, ref} from "vue";
 import DeteccionDialog from "@/Pages/Views/dialogs/DeteccionDialogPDF.vue";
 import { FODAPStore } from "@/store/server.js";
 import { Deteccion } from "@/store/Deteccion.js";
@@ -10,6 +10,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import Loading from "@/Components/Loading.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Modal from "@/Components/Modal.vue";
+import {AlertLoading, errorMsg, notify, success_alert} from "@/jsfiels/alertas.js";
 
 const store = FODAPStore();
 const detecciones_store = Deteccion();
@@ -24,42 +25,13 @@ const props = defineProps({
     dates: Array,
 });
 const pdf_dialog = ref(false);
-const snackbar = ref(false);
 const color = ref("");
 const message = ref("");
-const timeout = ref(0);
 const search = ref();
 const loading = ref(false);
 const show = ref(false);
 
-const snackEventActivator = () => {
-    snackbar.value = true;
-    message.value =
-        "Parece que los recursos se han actualizado, por favor recarga la pagina";
-    color.value = "warning";
-    timeout.value = 5000;
-    setTimeout(() => {
-        snackbar.value = false;
-    }, timeout.value);
-};
-const snackErrorActivator = () => {
-    snackbar.value = true;
-    message.value = "No se pudo procesar la solicitud";
-    color.value = "error";
-    timeout.value = 5000;
-    setTimeout(() => {
-        snackbar.value = false;
-    }, timeout.value);
-};
-const snackSuccessActivator = () => {
-    snackbar.value = true;
-    message.value = "Procesado correctamente";
-    color.value = "success";
-    timeout.value = 5000;
-    setTimeout(() => {
-        snackbar.value = false;
-    }, timeout.value);
-};
+
 onMounted(() => {
     window.Echo.private(`App.Models.User.${props.auth.user.id}`).notification(
         (notification) => {
@@ -92,13 +64,13 @@ onMounted(() => {
     window.Echo.private("deteccion-observacion").listen(
         "ObservacionEvent",
         (event) => {
-            snackEventActivator();
+            notify('Atención', 'info', 'Los recursos han cambiado, ACTUALIZA LA PAGINA')
         }
     );
     window.Echo.private("delete-deteccion").listen(
         "DeleteDeteccionEvent",
         (event) => {
-            snackEventActivator();
+            notify('Atención', 'info', 'Los recursos han cambiado, ACTUALIZA LA PAGINA')
         }
     );
 
@@ -112,12 +84,33 @@ onMounted(() => {
     }
 });
 
-const modal = (event) => {
-    // console.log(event);
+const closeModal = () => {
+    pdf_dialog.value = false
 };
 
-const pdfDeteccion = (form) => {
-    loading.value = true;
+const form = useForm({
+    periodo: null,
+    carrera: null,
+    anio: null,
+});
+const periodos = [
+    { id: 1, name: "ENERO-JUNIO" },
+    { id: 2, name: "AGOSTO-DICIEMBRE" },
+];
+const fullYears = computed(() => {
+    const maxYears = new Date().getFullYear() + 1;
+    const minYears = maxYears - 7;
+    const years = [];
+    for (let i = maxYears; i >= minYears; i--) {
+        years.push(i);
+    }
+
+    return years;
+});
+
+const pdfDeteccion = () => {
+    AlertLoading('Generando documento...', 'Esto puede tardar unos minutos');
+    // loading.value = true
     axios
         .get("/pdf/deteccion", {
             params: {
@@ -128,11 +121,11 @@ const pdfDeteccion = (form) => {
         })
         .then((res) => {
             // cursos.value = res.data.cursos
-            if (res.data.mensaje) {
-                message.value = res.data.mensaje;
-                pdf_dialog.value = false;
-                show.value = true;
-                loading.value = false;
+            if (res.data.message) {
+                message.value = res.data.message;
+                loading.value = false
+                pdf_dialog.value = false
+                notify('Atención', 'info', `${message.value}.`)
             } else {
                 const url = "/storage/Deteccion.pdf";
                 const link = document.createElement("a");
@@ -142,21 +135,24 @@ const pdfDeteccion = (form) => {
                 link.click();
                 loading.value = false;
                 form.reset();
-                message.value = "Documento generado con exito";
-                timeout.value = 5000;
-                color.value = "success";
-                snackSuccess.value = true;
+                pdf_dialog.value = false
+                success_alert('Exito', 'El documento se descargo.')
             }
         })
         .catch((error) => {
-            message.value =
-                "¡Debe ingresar los datos para generar el documento!";
-            color.value = "error";
-            timeout.value = 5000;
-            snackSuccess.value = true;
-            loading.value = false;
+            pdf_dialog.value = false
+            loading.value = false
+            errorMsg('Atención', `${format_errors(error.response?.data.errors)}`)
+            message.value = ""
         });
 };
+
+const format_errors = (errors) => {
+    for (const errorsKey in errors) {
+        message.value += errors[errorsKey]
+    }
+    return message.value.split('.').join('. ');
+}
 </script>
 
 <template>
@@ -197,9 +193,87 @@ const pdfDeteccion = (form) => {
                     >
                         Generar PDF
                     </v-btn>
+                    <Modal :show="pdf_dialog" @close="closeModal">
+                        <div class="grid grid-rows-1 p-10 m-5">
+                            <div class="flex justify-center">
+<!--                                <div class="grid grid-rows-3">-->
+                                    <div class="grid grid-cols-1 gap-4">
+<!--                                        <div class="flex justify-center">-->
+                                            <label
+                                                for="carrera"
+                                                class=""
+                                            >Carrera a la que va dirigida:
+                                            </label>
+                                            <div class="pt-5">
+                                                <v-select
+                                                    v-model="form.carrera"
+                                                    :items="props.carrera"
+                                                    item-title="nameCarrera"
+                                                    item-value="id"
+                                                    variant="solo"
+                                                    class="w-[500px]"
+                                                ></v-select>
+                                            </div>
+<!--                                        </div>-->
+                                        <label
+                                            for="periodo"
+                                            class=""
+                                        >Periodo:
+                                        </label>
+                                        <div class="pt-5">
+                                            <v-select
+                                                v-model="form.periodo"
+                                                :items="periodos"
+                                                item-title="name"
+                                                item-value="id"
+                                                variant="solo"
+                                            ></v-select>
+                                        </div>
+                                        <label
+                                            for="anio"
+                                            class=""
+                                        >Año:
+                                        </label>
+                                        <div class="pt-5">
+                                            <v-select
+                                                v-model="form.anio"
+                                                :items="fullYears"
+                                                item-title="name"
+                                                item-value="id"
+                                                variant="solo"
+                                            ></v-select>
+                                        </div>
+                                    </div>
+<!--                                </div>-->
+                            </div>
+                        </div>
+                        <div class="grid grid-rows-1 p-10">
+                            <div class="flex justify-center">
+                                <div class="grid grid-cols-1 md:grid-cols-2">
+                                    <div class="flex justify-center">
+                                        <v-btn
+                                            color="error"
+                                            @click="pdf_dialog = false"
+                                        >
+                                            Cancelar
+                                        </v-btn>
+                                    </div>
+                                    <div class="flex justify-center">
+                                        <v-btn
+                                            @click="pdfDeteccion"
+                                            color="success"
+                                            prepend-icon="mdi-file-pdf-box"
+                                        >
+                                            Generar
+                                        </v-btn>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </Modal>
                 </div>
             </template>
-            <div class="flex justify-end mr-2 pr-2">
+            <div class="flex justify-end mr-2 pr-6">
                 <div v-if="props.dates">
                     <template v-if="props.dates[0] === true">
                         <template v-if="props.dates[1].d === 1">
@@ -234,12 +308,12 @@ const pdfDeteccion = (form) => {
         </div>
 
         <!--        dialog-->
-        <DeteccionDialog
-            :carreras="props.carrera"
-            v-model:modelValue="pdf_dialog"
-            @update:modelValue="modal"
-            @form:deteccion="pdfDeteccion"
-        ></DeteccionDialog>
+<!--        <DeteccionDialog-->
+<!--            :carreras="props.carrera"-->
+<!--            v-model:modelValue="pdf_dialog"-->
+<!--            @update:modelValue="modal"-->
+<!--            @form:deteccion="pdfDeteccion"-->
+<!--        ></DeteccionDialog>-->
 
         <template v-if="props.detecciones.length !== 0">
             <!--Tabla-->
