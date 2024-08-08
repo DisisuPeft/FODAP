@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DocenteRequest;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Carrera;
 use App\Models\Departamento;
@@ -108,60 +109,62 @@ class ProfileController extends Controller
         return Redirect::to('/');
     }
 
-    public function DocenteProfileCreate(Request $request)
+    public function DocenteProfileCreate(DocenteRequest $request)
     {
-        try {
-            $request->validate([
-                'id' => 'required',
-                'rfc' => 'required',
-                'curp' => 'required',
-                'nombre' => 'required',
-                'apellidoPat' => 'required',
-                'apellidoMat' => 'required',
+
+//        $request->validated();
+        $docente = new Docente();
+        $existe = $docente->docente_existe($request);
+//        DB::beginTransaction();
+        if ($existe[0]){
+            $user = User::where('id', $request->id)->update([
+                'docente_id' => $existe[1]->id,
             ]);
 
-            $docente_find = Docente::where('nombre', $request->nombre)
-                ->where('apellidoPat', $request->apellidoPat)
-                ->where('apellidoMat', $request->apellidoMat)
-                ->first();
+            if ($user > 0){
 
-            if ($docente_find){
-                User::where('id', $request->id)->update([
-                    'docente_id' => $docente_find->id,
+                $docente = Docente::where('id', $existe[1]->id)->update($request->validated() + [
+                        'nombre_completo' => $request->nombre . " " . $request->apellidoPat . " " . $request->apellidoMat,
+                        'user_id' =>  $request->id,
                 ]);
 
-                $docente_find->update([
-                    'user_id' => $request->id
-                ]);
-
-                $docente_find->save();
-
-                return "Docente actualizado";
-            }else {
-                $docente = DocenteController::create_instance_docente($request);
-                $docente->update([
-                    'user_id' => $request->id
-                ]);
-                $docente->save();
-
-                User::where('id', $request->id)->update([
-                    'docente_id' => $docente->id,
-                ]);
+//                $update = $d->update([
+//                    'user_id' => $request->id
+//                ]);
+                if ($docente > 0){
+                    return redirect()->route('profile.edit');
+                }else{
+                    return back()->withErrors('No se actualizo el id que vincula al docente con su usuario.');
+                }
+            }else{
+                return back()->withErrors('No se actualizo al usuario.');
             }
-            return Redirect::route('dashboard');
+        }else {
+            $d = $docente->create_instance_docente($request, null);
 
-        }catch (\Exception $exception){
-            DB::rollBack();
-            return Redirect::route('profile.edit')->withErrors('error', 'Error a la hora de crear el registro: ' . $exception->getMessage());
+            $update = $d->update([
+                'user_id' => $request->id
+            ]);
+
+            if ($update){
+                $user = User::where('id', $request->id)->update([
+                    'docente_id' => $d->id,
+                ]);
+                if ($user > 0){
+                    return redirect()->route('profile.edit');
+                }else{
+                    return back()->withErrors('No se actualizo al usuario.');
+                }
+            }else{
+                return back()->withErrors('No se actualizo el id que vincula al docente con su usuario.');
+            }
         }
     }
 
     public function update_docente(Request $request, $id)
     {
-        $docente = DocenteController::updated_instance_docente($request, $id);
-
-        $docente->save();
-
+        $docente = new Docente();
+        $docente->updated_instance_docente($request, $id, null);
         return Redirect::route('profile.edit');
     }
 }

@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, onUnmounted, watch } from 'vue';
+import {computed, onMounted, onUnmounted, ref, watch} from 'vue';
 
 const props = defineProps({
     show: {
@@ -17,6 +17,10 @@ const props = defineProps({
     color: {
         type: String,
         default: "bg-white",
+    },
+    persistent: {
+        type: Boolean,
+        default: false,
     }
 });
 
@@ -30,9 +34,12 @@ watch(
         } else {
             document.body.style.overflow = null;
         }
+        // console.log(modal.value)
+        saveModalState()
     }
 );
 
+const modal = ref(false)
 const close = () => {
     if (props.closeable) {
         emit('close');
@@ -40,17 +47,38 @@ const close = () => {
 };
 
 const closeOnEscape = (e) => {
-    if (e.key === 'Escape' && props.show) {
+    if (e.key === 'Escape' && props.show && props.persistent) {
         close();
     }
 };
+const loadModalState = () => {
+    const modalState = localStorage.getItem('modalState');
+    props.show = modalState === 'true';
+};
+const saveModalState = () => {
+    // modal.value = props.show
+    if (props.persistent){
+        ;
+    }else{
+        localStorage.setItem('modalState', props.show);
+    }
+};
 
-onMounted(() => document.addEventListener('keydown', closeOnEscape));
+onMounted(() => {
+    document.addEventListener('keydown', closeOnEscape)
+    saveModalState()
+});
 
 onUnmounted(() => {
     document.removeEventListener('keydown', closeOnEscape);
     document.body.style.overflow = null;
+    // saveModalState()
 });
+
+// watch(props.show, () => {
+//     console.log(modal.value)
+//     saveModalState()
+// })
 
 const maxWidthClass = computed(() => {
     return {

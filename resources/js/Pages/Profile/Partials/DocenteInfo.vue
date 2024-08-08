@@ -7,15 +7,12 @@ import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import CustomSnackBar from "@/Components/CustomSnackBar.vue";
-import {confirmy, errorMsg, notify, success_alert} from "@/jsfiels/alertas.js";
+import {AlertLoading, confirmy, errorMsg, notify, success_alert} from "@/jsfiels/alertas.js";
 import Swal from "sweetalert2";
 
 const user = computed(() => usePage().props.auth.user);
 const alert = ref(true)
-const snackbar = ref(false);
-const timeout = ref(0)
 const message = ref("");
-const color = ref("")
 
 const CURPValidator = [
     value => {
@@ -39,24 +36,24 @@ const phone_number_rules = [
     }
 ];
 
-const snackErrorActivator = () => {
-    snackbar.value = true;
-    message.value = "No se pudo procesar la solicitud"
-    color.value = "error"
-    timeout.value = 5000
-    setTimeout(() => {
-        snackbar.value = false;
-    }, timeout.value);
-};
-const snackSuccessActivator = () => {
-    snackbar.value = true;
-    message.value = "Procesado correctamente"
-    color.value = "success"
-    timeout.value = 5000
-    setTimeout(() => {
-        snackbar.value = false;
-    }, timeout.value);
-};
+// const snackErrorActivator = () => {
+//     snackbar.value = true;
+//     message.value = "No se pudo procesar la solicitud"
+//     color.value = "error"
+//     timeout.value = 5000
+//     setTimeout(() => {
+//         snackbar.value = false;
+//     }, timeout.value);
+// };
+// const snackSuccessActivator = () => {
+//     snackbar.value = true;
+//     message.value = "Procesado correctamente"
+//     color.value = "success"
+//     timeout.value = 5000
+//     setTimeout(() => {
+//         snackbar.value = false;
+//     }, timeout.value);
+// };
 const props = defineProps({
     docente: Object,
     carrera: Array,
@@ -64,7 +61,8 @@ const props = defineProps({
     tipo_plaza: Array,
     puesto: Array,
     posgrado: Array,
-    auth: Object
+    auth: Object,
+    errors: {}
 });
 const form = useForm({
     id: user.value.id,
@@ -88,23 +86,24 @@ function submit() {
     if (!props.docente) {
         Swal.fire({
             title: '¿Esta seguro de haber ingresado todos los datos?',
-            text: '',
+            text: 'Esta acción se puede revertir, informar a la coordinación de formación docente',
             allowOutsideClick: false,
-            icon: 'alert',
+            icon: 'warning',
             allowEscapeKey: false,
             allowEnterKey:false,
             showConfirmButton: true,
             confirmButtonText: 'Confirmar',
             cancelButtonText: 'Cancelar',
-            showCancelButton: true
+            showCancelButton: true,
         }).then((res) => {
             if (res.isConfirmed){
+                AlertLoading('Guardando los datos...', 'Esta accion puede tardar unos minutos')
                 form.post(route('docente.create'), {
                     onSuccess: () => {
                         success_alert('Exito', 'Creado con exito')
                     },
                     onError: () => {
-                        errorMsg('Error', 'Verifica haber ingresado todos los datos, si no comunica al departamento de desarrollo academico')
+                        errorMsg('Atención', `${format_errors(props.errors)}`)
                     }
                 })
             }
@@ -112,9 +111,9 @@ function submit() {
     } else {
         Swal.fire({
             title: '¿Esta seguro de haber ingresado todos los datos?',
-            text: '',
+            text: 'Esta acción se puede revertir, informar a la coordinación de formación docente',
             allowOutsideClick: false,
-            icon: 'alert',
+            icon: 'warning',
             allowEscapeKey: false,
             allowEnterKey:false,
             showConfirmButton: true,
@@ -123,12 +122,13 @@ function submit() {
             showCancelButton: true
         }).then((res) => {
             if (res.isConfirmed){
+                AlertLoading('Guardando los datos...', 'Esta accion puede tardar unos minutos')
                 form.put(route('update.docente', props.docente.id), {
                     onSuccess: () => {
                         success_alert('Exito', 'Actualizado con exito')
                     },
                     onError: () => {
-                        errorMsg('Error', 'Verifica haber ingresado todos los datos, si no comunica al departamento de desarrollo academico')
+                        errorMsg('Atención', `${format_errors(props.errors)}`)
                     }
                 })
             }
@@ -148,7 +148,12 @@ const formatearTelefono = () => {
     // Crear el número de teléfono formateado
     numeroTelefonoFormateado.value = `${segmento1}-${segmento2}-${segmento3}`;
 };
-
+const format_errors = (errors) => {
+    for (const errorsKey in errors) {
+        message.value += errors[errorsKey]
+    }
+    return message.value.split('.').join('. ');
+}
 // console.log(props.auth.role)
 onMounted(() => {
     if (!props.docente) {
@@ -368,7 +373,7 @@ onMounted(() => {
                     <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Guardado.</p>
                 </Transition>
             </div>
-            <CustomSnackBar v-model="snackbar" :message="message" :color="color" :timeout="timeout" @update:modelValue="snackbar = $event"></CustomSnackBar>
+<!--            <CustomSnackBar v-model="snackbar" :message="message" :color="color" :timeout="timeout" @update:modelValue="snackbar = $event"></CustomSnackBar>-->
         </form>
     </section>
 </template>

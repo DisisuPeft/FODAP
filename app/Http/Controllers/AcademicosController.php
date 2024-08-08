@@ -38,6 +38,14 @@ class AcademicosController extends Controller
     {
         $docentes = Docente::select('nombre_completo', 'id')->get();
         $carrera = Carrera::where('departamento_id', auth()->user()->departamento_id)->select('nameCarrera', 'id', 'departamento_id')->get();
+        $c = $carrera->toArray();
+
+        $c[] = [
+            'nameCarrera' => 'TODAS LAS CARRERAS',
+            'id' => 13,
+            'departamento_id' => null,
+        ];
+
         $lugar = Lugar::with('curso')->get();
         $departamento = Departamento::where('id', auth()->user()->departamento_id)->get();
         $tipoPlaza = DB::table('tipo_plaza')->get();
@@ -45,7 +53,7 @@ class AcademicosController extends Controller
         $posgrado = DB::table('posgrado')->select('id', 'nombre')->get();
         return Inertia::render('Views/academicos/CreateDetecciones', [
             'base_docente' => $docentes,
-            'carrera_filtro' => $carrera,
+            'carrera_filtro' => collect($carrera),
             'todos_los_departamentos' => $departamento,
             'lugar' => $lugar,
             'carrera' => Carrera::all(),
@@ -57,27 +65,25 @@ class AcademicosController extends Controller
     }
 
 
-    private static function consult_view($query)
-    {
-        return DeteccionNecesidades::with(['carrera', 'deteccion_facilitador', 'docente_inscrito'])->where('id', $query)->first();
-    }
 
 
     public function show(string $id)
     {
+        $curso = new DeteccionNecesidades();
         return Inertia::render('Views/academicos/ShowDetecciones', [
-            'deteccion' => $this->consult_view($id),
+            'deteccion' => $curso->consult_view($id),
         ]);
     }
 
 
     public function edit(string $id)
     {
+        $curso = new DeteccionNecesidades();
         $carrera = Carrera::where('departamento_id', auth()->user()->departamento_id)->select('nameCarrera', 'id', 'departamento_id')->get();
         $docente = Docente::all();
         $lugar = Lugar::with('curso')->get();
         return Inertia::render('Views/academicos/EditDetecciones', [
-            'deteccion' => $this->consult_view($id),
+            'deteccion' => $curso->consult_view($id),
             'carrera' => $carrera,
             'docentes' => $docente,
             'lugar' => $lugar,
@@ -128,23 +134,23 @@ class AcademicosController extends Controller
         date_default_timezone_set('America/Mexico_City');
         CoursesController::state_curso();
 
-
-        $inscritos = DB::table('docente')
-            ->orderBy('nombre', 'asc')
-            ->join('inscripcion', 'inscripcion.docente_id', '=', 'docente.id')
-            ->leftJoin('calificaciones', function ($join) {
-                $join->on('calificaciones.docente_id', '=', 'docente.id')
-                    ->on('calificaciones.curso_id', '=', 'inscripcion.curso_id');
-            })
-            ->where('inscripcion.curso_id', '=', $id)
-            ->select('docente.*', 'calificaciones.calificacion', 'inscripcion.curso_id AS inscripcion_curso_id')
-            ->distinct() // Agregar el método distinct aquí
-            ->get();
+        $curso = new DeteccionNecesidades();
+//        $inscritos = DB::table('docente')
+//            ->orderBy('nombre', 'asc')
+//            ->join('inscripcion', 'inscripcion.docente_id', '=', 'docente.id')
+//            ->leftJoin('calificaciones', function ($join) {
+//                $join->on('calificaciones.docente_id', '=', 'docente.id')
+//                    ->on('calificaciones.curso_id', '=', 'inscripcion.curso_id');
+//            })
+//            ->where('inscripcion.curso_id', '=', $id)
+//            ->select('docente.*', 'calificaciones.calificacion', 'inscripcion.curso_id AS inscripcion_curso_id')
+//            ->distinct() // Agregar el método distinct aquí
+//            ->get();
 
         return Inertia::render('Views/cursos/academicos/ShowInscritos', [
-            'curso' => $this->consult_view($id),
+            'curso' => $curso->consult_view($id),
             'docente' => Docente::orderBy('nombre', 'asc')->get(),
-            'inscritos' => $inscritos,
+            'inscritos' => $curso->inscritos_view_academicos($id),
         ]);
     }
 

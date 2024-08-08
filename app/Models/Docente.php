@@ -98,16 +98,16 @@ class Docente extends Model
             ->where(DB::raw('apellidoPat'), '=', $apellidoPat)
             ->where(DB::raw('apellidoMat'), '=', $apellidoMat)->first();
         if ($q) {
-            return true;
+            return [true, $q];
         }else{
-            return false;
+            return [false, 'No existe el nombre del docente'];
         }
     }
     public function create_instance_docente($request, $type)
     {
         DB::beginTransaction();
         $existe = $this->docente_existe($request);
-        if ($existe){
+        if ($existe[0]){
             DB::rollBack();
             return back()->withErrors('El nombre que se ingreso ya existe en la base de datos.');
         }else{
@@ -117,16 +117,21 @@ class Docente extends Model
                         'nombre_completo' => $request->nombre . " " . $request->apellidoPat . " " . $request->apellidoMat,
                     ]);
             }else{
+//                dd('si entramos aqui');
                 $docente = Docente::create($request->validated() + [
                         'nombre_completo' => $request->nombre . " " . $request->apellidoPat . " " . $request->apellidoMat,
                         'user_id' =>  $request->id,
                 ]);
+
             }
             if($docente){
                 DB::commit();
+//                                dd('si entramos aqui', $docente);
+                $docente->save();
+                return $docente;
             }else{
                 DB::rollBack();
-                return back()->withErrors('Error al crear el docente');
+                return back()->withErrors('Error al crear el docente.');
             }
         }
     }

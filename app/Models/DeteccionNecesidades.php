@@ -376,7 +376,7 @@ class DeteccionNecesidades extends Model
             ->distinct()
             ->select('docente.id')
             ->count();
-        //Sistemas 
+        //Sistemas
         $totales_sistemas = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
@@ -725,5 +725,24 @@ class DeteccionNecesidades extends Model
             array("carrera" => "Ciencias Económico Administrativo", "total" => $totales_cea,  "Total_de_hombres_capacitados" => $totales_cea_masculinos, "Total_de_mujeres_capacitadas" => $totales_cea_femenino),
             array("carrera" => "Todas las carreras", "total" => $totales_todos,  "Total_de_hombres_capacitados" => $totales_masculinos, "Total_de_mujeres_capacitadas" => $totales_femenino)
         );
+    }
+
+    public function consult_view($query)
+    {
+        return DeteccionNecesidades::with(['carrera', 'deteccion_facilitador', 'docente_inscrito'])->where('id', $query)->first();
+    }
+
+    public function inscritos_view_academicos($q){
+        return DB::table('docente')
+            ->orderBy('nombre', 'asc')
+            ->join('inscripcion', 'inscripcion.docente_id', '=', 'docente.id')
+            ->leftJoin('calificaciones', function ($join) {
+                $join->on('calificaciones.docente_id', '=', 'docente.id')
+                    ->on('calificaciones.curso_id', '=', 'inscripcion.curso_id');
+            })
+            ->where('inscripcion.curso_id', '=', $q)
+            ->select('docente.*', 'calificaciones.calificacion', 'inscripcion.curso_id AS inscripcion_curso_id')
+            ->distinct() // Agregar el método distinct aquí
+            ->get();
     }
 }

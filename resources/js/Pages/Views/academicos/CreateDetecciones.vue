@@ -129,12 +129,12 @@ function totalHoras(fechaInicio, fechaFinal, horaInicio, horaFinal) {
     let fechaFinalParts = fechaFinal.split('-');
     let fechaInicioObj = new Date(fechaInicioParts[0], fechaInicioParts[1] - 1, fechaInicioParts[2]);
     let fechaFinalObj = new Date(fechaFinalParts[0], fechaFinalParts[1] - 1, fechaFinalParts[2]);
-    let horaInicioObj = new Date(`01/01/1970 ${horaInicio}`).toLocaleTimeString('es-MX', { timeZone: 'America/Mexico_City' });
-    let horaFinalObj = new Date(`01/01/1970 ${horaFinal}`).toLocaleTimeString('es-MX', { timeZone: 'America/Mexico_City' });
+    // let horaInicioObj = new Date(`01/01/1970 ${horaInicio}`).toLocaleTimeString('es-MX', { timeZone: 'America/Mexico_City' });
+    // let horaFinalObj = new Date(`01/01/1970 ${horaFinal}`).toLocaleTimeString('es-MX', { timeZone: 'America/Mexico_City' });
 
     let diasHabiles = 0;
     let horasTotales = 0;
-    // console.log(fechaFinalObj, fechaFinal)
+    // console.log(fechaFinalObj, fechaInicioObj)
     function esDiaDeSemana(fecha) {
         const dia = fecha.getDay();
         return dia !== 0 && dia !== 6; // 0 representa domingo, 6 representa sábado
@@ -144,9 +144,9 @@ function totalHoras(fechaInicio, fechaFinal, horaInicio, horaFinal) {
         if (esDiaDeSemana(fechaInicioObj)) {
             diasHabiles++;
             // Calcular las horas entre la hora de inicio y la hora final en zona horaria de México
-            let tiempoInicio = new Date(`${fechaInicioObj.toISOString().slice(0, 10)} ${horaInicioObj}`).getTime();
-            let tiempoFinal = new Date(`${fechaInicioObj.toISOString().slice(0, 10)} ${horaFinalObj}`).getTime();
-
+            let tiempoInicio = new Date(`${fechaInicioObj.toISOString().slice(0, 10)}T${horaInicio}:00`).getTime();
+            let tiempoFinal = new Date(`${fechaInicioObj.toISOString().slice(0, 10)}T${horaFinal}:00`).getTime();
+            // console.log(tiempoInicio, `${fechaInicioObj.toISOString().slice(0, 10)}T${horaInicio}:00`)
             let tiempoTranscurrido = tiempoFinal - tiempoInicio;
             let horaEnDia = tiempoTranscurrido / (1000 * 60 * 60); // Convertir a horas
             horasTotales += horaEnDia;
@@ -190,21 +190,38 @@ watch(() => [form.fecha_I, form.fecha_F, form.hora_I, form.hora_F], ([newFechaI,
     // console.log(newFechaI, newFechaF, newHoraI, newHoraF)
     if (newFechaI && newFechaF && newHoraI && newHoraF){
         horas_totales.value = totalHoras(newFechaI, newFechaF, newHoraI, newHoraF)
+        // console.log(totalHoras(newFechaI, newFechaF, newHoraI, newHoraF))
         // totalHoras(newFechaI, newFechaF, newHoraI, newHoraF)
     }
 })
 
 
 const submit = () => {
-    form.post(route('store.detecciones'), {
-        onSuccess: () => {
-            form.reset();
-            dialogReset.value = true;
-            dialog.value = true;
-        },
-        onError: () => {
-            errorMsg('Atención', `${format_errors(props.errors)}`)
-        },
+    Swal.fire({
+        title: 'Esta por generar una deteccion de necesidades.',
+        text: 'Esta acción se puede revertir, pero tendra que informar a la coordinación de formación docente.',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        icon: "info",
+        timerProgressBar: true
+    }).then(res => {
+        if (res.isConfirmed){
+            AlertLoading('Guardando la información...', 'Esto puede tardar unos minutos')
+            form.post(route('store.detecciones'), {
+                onSuccess: () => {
+                    form.reset();
+                    dialogReset.value = true;
+                    dialog.value = true;
+                    success_alert('Exito', 'Curso generado.')
+                },
+                onError: () => {
+                    errorMsg('Atención', `${format_errors(props.errors)}`)
+                    message.value = ""
+                },
+            })
+        }
     })
 }
 const dialogReset = ref(false);
@@ -285,7 +302,7 @@ const closeModal = () => {
 <!--                                </div>-->
 <!--                            </v-card>-->
 <!--                        </v-dialog>-->
-                        <Modal :show="dialog" @close="closeModal">
+                        <Modal :show="dialog" @close="closeModal" :persistent="true">
                             <div class="grid grid-rows-1">
                                 <div class="flex justify-center items-center m-5">
                                     <p class="text-xl ">Tipo de diagnostico que desea realizar</p>
@@ -561,7 +578,7 @@ const closeModal = () => {
                                                     </div>
                                                 </v-col>
                                             </v-row>
-                                            <v-select required :items="carreraFilter" item-title="nameCarrera" item-value="id"
+                                            <v-select required :items="props.carrera_filtro" item-title="nameCarrera" item-value="id"
                                                       v-model="form.dirigido" variant="solo">
 
                                             </v-select>
@@ -736,20 +753,22 @@ const closeModal = () => {
                                                 </v-col>
                                             </v-row>
                                         </v-col>
-                                        <v-row justify="center">
-                                            <v-col cols="6" align="center" class="">
-                                                <template v-if="horas_totales < 30">
-                                                    <v-chip variant="flat" color="error" prepend-icon="mdi-cancel">
-                                                        El curso es menor a 30 horas
-                                                    </v-chip>
-                                                </template>
-                                                <template v-else-if="horas_totales >= 30">
-                                                    <v-chip variant="flat" color="success" prepend-icon="mdi-check-circle">
-                                                        El curso es de {{horas_totales}} horas
-                                                    </v-chip>
-                                                </template>
-                                            </v-col>
-                                        </v-row>
+                                        <div class="grid grid-rows-1">
+                                            <div class="flex justify-center">
+                                                <div class="grid grid-cols-1">
+                                                    <template v-if="horas_totales < 30">
+                                                        <v-chip variant="flat" color="error" prepend-icon="mdi-cancel">
+                                                            El curso es menor a 30 horas
+                                                        </v-chip>
+                                                    </template>
+                                                    <template v-else-if="horas_totales >= 30">
+                                                        <v-chip variant="flat" color="success" prepend-icon="mdi-check-circle">
+                                                            El curso es de {{horas_totales}} horas
+                                                        </v-chip>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <v-col align-self="center" cols="12">
                                             <v-row justify="center">
                                                 <v-col align="start" cols="5">
@@ -776,13 +795,10 @@ const closeModal = () => {
                                         </v-col>
                                     </v-row>
                                 </v-container>
-                                <div class="flex justify-center mr-12 h-6 items-center gap-4">
-                                    <PrimaryButton class="w-45 h-12" :disabled="form.processing">
-                                        <span class="flex justify-center items-center">Guardar</span>
-                                    </PrimaryButton>
-                                    <!--                        <v-btn :disabled="form.processing" rounded="xl" prepend-icon="mdi-pen-plus" color="blue-darken-1" block size="large">-->
-                                    <!--                            Crear-->
-                                    <!--                        </v-btn>-->
+                                <div class="flex items-center gap-4 mr-15">
+                                    <v-btn type="submit" color="blue-darken-1" icon="mdi-content-save-all" size="x-large" class="floating-btn">
+
+                                    </v-btn>
 
                                     <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out">
                                         <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Guardado.</p>
@@ -795,14 +811,35 @@ const closeModal = () => {
                 </div>
             </div>
         </div>
-        <custom-snack-bar
-        :timeout="timeout" :color="color" :message="message" v-model="snackbar" @update:modelValue="snackbar = $event"
-        >
-
-        </custom-snack-bar>
     </AuthenticatedLayout>
 </template>
 
 <style scoped>
+.floating-btn {
+    position: fixed;
+    bottom: 50px; /* Ajusta la posición vertical como desees */
+    right: 150px; /* Ajusta la posición horizontal como desees */
+    z-index: 1000; /* Ajusta el z-index según tus necesidades para asegurarte de que esté por encima de otros elementos. */
+    width: 80px;
+    height: 80px;
+}
+/* Para pantallas medianas (tabletas) */
+@media (max-width: 768px) {
+    .floating-btn {
+        bottom: 40px;
+        right: 100px;
+        width: 60px;
+        height: 60px;
+    }
+}
 
+/* Para pantallas pequeñas (teléfonos móviles) */
+@media (max-width: 480px) {
+    .floating-btn {
+        bottom: 30px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+    }
+}
 </style>

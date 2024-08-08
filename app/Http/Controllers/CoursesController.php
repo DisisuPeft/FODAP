@@ -28,40 +28,50 @@ class CoursesController extends Controller
      */
     public function store(CursoRequest $request)
     {
-        try {
+//        try {
             DB::beginTransaction();
             $fecha_Inical = Carbon::parse($request->fecha_I);
             $fecha_final = Carbon::parse($request->fecha_F);
+            $facilitadores = $request->input('facilitadores', []);
             if ($fecha_Inical <= $fecha_final) {
+                if (count($facilitadores) > 3){
+                    DB::rollBack();
+                    return back()->withErrors('Un curso solo puede tener un maximo de 3 facilitadores');
+                }else{
+                    $deteccion = DeteccionNecesidades::create($request->validated() + [
+                            'aceptado' => 0,
+                            'obs' => 0,
+                            'total_horas' => $this->total_horas($request->fecha_I, $request->fecha_F, $request->hora_I, $request->hora_F),
+                            'id_departamento' => auth()->user()->departamento_id,
+                            'facilitador_externo' => $request->facilitador_externo,
+                            'id_jefe' => $request->id_jefe
+                        ]);
 
-                $deteccion = DeteccionNecesidades::create($request->validated() + [
-                    'aceptado' => 0,
-                    'obs' => 0,
-                    'total_horas' => $this->total_horas($request->fecha_I, $request->fecha_F, $request->hora_I, $request->hora_F),
-                    'id_departamento' => auth()->user()->departamento_id,
-                    'facilitador_externo' => $request->facilitador_externo,
-                    'id_jefe' => $request->id_jefe
-                ]);
+                    if ($deteccion){
+                        $deteccion->save();
 
-                $deteccion->save();
+                        $deteccion->deteccion_facilitador()->toggle($request->input('facilitadores', []));
 
-                $deteccion->deteccion_facilitador()->toggle($request->input('facilitadores', []));
+                        //               DocenteController::facilitadores_permission($request->input('facilitadores'));
 
-                //               DocenteController::facilitadores_permission($request->input('facilitadores'));
+                        $this->sendNotification($deteccion);
 
-                $this->sendNotification($deteccion);
+                        DB::commit();
 
-                DB::commit();
-
-                event(new DeteccionEvent($deteccion));
-                return Redirect::route('detecciones.create');
+                        event(new DeteccionEvent($deteccion));
+                        return Redirect::route('detecciones.create');
+                    }else{
+                        DB::rollBack();
+                        return back()->withErrors('El curso no pudo ser creado.');
+                    }
+                }
             } else {
                 return back()->withErrors('La fecha final no puede ser menor que la fecha inicial');
             }
-        } catch (\Exception $exception) {
-            DB::rollBack();
-            return Redirect::route('detecciones.create')->withErrors('error', 'Error a la hora de crear el registro: ' . $exception->getMessage());
-        }
+//        } catch (\Exception $exception) {
+//            DB::rollBack();
+//            return Redirect::route('detecciones.create')->withErrors('error', 'Error a la hora de crear el registro: ' . $exception->getMessage());
+//        }
     }
 
     public static function sendNotification($curso)
@@ -74,7 +84,9 @@ class CoursesController extends Controller
 
     public function update(CursoRequest $request, string $id)
     {
+        DB::beginTransaction();
         $facilitadores = $request->input('facilitadores', []);
+
         $deteccion = DeteccionNecesidades::where('id', $id)->first();
 
         $deteccion->total_horas = $this->total_horas($request->fecha_I, $request->fecha_F, $request->hora_I, $request->hora_F);
@@ -82,25 +94,34 @@ class CoursesController extends Controller
         $deteccion->deteccion_facilitador()->sync([]);
 
         if (count($facilitadores) > 3) {
-            return Redirect::back()->withErrors('Excede el limite de facilitadores');
+            return Redirect::back()->withErrors('Un curso solo puede tener un maximo de 3 facilitadores');
         } else {
             $deteccion->deteccion_facilitador()->sync(
                 $facilitadores,
                 false
             );
 
-            $deteccion->update($request->validated());
+            $update = $deteccion->update($request->validated() + [
+                    'facilitador_externo' => $request->facilitador_externo
+            ]);
 
-            $deteccion->save();
+            if ($update) {
+                $deteccion->save();
 
-            event(new DeteccionEditadaEvent($deteccion));
+                DB::commit();
 
-            User::role(['Coordinacion de FD y AP',  'Jefe del Departamento de Desarrollo Academico'])->each(function (User $user) use ($deteccion) {
-                $usuario = auth()->user() == null ? $user : auth()->user();
-                $user->notify(new DeteccionEditadaNotification($deteccion, $usuario));
-            });
+                event(new DeteccionEditadaEvent($deteccion));
 
-            return Redirect::route('detecciones.index');
+                User::role(['Coordinacion de FD y AP',  'Jefe del Departamento de Desarrollo Academico'])->each(function (User $user) use ($deteccion) {
+                    $usuario = auth()->user() == null ? $user : auth()->user();
+                    $user->notify(new DeteccionEditadaNotification($deteccion, $usuario));
+                });
+
+                return Redirect::route('detecciones.index');
+            }else{
+                DB::rollBack();
+                return back()->withErrors('El curso no pudo actualizarse.');
+            }
         }
     }
 
