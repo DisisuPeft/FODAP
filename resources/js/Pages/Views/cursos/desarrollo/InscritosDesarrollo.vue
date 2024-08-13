@@ -214,35 +214,39 @@ const submitActa = () => {
 };
 const submitConstancia = (docente_id) => {
     loading.value = true;
-    axios
-        .get(route("pdf.constancia"), {
-            params: {
-                id: props.curso.id,
-                id_docente: docente_id,
-            },
-        })
-        .then((res) => {
-            if(res.data[1] === 0){
-                const url = "/storage/constancia.pdf";
-                const link = document.createElement("a");
-                link.href = url;
-                link.setAttribute("download", "constancia.pdf");
-                document.body.appendChild(link);
-                link.click();
-                loading.value = false;
-                success_alert('Exito', 'Se ha descargado la contancia con exito')
-            }else{
-                loading.value = false;
-                console.log(res.data)
-                errorMsg('Parece que hacen falta estos parametros: ', `${res.data[0]}`)
+    if(props.curso?.estado === 1 || props.curso?.estado === 2){
+        axios
+            .get(route("pdf.constancia"), {
+                params: {
+                    id: props.curso.id,
+                    id_docente: docente_id,
+                },
+            })
+            .then((res) => {
+                if(res.data[1] === 0){
+                    const url = "/storage/constancia.pdf";
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.setAttribute("download", "constancia.pdf");
+                    document.body.appendChild(link);
+                    link.click();
+                    loading.value = false;
+                    success_alert('Exito', 'Se ha descargado la contancia con exito')
+                }else{
+                    loading.value = false;
+                    console.log(res.data)
+                    errorMsg('Parece que hacen falta estos parametros: ', `${res.data[0]}`)
 
-                // errorMsg('Parece que hacen falta estos parametros: ', `${}`)
-            }
-        })
-        .catch((error) => {
-            loading.value = false;
-            notify('¡Atención!','warning', `El servidor respondio: ${error.response.data}`)
-        });
+                    // errorMsg('Parece que hacen falta estos parametros: ', `${}`)
+                }
+            })
+            .catch((error) => {
+                loading.value = false;
+                notify('¡Atención!','warning', `El servidor respondio: ${error.response.data}`)
+            });
+    }else{
+        notify('¡Atención!', 'info', 'El curso aun no ha comenzado por lo que no se puede generar la constancia.')
+    }
 };
 const id_curso = useForm({
     curso: props.curso.id,
@@ -414,6 +418,27 @@ const generar_reconocimiento = () => {
         notify('¡Atención!', 'info', 'El curso no ha concluido por lo que no se puede generar el reconocimiento.')
     }
 }
+
+const descargar_lista_asistencia = () => {
+    if (props.curso?.estado === 1 || props.curso?.estado === 2){
+        Swal.fire({
+            title: 'Esta por generar la lista de asistencia.',
+            text: 'Esta acción puede tardar unos minutos.',
+            showCancelButton: true,
+            showConfirmButton: true,
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar',
+            icon: "info",
+            timerProgressBar: true
+        }).then(res => {
+            if (res.isConfirmed){
+                notify('¡Atención!', 'info', 'En breve se podra descargar la lista de asistencia.')
+            }
+        })
+    }else{
+        notify('¡Atención!', 'info', 'El curso aun no ha comenzado por lo que no se puede descargar la lista de asistencia.')
+    }
+}
 </script>
 
 <template>
@@ -468,36 +493,55 @@ const generar_reconocimiento = () => {
                     </div>
                 </div>
         </template>
-        <div class="grid grid-cols-1 lg:grid-cols-2 p-2 gap-2 p-6">
-            <div class="flex justify-center items-center">
-                <v-tooltip location="right">
-                    <template v-slot:activator="{ props }">
-                        <v-btn
-                            prepend-icon="mdi-microsoft-excel"
-                            v-bind="props"
-                            color="green-lighten-1"
-                            @click="descargar_formato_constancia"
-                        >
-                            Formato de constancia
-                        </v-btn>
-                    </template>
-                    <span>Descargar</span>
-                </v-tooltip>
-            </div>
-            <div class="flex justify-center items-center">
-                <v-tooltip location="right">
-                    <template v-slot:activator="{ props }">
-                        <v-btn
-                            prepend-icon="mdi-microsoft-excel"
-                            v-bind="props"
-                            color="green-lighten-1"
-                            @click="descargar_formato_constancia_reconocimiento"
-                        >
-                            Formato de reconocimiento
-                        </v-btn>
-                    </template>
-                    <span>Descargar</span>
-                </v-tooltip>
+        <div class="grid grid-rows-1">
+            <div class="flex justify-center">
+                <div class="grid grid-cols-1 lg:grid-cols-3 p-2 gap-2 p-6">
+                    <div class="flex justify-center items-center">
+                        <v-tooltip location="right">
+                            <template v-slot:activator="{ props }">
+                                <v-btn
+                                    prepend-icon="mdi-microsoft-excel"
+                                    v-bind="props"
+                                    color="green-lighten-1"
+                                    @click="descargar_formato_constancia"
+                                >
+                                    Formato de constancia
+                                </v-btn>
+                            </template>
+                            <span>Descargar</span>
+                        </v-tooltip>
+                    </div>
+                    <div class="flex justify-center items-center">
+                        <v-tooltip location="right">
+                            <template v-slot:activator="{ props }">
+                                <v-btn
+                                    prepend-icon="mdi-microsoft-excel"
+                                    v-bind="props"
+                                    color="green-lighten-1"
+                                    @click="descargar_formato_constancia_reconocimiento"
+                                >
+                                    Formato de reconocimiento
+                                </v-btn>
+                            </template>
+                            <span>Descargar</span>
+                        </v-tooltip>
+                    </div>
+                    <div class="flex justify-center items-center">
+                        <v-tooltip location="right">
+                            <template v-slot:activator="{ props }">
+                                <v-btn
+                                    prepend-icon="mdi-file-pdf-box"
+                                    v-bind="props"
+                                    color="blue-darken-1"
+                                    @click="descargar_lista_asistencia"
+                                >
+                                    Generar lista de asistencia.
+                                </v-btn>
+                            </template>
+                            <span>Descargar</span>
+                        </v-tooltip>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -646,7 +690,7 @@ const generar_reconocimiento = () => {
                                 </template>
                             </td>
                             <td class="text-center">
-                                <template v-if="inscrito.calificacion === 1">
+                                <template v-if="inscrito?.calificacion === 1">
                                     <v-btn
                                         icon="mdi-file-pdf-box"
                                         color="success"
