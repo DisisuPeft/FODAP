@@ -15,6 +15,8 @@ import CalificacionesUpdate from "@/Components/CalificacionesUpdate.vue";
 import Modal from "@/Components/Modal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Loading from "@/Components/Loading.vue";
+import {AlertLoading, errorMsg, notify, success_alert} from "@/jsfiels/alertas.js";
+import Swal from "sweetalert2";
 
 const my_curso_store = Curso()
 const store = FODAPStore()
@@ -24,6 +26,7 @@ const props = defineProps({
     auth: Object,
     facilitador: Object,
     inscritos: Array,
+    errors: Object
 });
 const timeout = ref();
 const id_teacher = ref(null);
@@ -53,52 +56,31 @@ const update_docente_calificacion = (docente_id, calification) => {
 const addCalificacion = (form) => {
     form.post(route('calificaciones.facilitador.create'), {
         onSuccess: () => {
-            snackSuccessActivator()
+            dialogCalificacion.value = false
+            success_alert('Exito.', 'Calificación asignada.')
         },
         onError: () => {
-            snackErrorActivator()
+            dialogCalificacion.value = false
+            notify('Alerta','warning', `${format_errors(props.errors)}`)
+            message.value = ""
         }
     })
 }
 const updateCalificacion = (form) => {
     form.put(route('calificaciones.facilitador.update'), {
         onSuccess: () => {
-            snackSuccessActivator()
+            dialogCalificacionUpdate.value = false
+            success_alert('Exito.', 'Calificación actualizada.')
         },
         onError: () => {
-            snackErrorActivator()
+            dialogCalificacionUpdate.value = false
+            notify('Alerta','warning', `${format_errors(props.errors)}`)
+            message.value = ""
         }
     })
 }
 const closeModal = () => {
     show_ficha.value = false;
-};
-const snackEventActivator = () => {
-    snackbar.value = true;
-    message.value = "Parece que los recursos se han actualizado, por favor recarga la pagina"
-    color.value = "warning"
-    timeout.value = 8000
-    setTimeout(() => {
-        snackbar.value = false
-    }, timeout.value)
-};
-const snackErrorActivator = () => {
-    snackbar.value = true;
-    message.value = "No se pudo procesar la solicitud"
-    color.value = "error"
-    timeout.value = 5000
-    setTimeout(() => {
-        snackbar.value = false
-    }, timeout.value)
-};
-const snackSuccessActivator = () => {
-    snackbar.value = true;
-    message.value = "Procesado correctamente"
-    color.value = "success"
-    timeout.value = 5000
-    setTimeout(() => {
-        snackbar.value = false
-    }, timeout.value)
 };
 
 const submit = (inscripcion, id) => {
@@ -114,35 +96,41 @@ const submit = (inscripcion, id) => {
         link.setAttribute('download', 'CDI.pdf');
         document.body.appendChild(link);
         link.click();
-        snackSuccessActivator()
+        // snackSuccessActivator()
     }).catch(error => {
-        snackErrorActivator()
+        // snackErrorActivator()
     })
 }
 
 const generar_ficha = () => {
     loading.value = true
-    try{
-        axios.get(route('pdf.ficha.tecnica'), {
-            params: {
-                id_ficha: props.curso.ficha_tecnica.id
+
+            // AlertLoading('Generando documento...', 'Esta acción puede tardar unos minutos')
+            if (props.curso.ficha_tecnica){
+                axios.get(route('pdf.ficha.tecnica'), {
+                    params: {
+                        id_ficha: props.curso.ficha_tecnica.id
+                    }
+                }).then(res => {
+                    loading.value = false
+                    const url = '/storage/ficha.pdf';
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', 'ficha.pdf');
+                    document.body.appendChild(link);
+                    link.click();
+                    // snackSuccessActivator()
+                    success_alert('Exito', `${res.response.data}`)
+                }).catch(error => {
+                    loading.value = false
+                    // snackErrorActivator()
+                    errorMsg('Ateción.', `${error.response.data.errors}`)
+                })
+            }else{
+                loading.value = false
+                notify('Atención', 'warning', 'El PDF no se puede generar debido a que no se ha capturado la ficha tecnica del curso.')
             }
-        }).then(res => {
-            loading.value = false
-            const url = '/storage/ficha.pdf';
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'ficha.pdf');
-            document.body.appendChild(link);
-            link.click();
-            snackSuccessActivator()
-        }).catch(error => {
-            loading.value = false
-            snackErrorActivator()
-        })
-    }catch (e) {
-        snackErrorActivator()
-    }
+
 };
 
 const form = useForm({
@@ -156,7 +144,12 @@ const fila_seleccionada = (id) => {
 }
 
 
-
+const format_errors = (errors) => {
+    for (const errorsKey in errors) {
+        message.value += errors[errorsKey]
+    }
+    return message.value.split('.').join('. ');
+}
 
 onMounted(() => {
     window.Echo.private(`App.Models.User.${props.auth.user.id}`).notification((notification) => {
@@ -175,29 +168,69 @@ onMounted(() => {
                 break;
         }
     });
-    console.log(props.curso.ficha_tecnica.id)
+    // console.log(props.curso.ficha_tecnica.id)
     window.Echo.private('inscritos-chanel').listen('InscripcionEvent', (event) => {
         // my_curso_store.update_inscritos(event.inscritos)
-        snackEventActivator()
+        // snackEventActivator()
     })
     window.Echo.private('calificacion-update').listen('CalificacionEvent', (event) => {
         // my_curso_store.update_calificacion(event.calificacion[0])
-        snackEventActivator()
+        // snackEventActivator()
     })
     my_curso_store.inscritos_curso(props.curso.id)
-
+    if (props.curso?.ficha_tecnica) {
+        color.value = "success";
+    } else {
+        color.value = "error";
+    }
 });
+
+const inform = () => {
+    notify('Ateción', 'info', 'El curso no cuenta con ficha técnica.')
+}
 </script>
 
 <template>
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-lg font-medium text-gray-900">{{curso.nombreCurso}}</h2>
-            <NavLink :href="route('show.facilitadores', props.facilitador.id)" as="button">
-                <v-btn icon="mdi-arrow-left">
+            <div class="grid grid-rows-2">
+                <div class="flex justify-center">
+                    <h2 class="text-lg font-medium text-gray-900">{{curso.nombreCurso}}</h2>
+                </div>
+                <div class="flex justify-center">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:w-[900px]">
+                        <div class="flex justify-start">
+                            <NavLink :href="route('show.facilitadores', props.facilitador.id)" as="button">
+                                <v-btn icon="mdi-arrow-left">
 
-                </v-btn>
-            </NavLink>
+                                </v-btn>
+                            </NavLink>
+                        </div>
+                        <div class="flex justify-center items-center ma-3">
+                            <v-tooltip location="right">
+                                <template v-slot:activator="{ props }">
+                                    <v-btn
+                                        icon="mdi-file"
+                                        :color="color"
+                                        v-bind="props"
+                                        size="large"
+                                    >
+                                    </v-btn>
+                                </template>
+                                <template v-if="color === 'success'">
+                                    <span>Este curso cuenta con su ficha técnica.</span>
+                                </template>
+                                <template v-if="color === 'error'">
+                            <span
+                            >Este curso no cuenta con su ficha
+                                técnica.</span
+                            >
+                                </template>
+                            </v-tooltip>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </template>
         <div class=" mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-4 mt-7 sm:p-8 bg-white shadow sm:rounded-lg">
@@ -255,71 +288,84 @@ onMounted(() => {
         </div>
         <div class=" mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-4 mt-7 sm:p-8 bg-white shadow sm:rounded-lg">
-                <v-card elevation="0">
-                    <v-card-title class="text-center">Ficha Técnica</v-card-title>
-                    <v-row justify="center">
-                        <v-col cols="6" align="center">
-                            <v-tooltip location="left">
-                                <template v-slot:activator="{ props }">
-                                    <v-btn icon v-bind="props" color="blue-darken-1" size="normal">
-                                        <v-icon>
-                                            mdi-help
-                                        </v-icon>
+                <div class="grid grid-rows-1">
+                    <div class="flex justify-center">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                            <div class="flex justify-center items-center">
+                                <v-tooltip location="left" class="">
+                                    <template v-slot:activator="{ props }">
+                                        <v-btn icon v-bind="props" color="blue-darken-1" size="normal">
+                                            <v-icon>
+                                                mdi-help
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>Indicar el periodo en el que se requiere la formación docente o
+                                                        actualización profesiona (enero-junio o agosto-diciembre)</span>
+                                </v-tooltip>
+                                <NavLink :href="route('crear.ficha', [props.auth.user.docente_id, props.curso.id])">
+                                    <v-btn color="blue-darken-1">
+                                        Crear ficha técnica
+                                    </v-btn>
+                                </NavLink>
+                            </div>
+                            <div class="flex justify-center items-center">
+                                <!--                            :href="route('edit.ficha', [props.auth.user.id, props.curso.id])"-->
+                                <v-btn color="blue-darken-1" @click="show_ficha = true">
+                                    Ver ficha técnica
+                                </v-btn>
+                                <Modal :show="show_ficha" @close="closeModal">
+                                    <template v-if="props.curso.ficha_tecnica">
+                                        <div class="grid grid-rows-3">
+                                            <div class="flex justify-center items-center pa-4">
+                                                {{props.curso.ficha_tecnica.competencias_desarrollar}}
+                                            </div>
+                                            <div class="flex justify-center items-center pa-4">
+                                                {{props.curso.ficha_tecnica.objetivo_general}}
+                                            </div>
+                                            <div class="flex justify-end items-center pa-4">
+                                                <SecondaryButton @click="show_ficha = false">Cerrar</SecondaryButton>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template v-else-if="props.curso.ficha_tecnica === null">
+                                        <v-alert
+                                            density="compact"
+                                            type="warning"
+                                            title="Alerta"
+                                            text="Este curso no posee una ficha tecnica"
+                                        ></v-alert>
+                                    </template>
+                                </Modal>
+                            </div>
+                            <div class="flex justify-center items-center">
+                                <!--                            :href="route('edit.ficha', [props.auth.user.id, props.curso.id])"-->
+                                <template v-if="props.auth?.user?.docente_id && props.curso?.id && props.curso.ficha_tecnica">
+                                    <NavLink
+                                        :href="route('edit.ficha', [
+                                        props.auth.user.docente_id,
+                                        props.curso.id,
+                            ])"
+                                    >
+                                        <v-btn color="blue-darken-1">
+                                            Editar ficha técnica
+                                        </v-btn>
+                                    </NavLink>
+                                </template>
+                                <template v-else>
+                                    <v-btn color="blue-darken-1" @click="errorMsg('¡Atención!', `El id del docente que tiene iniciada la sesión: ${props.auth?.user?.docente_id}, el curso relacionado con el mismo con ID: ${props.curso?.id} y el ID de la ficha técnica relacionada con el curso: ${props.curso?.ficha_tecnica?.id}, estos valores se requieren para editar la ficha técnica. Si falta un ID no mostrara el formulario, pero si los primeros dos valores están presentes significa que no existe o no ha sido capturada la ficha técnica.`)">
+                                        Editar ficha técnica
                                     </v-btn>
                                 </template>
-                                <span>Indicar el periodo en el que se requiere la formación docente o
-                                                    actualización profesiona (enero-junio o agosto-diciembre)</span>
-                            </v-tooltip>
-                            <NavLink :href="route('crear.ficha', [props.auth.user.docente_id, props.curso.id])">
-                                <v-btn color="blue-darken-1">
-                                    Crear ficha técnica
+                            </div>
+                            <div class="flex justify-center items-center">
+                                <v-btn @click="generar_ficha" color="blue-darken-1" prepend-icon="mdi-file-pdf-box">
+                                    Descargar PDF
                                 </v-btn>
-                            </NavLink>
-                        </v-col>
-                        <v-col cols="6" align="center">
-                            <!--                            :href="route('edit.ficha', [props.auth.user.id, props.curso.id])"-->
-                            <v-btn color="blue-darken-1" @click="show_ficha = true">
-                                Ver ficha técnica
-                            </v-btn>
-                            <Modal :show="show_ficha" @close="closeModal">
-                                <template v-if="props.curso.ficha_tecnica">
-                                    <div class="grid grid-rows-3">
-                                        <div class="flex justify-center items-center pa-4">
-                                            {{props.curso.ficha_tecnica.competencias_desarrollar}}
-                                        </div>
-                                        <div class="flex justify-center items-center pa-4">
-                                            {{props.curso.ficha_tecnica.objetivo_general}}
-                                        </div>
-                                        <div class="flex justify-end items-center pa-4">
-                                            <SecondaryButton @click="show_ficha = false">Cerrar</SecondaryButton>
-                                        </div>
-                                    </div>
-                                </template>
-                                <template v-else-if="props.curso.ficha_tecnica === null">
-                                    <v-alert
-                                        density="compact"
-                                        type="warning"
-                                        title="Alerta"
-                                        text="Este curso no posee una ficha tecnica"
-                                    ></v-alert>
-                                </template>
-                            </Modal>
-                        </v-col>
-                        <v-col cols="6" align="center">
-                            <!--                            :href="route('edit.ficha', [props.auth.user.id, props.curso.id])"-->
-                            <NavLink :href="route('edit.ficha', [props.auth.user.docente_id, props.curso.id])">
-                                <v-btn color="blue-darken-1">
-                                    Editar ficha técnica
-                                </v-btn>
-                            </NavLink>
-                        </v-col>
-                        <v-col cols="6" align="center" class="mt-2">
-                            <v-btn @click="generar_ficha" color="blue-darken-1" prepend-icon="mdi-file-pdf-box">
-                                Descargar PDF
-                            </v-btn>
-                        </v-col>
-                    </v-row>
-                </v-card>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class=" mx-auto sm:px-6 lg:px-8 space-y-6">
@@ -462,9 +508,9 @@ onMounted(() => {
 <!--                    </v-card>-->
 <!--            </div>-->
 <!--        </div>-->
-        <CustomSnackBar :message="message" :timeout="timeout" :color="color" v-model="snackbar" @update:modelValue="snackbar = $event">
+<!--        <CustomSnackBar :message="message" :timeout="timeout" :color="color" v-model="snackbar" @update:modelValue="snackbar = $event">-->
 
-        </CustomSnackBar>
+<!--        </CustomSnackBar>-->
         <Loading v-model="loading" @update:loading="loading = $event">
             <v-fade-transition leave-absolute>
                 <v-progress-circular

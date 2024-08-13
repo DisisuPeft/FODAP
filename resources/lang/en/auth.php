@@ -15,6 +15,6 @@ return [
 
     'failed' => 'Las credenciales son incorrectas',
     'password' => 'La contraseña es incorrecta.',
-    'throttle' => 'Espera :seconds seconds para poderte logear nuevamente.',
+    'throttle' => 'Espera :seconds segundos para poderte logear nuevamente.',
 
 ];

@@ -7,6 +7,7 @@ import TextInput from "@/Components/TextInput.vue";
 import {useForm} from "@inertiajs/vue3";
 import {onMounted, ref} from "vue";
 import NavLink from "@/Components/NavLink.vue";
+import {errorMsg, success_alert} from "@/jsfiels/alertas.js";
 
 const props = defineProps({
     departamento: {
@@ -32,6 +33,7 @@ const props = defineProps({
     },
 });
 const alert = ref(true)
+const message = ref("")
 const form = useForm({
     id: null,
     rfc: "",
@@ -53,13 +55,22 @@ const sex = [{ value: 1, text: "M" }, { value: 2, text: "F" }];
 const snackSuccess = ref(false);
 
 const submit = () => {
-    form.put(route('update.docentes.academicos', props.docente.id), {
+    form.put(route('update.docentes.academicos', [props.docente.id, "academicos"]), {
         onSuccess: () => {
-          snackSuccess.value = true
+          success_alert('Exito!', 'Docente actualizado.')
         },
+        onError: () => {
+            errorMsg('Atención.', `${format_errors(props.errors)}`)
+        }
     })
 }
 
+const format_errors = (errors) => {
+    for (const errorsKey in errors) {
+        message.value += errors[errorsKey]
+    }
+    return message.value.split('.').join('. ');
+}
 
 onMounted(() => {
     if (!props.docente) {

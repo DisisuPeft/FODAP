@@ -83,8 +83,8 @@ const filter = computed(() => {
                                         docente o Actualización profesional)
                                     </label>
                                 </div>
-                                <div class="flex justify-center">
-                                    <select v-model="fd">
+                                <div class="flex justify-start md:justify-center p-2">
+                                    <select v-model="fd" class="bg-white">
                                         <option></option>
                                         <option
                                             v-for="cursos in tipos_cursos"

@@ -124,15 +124,15 @@ watch(p, (newp) => {
         <template #header>
             <h2 class="text-lg font-medium text-gray-900">Cursos</h2>
         </template>
-        <CustomSnackBar
-            :message="message"
-            :color="color"
-            v-model="snackbar"
-            :timeout="timeout"
-            @update:modelValue="snackbar = $event"
-        />
-        <div class="flex justify-center mt-5 mb-5">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+<!--        <CustomSnackBar-->
+<!--            :message="message"-->
+<!--            :color="color"-->
+<!--            v-model="snackbar"-->
+<!--            :timeout="timeout"-->
+<!--            @update:modelValue="snackbar = $event"-->
+<!--        />-->
+<!--        <div class="flex justify-center mt-5 mb-5">-->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 ml-8 p-4">
                 <div class="flex justify-center">
                     <div class="grid grid-rows-1">
                         <div class="flex justify-start">
@@ -141,8 +141,8 @@ watch(p, (newp) => {
                                 Actualización profesional)
                             </label>
                         </div>
-                        <div class="flex justify-center">
-                            <select v-model="t">
+                        <div class="flex justify-start md:justify-center p-2">
+                            <select v-model="t" class="bg-white">
                                 <option></option>
                                 <option
                                     v-for="cursos in tipos_cursos"
@@ -160,8 +160,8 @@ watch(p, (newp) => {
                         <div class="flex justify-start">
                             <label class="text-sm"> Filtrar por periodo </label>
                         </div>
-                        <div class="flex justify-center">
-                            <select v-model="p">
+                        <div class="flex justify-center justify-start md:justify-center p-2">
+                            <select v-model="p" class="bg-white">
                                 <option></option>
                                 <option
                                     v-for="pp in period"
@@ -179,8 +179,8 @@ watch(p, (newp) => {
                         <div class="flex justify-start">
                             <label class="text-sm"> Filtrar por año </label>
                         </div>
-                        <div class="flex justify-center">
-                            <select v-model="a">
+                        <div class="flex justify-start md:justify-center p-2">
+                            <select v-model="a" class="bg-white">
                                 <option></option>
                                 <option
                                     v-for="an in fullYears"
@@ -194,7 +194,7 @@ watch(p, (newp) => {
                     </div>
                 </div>
             </div>
-        </div>
+<!--        </div>-->
         <template v-if="props.cursos.length !== 0">
             <div class="mx-auto sm:px-6 lg:px-8 space-y-6">
                 <div class="p-4 mt-3 sm:p-8 bg-white shadow sm:rounded-lg">

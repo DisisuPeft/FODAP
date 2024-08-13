@@ -5,6 +5,9 @@ import DialogPIFAP from "@/Pages/Views/dialogs/DialogPIFAP.vue";
 import NavLink from "@/Components/NavLink.vue";
 import { Curso } from "@/store/curso.js";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import {AlertLoading, errorMsg, notify, success_alert} from "@/jsfiels/alertas.js";
+import {router} from "@inertiajs/vue3";
+import Swal from "sweetalert2";
 
 const curso_store = Curso();
 
@@ -12,10 +15,12 @@ const props = defineProps({
     cursos: Array,
     auth: Object,
     facilitadores: Array,
+    errors: Object
 });
 
 const pdf_dialog = ref(false);
 const search = ref("");
+const message = ref("")
 const estado = computed(() => {
     if (props.cursos.length === 0) {
         return 1;
@@ -69,6 +74,7 @@ onMounted(() => {
     curso_store.get_curso_desarrollo();
 });
 function download_excel_clave_curso() {
+    AlertLoading('Generando documento...', 'Esto puede tardar unos minutos')
     axios
         .get(route("excel.claves.curso"))
         .then((res) => {
@@ -78,15 +84,14 @@ function download_excel_clave_curso() {
             link.setAttribute("download", "claves_curso.xlsx");
             document.body.appendChild(link);
             link.click();
+            success_alert('Exito.', 'Documento excel generado.')
         })
         .catch((error) => {
-            alert(
-                "Error al descargar el recurso. Reporte de error: " +
-                    error.response.data
-            );
+            errorMsg('Atención', `El servidor respondio: ${error.response.data}`)
         });
 }
 function download_excel_clave_curso_validacion() {
+    AlertLoading('Generando documento...', 'Esto puede tardar unos minutos')
     axios
         .get(route("excel.claves.curso.validacion"))
         .then((res) => {
@@ -96,16 +101,45 @@ function download_excel_clave_curso_validacion() {
             link.setAttribute("download", "claves_validacion.xlsx");
             document.body.appendChild(link);
             link.click();
+            success_alert('Exito.', 'Documento excel generado.')
         })
         .catch((error) => {
-            alert(
-                "Error al descargar el recurso. Reporte de error: " +
-                    error.response.data
-            );
+            errorMsg('Atención', `El servidor respondio: ${error.response.data}`)
         });
 }
+const format_errors = (errors) => {
+    for (const errorsKey in errors) {
+        message.value += errors[errorsKey]
+    }
+    return message.value.split('.').join('. ');
+}
+// console.log(props.cursos);
 
-console.log(props.cursos);
+const claves_curso = () => {
+    Swal.fire({
+        title: 'Atención!',
+        text: 'Esta acción solo se debe realizar al finalizar los cursos cada periodo intersemestral. ¿Desea realizar la asignación de las claves en orden ascendente?',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        icon: "warning",
+        timerProgressBar: true
+    }).then(res => {
+        if (res.isConfirmed){
+            AlertLoading('Guardando los datos...', 'Esta accion puede tardar unos minutos')
+            router.post(route('count.cursos'), {}, {
+                onSuccess: () => {
+                    success_alert('Exito.', 'Claves de cursos generadas.')
+                },
+                onError: () => {
+                    errorMsg('Atención', `${format_errors(props.errors)}`)
+                    message.value = ""
+                },
+            })
+        }
+    })
+}
 </script>
 
 <template>
@@ -286,11 +320,11 @@ console.log(props.cursos);
                         </NavLink>
                     </div>
                     <div class="flex justify-center ml-16">
-                        <NavLink
-                            :href="route('count.cursos')"
-                            method="post"
-                            as="button"
-                        >
+<!--                        <NavLink-->
+<!--                            :href="route('count.cursos')"-->
+<!--                            method="post"-->
+<!--                            as="button"-->
+<!--                        >-->
                             <v-btn
                                 block
                                 size="large"
@@ -298,10 +332,11 @@ console.log(props.cursos);
                                 prepend-icon="mdi-key-variant"
                                 height="50"
                                 width="550"
+                                @click.prevent="claves_curso"
                             >
                                 Claves de curso
                             </v-btn>
-                        </NavLink>
+<!--                        </NavLink>-->
                         <div class="flex justify-start ml-5">
                             <v-tooltip location="right">
                                 <template v-slot:activator="{ props }">
@@ -315,8 +350,7 @@ console.log(props.cursos);
                                     </v-btn>
                                 </template>
                                 <span
-                                    >Esto unicamente debe ser ejecutado por
-                                    periodo.</span
+                                    >Esto unicamente debe ser ejecutado despues de finalizar todos los cursos.</span
                                 >
                             </v-tooltip>
                         </div>

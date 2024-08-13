@@ -237,9 +237,10 @@ class AcademicosController extends Controller
             'docente' => $docente
         ]);
     }
-    public function update_docente_academico(Request $request, $id)
+    public function update_docente_academico(Request $request, $id, $type)
     {
-        $docente = DocenteController::updated_instance_docente($request, $id);
-        return Redirect::route('edit.docentes.academicos', ['id' => $docente->id]);
+        $docente = new Docente();
+        $docente->updated_instance_docente($request, $id, $type);
+        return Redirect::route('edit.docentes.academicos', ['id' => $id]);
     }
 }

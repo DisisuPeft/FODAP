@@ -6,10 +6,12 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import {ref, computed} from 'vue'
 import CreateDocenteA from "@/Pages/Views/academicos/docentes/CreateDocenteA.vue";
 import CustomSnackBar from "@/Components/CustomSnackBar.vue";
+import {AlertLoading, errorMsg, success_alert} from "@/jsfiels/alertas.js";
+import Swal from "sweetalert2";
 
 const props = defineProps({
     auth: Object,
-    docentes: Object,
+    docentes: Array,
     tipo_plaza: {
         type: Array,
     },
@@ -40,29 +42,21 @@ const header = [
     {key: "apellidoPat", title: "Apellido Paterno"},
     {key: "apellidoMat", title: "Apellido Materno"},
     {key: "options", title: "Opciones"},
-    {key: "delete", title: "Eliminar"},
+    // {key: "delete", title: "Eliminar"},
 ];
 
 async function submitDocente(form){
-    try {
-        form.post(route('create.docentes.academicos.up'), {
+    dialogDocente.value = false
+    AlertLoading('Guardando la información...', 'Esto puede tardar unos minutos')
+        form.post(route('create.docentes.academicos.up', "academicos"), {
             onSuccess: () => {
-                dialogDocente.value = false
-                message.value = 'Recurso actualizado con exito'
-                color.value = 'success'
-                snack_bar.value = true
                 form.reset()
+                success_alert('Exito.', 'Docente creado.')
             },
             onError: () => {
-                message.value = 'Ah ocurrido un error al generar el recurso'
-                color.value = 'error'
-                snack_bar.value = true
-                dialogDocente.value = false
+                errorMsg('Atención.', `${format_errors(props.errors)}`)
             }
         })
-    }catch (e) {
-        console.log(e)
-    }
 }
 onMounted(() => {
     window.Echo.private(`App.Models.User.${props.auth.user.id}`).notification((notification) => {
@@ -80,6 +74,26 @@ onMounted(() => {
                 props.auth.usernotifications++
                 break;
         }
+    });
+});
+const format_errors = (errors) => {
+    for (const errorsKey in errors) {
+        message.value += errors[errorsKey]
+    }
+    return message.value.split('.').join('. ');
+}
+
+const filter = computed(() => {
+    let docente = search.value.trim().toLowerCase();
+    console.log(docente)
+    // Si no hay valor en el input, retorna todos los docentes
+    if (!docente) {
+        return props.docentes;
+    }
+
+    // Filtra docentes por el nombre completo
+    return props.docentes.filter((c) => {
+        return c.nombre_completo.toLowerCase().includes(docente);
     });
 });
 </script>
@@ -116,11 +130,11 @@ onMounted(() => {
 
                     <v-text-field
                         v-model="search"
-                        label="Search"
+                        label="Buscar"
                         prepend-icon="mdi-magnify"
                         variant="solo"
                     ></v-text-field>
-                    <v-data-table :headers="header" :items="props.docentes" :search="search"
+                    <v-data-table :headers="header" :items="filter"
                                   fixed-header
                                   next-icon="mdi-arrow-right-bold-circle"
                                   prev-icon="mdi-arrow-left-bold-circle"
@@ -140,13 +154,13 @@ onMounted(() => {
                                 </v-btn>
                             </NavLink>
                         </template>
-                        <template v-slot:item.delete="{item}">
-<!--                            <NavLink :href="route('edit.docentes.academicos', item.id)" as="button">-->
-                                <v-btn icon size="large" elevation="0">
-                                    <v-icon>mdi-delete</v-icon>
-                                </v-btn>
-<!--                            </NavLink>-->
-                        </template>
+    <!--                        <template v-slot:item.delete="{item}">-->
+    <!--&lt;!&ndash;                            <NavLink :href="route('edit.docentes.academicos', item.id)" as="button">&ndash;&gt;-->
+    <!--                                <v-btn icon size="large" elevation="0">-->
+    <!--                                    <v-icon>mdi-delete</v-icon>-->
+    <!--                                </v-btn>-->
+    <!--&lt;!&ndash;                            </NavLink>&ndash;&gt;-->
+    <!--                        </template>-->
                     </v-data-table>
                 </div>
             </div>

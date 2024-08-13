@@ -7,6 +7,7 @@ use App\Events\CursosAceptados;
 use App\Events\DeleteDeteccionEvent;
 use App\Events\InscripcionEvent;
 use App\Events\ObservacionEvent;
+use App\Http\Requests\CalificacionesRequest;
 use App\Http\Requests\CursoRequest;
 use App\Http\Requests\DocenteRequest;
 use App\Models\Calificaciones;
@@ -333,15 +334,17 @@ class DesarrolloController extends Controller
 
         event(new DeleteDeteccionEvent($deteccion));
 
-        $deteccion->update([
-            'status' => 99,
-        ]);
+        $delete = $deteccion->delete();
 
-        if ($deteccion->aceptado == 1) {
-            return Redirect::route('index.desarrollo.cursos');
+        if ($delete){
+            if ($deteccion->aceptado == 1) {
+                return Redirect::route('index.desarrollo.cursos');
+            }
+
+            return Redirect::route('index.detecciones');
+        }else{
+            return back()->withErrors('El curso no se elimino, debe informar al área de computo.');
         }
-
-        return Redirect::route('index.detecciones');
     }
 
 
@@ -371,14 +374,24 @@ class DesarrolloController extends Controller
 
     public function desinscribirse(Request $request, $docente)
     {
-        $curso = $request->curso;
-        $teacher = Docente::with(['inscrito' => function ($query) use ($curso) {
-            $query->where('inscripcion.curso_id', '=', $curso);
-        }])->find($docente);
-
-        $teacher->inscrito()->sync([]);
-
-        return redirect()->route('index.desarrollo.inscritos', ['id' => $curso])->with('message', 'Docente eliminado del curso');
+        if($request->curso){
+            $curso = $request->curso;
+            $teacher = Docente::with(['inscrito' => function ($query) use ($curso) {
+                $query->where('inscripcion.curso_id', '=', $curso);
+            }])->find($docente);
+            if ($teacher){
+                $inscrito = $teacher->inscrito()->sync([]);
+                if (count($inscrito['detached']) > 0){
+                    return redirect()->route('index.desarrollo.inscritos', ['id' => $curso])->with('message', 'Docente eliminado del curso');
+                }else{
+                    return back()->withErrors('Si el docente no desaparece, actualice la pagina e intentelo de nuevo.');
+                }
+            }else{
+                return back()->withErrors('No se encontro al docente inscrito en la base de datos.');
+            }
+        }else{
+            return back()->withErrors('No se compartio el ID del curso.');
+        }
     }
 
     public function docentes()
@@ -467,32 +480,34 @@ class DesarrolloController extends Controller
         return Redirect::route('edit.docentes', ['id' => $id]);
     }
     //revisar este otro metodo
-    public function calificaciones_desarrollo(Request $request)
+    public function calificaciones_desarrollo(CalificacionesRequest $request)
     {
-        $request->validate([
-            'docente_id' => 'required',
-            'calificacion' => 'required',
-            'curso_id' => 'required',
-        ]);
+        $calificaciones = new Calificaciones();
 
-        DocenteController::add_calificacion($request);
 
-        $syncCalificacion = $this->consult_to_sync($request->curso_id, $request->docente_id);
-        event(new CalificacionEvent($syncCalificacion));
+        $data = $calificaciones->add_calificacion($request);
 
-        return Redirect::route('index.desarrollo.inscritos', ['id' => $request->curso_id]);
+        if ($data[1] == 200){
+            $syncCalificacion = $this->consult_to_sync($request->curso_id, $request->docente_id);
+            event(new CalificacionEvent($syncCalificacion));
+
+            return Redirect::route('index.desarrollo.inscritos', ['id' => $request->curso_id]);
+        }else{
+            return back()->withErrors($data[0]);
+        }
     }
 
-    public function update_calificaciones_desarrollo(Request $request)
+    public function update_calificaciones_desarrollo(CalificacionesRequest $request)
     {
-        $request->validate([
-            'docente_id' => 'required',
-            'calificacion' => 'required',
-            'curso_id' => 'required',
-        ]);
+        $calificaciones = new Calificaciones();
 
-        DocenteController::update_calificacion($request, $request->docente_id);
-        return Redirect::route('index.desarrollo.inscritos', ['id' => $request->curso_id]);
+        $update = $calificaciones->update_calificacion($request, $request->docente_id);
+
+        if ($update[1] == 200){
+            return Redirect::route('index.desarrollo.inscritos', ['id' => $request->curso_id]);
+        }else{
+            return back()->withErrors($update[0]);
+        }
     }
     public static function consult_to_sync($curso_id, $docente_id)
     {

@@ -245,7 +245,7 @@
     <table class="w100">
         <tr>
             <td class="titles">NOMBRE DEL ÚLTIMO GRADO DE ESTUDIOS:</td>
-            <td class="uline content w100">{{$docente?->posgrado->nombre}}</td>
+            <td class="uline content w100">{{$docente?->posgrado?->nombre}}</td>
         </tr>
     </table>
     <table class="w100">

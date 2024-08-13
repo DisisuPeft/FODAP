@@ -2,6 +2,9 @@
 import {computed, onMounted, ref} from "vue";
 import CustomSnackBar from "@/Components/CustomSnackBar.vue";
 import Loading from "@/Components/Loading.vue";
+import DangerButton from "@/Components/DangerButton.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import {errorMsg, notify, success_alert} from "@/jsfiels/alertas.js";
 
 const message = ref("")
 const color = ref("")
@@ -11,6 +14,10 @@ const loading = ref(false)
 
 const props = defineProps({
     modelValue: Boolean,
+    maxWidth: {
+        type: String,
+        default: '2xl',
+    },
 });
 const emit = defineEmits([
     'update:modelValue'
@@ -46,87 +53,155 @@ function submit(){
             anio: form.value.anio
         }
     }).then(res => {
-        if (res.data.mensaje){
-            message.value = res.data.mensaje
-            color.value = 'error'
-            timeout.value = 5000
-            snackbar.value = true
-            loading.value = false
-            setTimeout(()=>{
-                snackbar.value = false
-            },timeout.value)
-        }else {
+
             const url = '/storage/PIFDAP.pdf';
             const link = document.createElement('a');
             link.href = url;
             link.setAttribute('download', 'PIFDAP.pdf');
             document.body.appendChild(link);
             link.click();
-            message.value = 'Documento generado con exito'
-            color.value = 'success'
-            timeout.value = 5000
-            snackbar.value = true
             loading.value = false
-            setTimeout(()=>{
-                snackbar.value = false
-            },timeout.value)
-        }
+            emit('update:modelValue', false)
+            notify('¡Atención!', `${res.data[1]}`, `${res.data[0]}`)
+
     }).catch(error => {
-        message.value = 'Error al generar el documento'
-        color.value = 'error'
-        timeout.value = 5000
         loading.value = false
-        snackbar.value = true
-        setTimeout(()=>{
-            snackbar.value = false
-        },timeout.value)
+        errorMsg('Atención', `${format_errors(error.response?.data?.errors)}`)
+        message.value = ""
     })
 }
 
 
+const maxWidthClass = computed(() => {
+    return {
+        sm: 'sm:max-w-sm',
+        md: 'sm:max-w-md',
+        lg: 'sm:max-w-lg',
+        xl: 'sm:max-w-xl',
+        '2xl': 'sm:max-w-2xl',
+    }[props.maxWidth];
+})
 
 onMounted(() => {
 
 })
+
+const format_errors = (errors) => {
+    for (const errorsKey in errors) {
+        message.value += errors[errorsKey]
+    }
+    return message.value.split('.').join('. ');
+}
 </script>
 
 <template>
-    <v-dialog width="auto" persistent v-model="props.modelValue">
-        <form @submit.prevent="submit">
-            <v-card elevation="3" width="500" height="500">
-                <v-card-title>Ingresar los datos para generar PDF</v-card-title>
-                <v-card-text>
-                    <label for="anio" class="absolute text-md text-gray-500 dark:text-gray-400  bg-white  left-1 pb-4 mb-5 ml-5">Año: </label>
-                    <div class="pt-5">
-                        <v-select v-model="form.anio" :items="fullYears" item-title="name" item-value="id" variant="solo"></v-select>
+    <teleport to="body">
+        <transition leave-active-class="duration-200">
+            <div v-show="props.modelValue" class="fixed inset-0 overflow-y-auto px-4 py-12 sm:px-0 z-50" scroll-region>
+                <transition
+                    enter-active-class="ease-out duration-300"
+                    enter-from-class="opacity-0"
+                    enter-to-class="opacity-100"
+                    leave-active-class="ease-in duration-200"
+                    leave-from-class="opacity-100"
+                    leave-to-class="opacity-0"
+                >
+                    <div v-show="props.modelValue" class="fixed inset-0 transform transition-all">
+                        <div class="absolute inset-0 bg-gray-500 opacity-75" />
                     </div>
-                    <label for="periodo" class="absolute text-md text-gray-500 dark:text-gray-400  bg-white  left-1 pb-4 mb-5 ml-5">Periodo: </label>
-                    <div class="pt-5">
-                        <v-select v-model="form.periodo" :items="periodos" item-title="name" item-value="id" variant="solo"></v-select>
-                    </div>
-                </v-card-text>
-                <v-card-actions>
-                    <v-row justify="end">
-                        <v-col cols="4">
-                            <v-btn color="error" @click="emit('update:modelValue', false)">
-                                Cancelar
-                            </v-btn>
-                        </v-col>
-                        <v-col cols="4">
-                            <v-btn @click="submit" color="success" prepend-icon="mdi-file-pdf-box">
-                                Generar
-                            </v-btn>
-                        </v-col>
-                    </v-row>
-                </v-card-actions>
-            </v-card>
-        </form>
-    </v-dialog>
-    <CustomSnackBar
-    :color="color" :timeout="timeout" :message="message" v-model="snackbar" @update:modelValue="snackbar = $event"
-    >
+                </transition>
 
-    </CustomSnackBar>
+                <transition
+                    enter-active-class="ease-out duration-300"
+                    enter-from-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                    enter-to-class="opacity-100 translate-y-0 sm:scale-100"
+                    leave-active-class="ease-in duration-200"
+                    leave-from-class="opacity-100 translate-y-0 sm:scale-100"
+                    leave-to-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                >
+                    <div
+                        v-show="props.modelValue"
+                        :class="['mb-6', 'bg-white','rounded-lg', 'overflow-hidden', 'shadow-xl', 'transform', 'transition-all', 'sm:w-full', 'sm:mx-auto', maxWidthClass]"
+                    >
+                        <div v-if="props.modelValue">
+                            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+                                <div class="p-4 mt-7 sm:p-8 sm:rounded-lg">
+                                    <div class="grid grid-rows-1">
+                                        <!--                                        <div class="flex justify-center">-->
+                                        <div class="flex justify-start">
+                                                                <label for="anio" class="text-md text-gray-500 dark:text-gray-400 bg-white left-1 p-4">Año: </label>
+                                        </div>
+                                        <div class="flex justify-center p-4">
+                                                                    <v-select v-model="form.anio" :items="fullYears" item-title="name" item-value="id" variant="solo"></v-select>
+                                        </div>
+                                        <!--                                        </div>-->
+                                        <div class="flex justify-start">
+                                                                <label for="periodo" class="text-md text-gray-500 dark:text-gray-400 bg-white left-1 p-4">Periodo: </label>
+                                        </div>
+                                        <div class="flex justify-center p-4">
+                                                                    <v-select v-model="form.periodo" :items="periodos" item-title="name" item-value="id" variant="solo"></v-select>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-rows-1 p-3">
+                                        <div class="flex justify-end">
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div class="flex justify-end">
+                                                    <v-btn @click="emit('update:modelValue', false)" color="red">
+                                                        Cerrar
+                                                    </v-btn>
+                                                </div>
+                                                <div  class="flex justify-center">
+                                                                                <v-btn @click="submit" color="success" prepend-icon="mdi-file-pdf-box">
+                                                                                    Generar
+                                                                                </v-btn>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </transition>
+            </div>
+        </transition>
+    </teleport>
+<!--    <v-dialog width="auto" persistent v-model="props.modelValue">-->
+<!--        <form @submit.prevent="submit">-->
+<!--            <v-card elevation="3" width="500" height="500">-->
+<!--                <v-card-title>Ingresar los datos para generar PDF</v-card-title>-->
+<!--                <v-card-text>-->
+<!--                    <label for="anio" class="absolute text-md text-gray-500 dark:text-gray-400  bg-white  left-1 pb-4 mb-5 ml-5">Año: </label>-->
+<!--                    <div class="pt-5">-->
+<!--                        <v-select v-model="form.anio" :items="fullYears" item-title="name" item-value="id" variant="solo"></v-select>-->
+<!--                    </div>-->
+<!--                    <label for="periodo" class="absolute text-md text-gray-500 dark:text-gray-400  bg-white  left-1 pb-4 mb-5 ml-5">Periodo: </label>-->
+<!--                    <div class="pt-5">-->
+<!--                        <v-select v-model="form.periodo" :items="periodos" item-title="name" item-value="id" variant="solo"></v-select>-->
+<!--                    </div>-->
+<!--                </v-card-text>-->
+<!--                <v-card-actions>-->
+<!--                    <v-row justify="end">-->
+<!--                        <v-col cols="4">-->
+<!--                            <v-btn color="error" @click="emit('update:modelValue', false)">-->
+<!--                                Cancelar-->
+<!--                            </v-btn>-->
+<!--                        </v-col>-->
+<!--                        <v-col cols="4">-->
+<!--                            <v-btn @click="submit" color="success" prepend-icon="mdi-file-pdf-box">-->
+<!--                                Generar-->
+<!--                            </v-btn>-->
+<!--                        </v-col>-->
+<!--                    </v-row>-->
+<!--                </v-card-actions>-->
+<!--            </v-card>-->
+<!--        </form>-->
+<!--    </v-dialog>-->
+<!--    <CustomSnackBar-->
+<!--    :color="color" :timeout="timeout" :message="message" v-model="snackbar" @update:modelValue="snackbar = $event"-->
+<!--    >-->
+
+<!--    </CustomSnackBar>-->
     <Loading v-model="loading" @update:loading="loading = $event">
         <v-fade-transition leave-absolute>
             <v-progress-circular

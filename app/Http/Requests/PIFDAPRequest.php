@@ -30,8 +30,8 @@ class PIFDAPRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'anio.required' => 'El año es requerido!',
-            'periodo.required' => 'Debe indicar el periodo'
+            'anio.required' => 'Debe indicar el año.',
+            'periodo.required' => 'Debe indicar el periodo.'
         ];
     }
 }

@@ -161,7 +161,7 @@ class ProfileController extends Controller
         }
     }
 
-    public function update_docente(Request $request, $id)
+    public function update_docente(DocenteRequest $request, $id)
     {
         $docente = new Docente();
         $docente->updated_instance_docente($request, $id, null);

@@ -5,10 +5,12 @@ import {onMounted, reactive, ref} from "vue";
 import NavLink from "@/Components/NavLink.vue";
 import {FODAPStore} from "@/store/server.js";
 import CustomSnackBar from "@/Components/CustomSnackBar.vue";
+import {errorMsg, success_alert} from "@/jsfiels/alertas.js";
 const props = defineProps({
     auth: Object,
     docente: Object,
     curso: Object,
+    errors: Object,
 })
 
 const timeout = ref(0)
@@ -30,7 +32,6 @@ const form = useForm({
     introduccion: "",
     justificacion: "",
     objetivo_general: "",
-    descripcion_servicio: "",
     temas: [ ['', '', ''], ['', '', ''], ['', '', ''] ],
     elementos_didacticos: "",
     criterio_eval: [ ['', '', ''], ['', '', ''], ['', '', ''] ],
@@ -84,10 +85,13 @@ const snacktemas = () => {
 const submit = () => {
     form.post(route('store.ficha'), {
         onSuccess: () => {
-            snackSuccessActivator()
+            // snackSuccessActivator()
+            success_alert("Exito.", "La ficha se creo.")
         },
         onError: () => {
-            snackErrorActivator()
+            // snackErrorActivator()
+            errorMsg("Ateción", `${format_errors(props.errors)}`)
+            message.value = ""
         }
     })
 }
@@ -97,6 +101,13 @@ onMounted(() => {
     //
     // console.log(store.this_facilitador)
 });
+
+const format_errors = (errors) => {
+    for (const errorsKey in errors) {
+        message.value += errors[errorsKey]
+    }
+    return message.value.split('.').join('. ');
+}
 </script>
 
 <template>

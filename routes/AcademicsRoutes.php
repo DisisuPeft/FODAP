@@ -39,5 +39,5 @@ Route::middleware(['auth', 'role:Jefes Academicos'])->group(function () {
     Route::post('/academicos/docentes/up/{type}', [AcademicosController::class, 'docente_created_from_form'])->name('create.docentes.academicos.up');
 //    Route::post('/academicos/docentes/created', [AcademicosController::class, 'created_docentes_academicos'])->name('store.docentes.academicos');
     Route::get('/academicos/docentes/edit/{id}', [AcademicosController::class, 'edit_docente_academico'])->name('edit.docentes.academicos');
-    Route::put('/academicos/docentes/update/{id}', [AcademicosController::class, 'update_docente_academico'])->name('update.docentes.academicos');
+    Route::put('/academicos/docentes/update/{id}/{type}', [AcademicosController::class, 'update_docente_academico'])->name('update.docentes.academicos');
 });
