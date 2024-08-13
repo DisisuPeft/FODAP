@@ -397,8 +397,8 @@ const format_errors = (errors) => {
 const generar_reconocimiento = () => {
     if (props.curso?.estado === 2){
         Swal.fire({
-            title: '¿Ingreso la información correcta?',
-            text: 'Esta acción se puede revertir',
+            title: 'Esta por generar el reconocimiento.',
+            text: 'Esta acción puede tardar unos minutos.',
             showCancelButton: true,
             showConfirmButton: true,
             confirmButtonText: 'Confirmar',
@@ -407,7 +407,7 @@ const generar_reconocimiento = () => {
             timerProgressBar: true
         }).then(res => {
             if (res.isConfirmed){
-
+                notify('¡Atención!', 'info', 'En breve se podra descargar el reconocimiento.')
             }
         })
     }else{
