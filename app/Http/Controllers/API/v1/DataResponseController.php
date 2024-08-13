@@ -136,4 +136,10 @@ class DataResponseController extends Controller
                 'curso' => $curso,
         ]);
     }
+
+    public function facilitador_get(Request $request)
+    {
+        $docente = new Docente();
+        return $docente->getFacilitadores($request->id);
+    }
 }

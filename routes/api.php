@@ -38,5 +38,8 @@ Route::middleware('auth')->prefix('v1')->group(function () {
     Route::get('/notifications-catch', [NotificationController::class, 'notifications_api'])->name('v1.notificaciones');
     Route::get('/curso-info', [DataResponseController::class, 'curso_data'])->name('v1.cursoInfo');
 
+
+
+    Route::get('/facilitadores/get', [DataResponseController::class, 'facilitador_get'])->name('v1.facilitadores.get');
 });
 

@@ -378,26 +378,199 @@ class PDFController extends Controller
         $this->save_file($pdf_2, $path_2);
 
         if (Storage::disk('public')->exists($path) && Storage::disk('public')->exists($path_2)){
-            $this->merge_pdf('constancia1', 'constancia2');
+            $this->merge_pdf('constancia1', 'constancia2', 'constancia.pdf');
             return [$clean, $band];
         }else{
-            return ["No se almaceno el archivo de manera correcta, intente generarlo nuevamente. Si el problema persiste se debe revisar el codigo.", "error"];
+            $band++;
+            $errors[] = "No se almaceno el archivo de manera correcta, intente generarlo nuevamente. Si el problema persiste se debe revisar el codigo.";
+            return [$errors, $band];
         }
     }
 
-    public static function merge_pdf($pdf1, $pdf2)
+    public function reconocimiento(Request $request){
+        $year = date('Y');
+        $instituto = DB::table('nombre_instituto')->get();
+        $docente = Docente::with('inscrito', 'posgrado', 'carrera', 'puesto')->find($request->id_docente);
+        $curso = DeteccionNecesidades::with('deteccion_facilitador',  'clave_curso', 'clave_validacion')->find($request->id);
+        $coordinacion = User::with('docente')->where('email', 'cformacion@tuxtla.tecnm.mx')->first();
+        $ficha = FichaTecnica::where('id_curso', $curso->id)->first();
+        $band = 0;
+        $errors = [];
+
+        $facilitador = $curso->deteccion_facilitador;
+        $instituto = DB::table('nombre_instituto')->get();
+        if ($instituto->isEmpty()) {
+            $band++;
+            $errors[] = 'La consulta a la base de datos para obtener el nombre del insituto tecnológico retorno con un valor vacio.';
+        }
+
+// Verificar la consulta $docente
+        $docente = Docente::with('inscrito', 'posgrado', 'carrera', 'puesto')->find($request->id_docente);
+        if (is_null($docente)) {
+            $band++;
+            $errors[] = 'El docente consultado en la base de datos no existe.';
+        } else {
+            foreach ($docente->getAttributes() as $key => $value) {
+                if (is_null($value)) {
+                    if ($key != "interno" && "clavePresup" && "horarioEntrada" && "horarioSalida" && "prodep" && "empresa" && "tipodecurso"){
+                        $band++;
+                        $errors[] = 'La propiedad ' .'"'. $key .'"'. ' está vacía.';
+                    }
+                    break;
+                }
+            }
+            foreach (['inscrito', 'posgrado', 'carrera', 'puesto'] as $relation) {
+                if (is_null($docente->{$relation})) {
+                    $band++;
+                    $errors[] = 'La relación ' .'"'. $relation .'"'. ' esta vacía.';
+                }
+            }
+        }
+
+// Verificar la consulta $curso
+        $curso = DeteccionNecesidades::with('deteccion_facilitador', 'clave_curso', 'clave_validacion')->find($request->id);
+        if (is_null($curso)) {
+            $band++;
+            $errors[] = 'El curso consultado en la base de datos retorno un valor vacio.';
+        } else {
+            foreach ($curso->getAttributes() as $key => $value) {
+                if (is_null($value)) {
+                    if ($key != "anio_realizacion" && $key != "observaciones" && $key != "facilitador_externo"){
+                        $band++;
+                        $errors[] = 'La propiedad ' .'"'. $key .'"'. ' del curso está vacía. Se debe verificar la información del curso';
+                    }
+                    break;
+                }
+            }
+            foreach (['deteccion_facilitador', 'clave_curso', 'clave_validacion'] as $relation) {
+                if (is_null($curso->{$relation})) {
+                    $band++;
+                    $errors[] = 'La relación ' .'"'. $relation .'"'. ' del curso retorno un valor vacío. Verifique la información del curso.';
+                }
+            }
+        }
+
+// Verificar la consulta $coordinacion
+        $coordinacion = User::with('docente')->where('email', 'cformacion@tuxtla.tecnm.mx')->first();
+        if (is_null($coordinacion)) {
+            $band++;
+            $errors[] = 'La consulta en la base de datos para obetner al usuario que pertenece a la coordinación de formación docente retornó un valor vacio. Ingrese al apartado de "Configuracion" y verificar la información';
+        } else {
+            foreach ($coordinacion->getAttributes() as $key => $value) {
+                if (is_null($value)) {
+                    if ($key != "name" && "email_verified_at" && "created_at"){
+                        $band++;
+                        $errors[] = 'La propiedad ' .'"'. $key .'"'. ' del usuario de la coordinación de formación docente retornó un valor vacio. Ingrese al apartado de "Configuracion" y verificar la información';
+                    }
+                    break;
+                }
+            }
+            if (is_null($coordinacion->docente)) {
+                $band++;
+                $errors[] = 'La relación del usuario con el docente está vacía. Ingrese al apartado de "Configuracion" y verifique la información';
+            }
+        }
+
+// Verificar la consulta $ficha
+        if (!is_null($curso)) {
+            $ficha = FichaTecnica::where('id_curso', $curso->id)->first();
+            if (is_null($ficha)) {
+                $band++;
+                $errors[] = 'La consulta a la ficha tecnica relacionada con el curso retornó vacia. Es probable que no ha sido creada, verifique en el apartado de "Ficha técnica".';
+            } else {
+                foreach ($ficha->getAttributes() as $key => $value) {
+                    if (is_null($value)) {
+                        if ($key != "descripcion_servicio"){
+                            $band++;
+                            $errors[] = 'La propiedad ' .'"'. $key .'"'. ' de la ficha tecnica está vacía. Verifique la información.';
+                        }
+                        break;
+                    }
+                }
+            }
+        }else {
+            $band++;
+            $errors[] = 'La consulta para obtener el curso retornó un valor vacio. Si persisite, revise la información del curso.';
+        }
+        $director = DB::table('director')->where('id', 1)->get();
+//        dd($director);
+        if (is_null($director)){
+            $band++;
+            $errors[] = 'La consulta para obtener el nombre del director de la institucion retorno un valor vacio. Ingrese al apartado de "Configuracion" y verificar la información.';
+        }else {
+            foreach ($director as $key => $value) {
+                if (is_null($value)) {
+//                    if ($key != "descripcion_servicio"){
+                    $band++;
+                    $errors[] = 'La propiedad ' .'"'. $key .'"'. ' tiene un valor vacío. Ingrese al apartado de "Configuracion" y verificar la información.';
+//                    }
+                    break;
+                }
+            }
+        }
+        $clean = implode(" ", $errors);
+        if ($band != 0) {
+            return [$clean, $band];
+        }
+        $actual_date = date('Y-m-d');
+        $day = date('d');
+        $anio = date('Y');
+        $month_get = $this->parse_date($actual_date);
+
+        $fecha = $curso->fecha_I;
+        $fecha2 = $curso->fecha_F;
+//        dd($fecha, $fecha2);
+        $formatFechasI = explode("-", $fecha);
+        $formatFechasF = explode("-", $fecha2);
+//            $director = Director::all();
+        $month = $this->parse_date($fecha);
+//        dd($formatFechasI, $formatFechasF, $month);
+        $pdf_1 = Pdf::loadView('pdf.reconocimiento', compact('year', 'instituto', 'docente', 'formatFechasI', 'formatFechasF', 'month', 'facilitador', 'director', 'curso'))
+            ->setOptions([
+                'fontDir' => storage_path('app/public/fonts/'),
+            ])
+            ->output();
+
+        $path = 'reconocimiento1.pdf';
+
+        $pdf_2 = Pdf::loadView('pdf.reconocimiento_2', compact('year', 'curso', 'docente', 'day', 'anio', 'month_get', 'coordinacion', 'ficha'))
+            ->setPaper('a4', 'landscape')
+            ->output();
+
+        $path_2 = 'reconocimiento2.pdf';
+
+        $this->save_file($pdf_1, $path);
+        $this->save_file($pdf_2, $path_2);
+
+        if (Storage::disk('public')->exists($path) && Storage::disk('public')->exists($path_2)){
+            $merge = $this->merge_pdf('reconocimiento1', 'reconocimiento2', 'reconocimiento.pdf');
+            if ($merge[1] == 200){
+                return [$clean, $band];
+            }else{
+                $band++;
+                return [$merge[0], $band];
+            }
+        }else{
+            $band++;
+            $errors[] = "No se almaceno el archivo de manera correcta, intente generarlo nuevamente. Si el problema persiste se debe revisar el codigo.";
+            return [$errors, $band];
+        }
+    }
+
+    public static function merge_pdf($pdf1, $pdf2, $fileName)
     {
-        $name = "constancia.pdf";
+        $name = $fileName;
         $ruta = storage_path('app/public/' . $name);
         $pdf_1 = storage_path('app/public/' . $pdf1 . '.pdf');
         $pdf_2 = storage_path('app/public/' . $pdf2 . '.pdf');
 
         if (!file_exists($pdf_1) || !file_exists($pdf_2)) {
             // Manejar la falta de archivos, lanzar excepción o generar los PDFs previamente si es necesario
-            return "Los archivos no existen, notifica al administrador del sistema.";
+//            dd('app/public/' . $pdf1 . '.pdf', file_exists(storage_path('app/public/reconocimiento1.pdf')));
+            return ["Los PDF's no se generaron y no se almacenaron en la carpeta de archivos del sistema, se debe revisar en el codigo fuente.", 500];
         } else {
             $pdf = new Fpdi();
-
+//            dd('her');
             $pageCount1 = $pdf->setSourceFile($pdf_1);
             $template1 = $pdf->importPage(1);
             $pdf->addPage();
@@ -413,7 +586,7 @@ class PDFController extends Controller
             $pdf->useTemplate($template2);
 
             $pdf->Output($ruta, 'F');
-            return $ruta;
+            return [$ruta, 200];
         }
     }
 

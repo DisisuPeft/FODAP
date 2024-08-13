@@ -27,7 +27,9 @@ const props = defineProps({
     docente: Array,
     inscritos: Array,
     errors: Object,
-    flash: String
+    flash: {
+        type: [String, Object]
+    }
 });
 const timeout = ref(0);
 
@@ -45,6 +47,8 @@ const dialogCalificacionUpdate = ref(false);
 const show_ficha = ref(false);
 const color_ficha = ref("");
 const mm = ref([])
+const reconocimiento = ref(false);
+const getFacilitadores = ref([])
 const reloadPage = () => {
     router.reload();
     snackbar.value = false;
@@ -265,52 +269,6 @@ const desinscribir = (id) => {
 const closeModal = () => {
     show_ficha.value = false;
 };
-onMounted(() => {
-    window.Echo.private(`App.Models.User.${props.auth.user.id}`).notification(
-        (notification) => {
-            switch (notification.type) {
-                case "App\\Notifications\\NewDeteccionNotification":
-                    props.auth.usernotifications++;
-                    break;
-                case "App\\Notifications\\DeteccionEditadaNotification":
-                    props.auth.usernotifications++;
-                    break;
-                case "App\\Notifications\\AceptadoNotification":
-                    props.auth.usernotifications++;
-                    break;
-                case "App\\Notifications\\ObservacionNotification":
-                    props.auth.usernotifications++;
-                    break;
-            }
-        }
-    );
-    window.Echo.private("inscritos-chanel").listen(
-        "InscripcionEvent",
-        (event) => {
-            // snackEventActivator();
-        }
-    );
-    window.Echo.private("calificacion-update").listen(
-        "CalificacionEvent",
-        (event) => {
-            // snackEventActivator();
-        }
-    );
-    store.inscritos_curso_desarrollo(props.curso?.id);
-    axios
-        .get(route("count.cursos"))
-        .then((res) => {
-            // console.log(res.data);
-        })
-        .catch((err) => {
-            // console.log(err.response.data);
-        });
-    if (props.curso?.ficha_tecnica) {
-        color_ficha.value = "success";
-    } else {
-        color_ficha.value = "error";
-    }
-});
 
 const custom_snackbar = () => {
     snackbar.value = true;
@@ -398,7 +356,7 @@ const format_errors = (errors) => {
     return message.value.split('.').join('. ');
 }
 
-const generar_reconocimiento = () => {
+const generar_reconocimiento = (facilitador_id) => {
     if (props.curso?.estado === 2){
         Swal.fire({
             title: 'Esta por generar el reconocimiento.',
@@ -411,7 +369,35 @@ const generar_reconocimiento = () => {
             timerProgressBar: true
         }).then(res => {
             if (res.isConfirmed){
-                notify('¡Atención!', 'info', 'En breve se podra descargar el reconocimiento.')
+                axios
+                    .get(route("pdf.reconocimiento"), {
+                        params: {
+                            id: props.curso.id,
+                            id_docente: facilitador_id,
+                        },
+                    })
+                    .then((res) => {
+                        if(res.data[1] === 0){
+                            const url = "/storage/reconocimiento.pdf";
+                            const link = document.createElement("a");
+                            link.href = url;
+                            link.setAttribute("download", "reconocimiento.pdf");
+                            document.body.appendChild(link);
+                            link.click();
+                            loading.value = false;
+                            success_alert('Exito', 'Se ha descargado la contancia con exito')
+                        }else{
+                            loading.value = false;
+                            console.log(res.data)
+                            errorMsg('Parece que hacen falta estos parametros: ', `${res.data[0]}`)
+
+                            // errorMsg('Parece que hacen falta estos parametros: ', `${}`)
+                        }
+                    })
+                    .catch((error) => {
+                        loading.value = false;
+                        notify('¡Atención!','warning', `El servidor respondio: ${error.response.data}`)
+                    });
             }
         })
     }else{
@@ -438,6 +424,45 @@ const descargar_lista_asistencia = () => {
     }else{
         notify('¡Atención!', 'info', 'El curso aun no ha comenzado por lo que no se puede descargar la lista de asistencia.')
     }
+}
+
+onMounted(() => {
+    window.Echo.private(`App.Models.User.${props.auth.user.id}`).notification(
+        (notification) => {
+            switch (notification.type) {
+                case "App\\Notifications\\NewDeteccionNotification":
+                    props.auth.usernotifications++;
+                    break;
+                case "App\\Notifications\\DeteccionEditadaNotification":
+                    props.auth.usernotifications++;
+                    break;
+                case "App\\Notifications\\AceptadoNotification":
+                    props.auth.usernotifications++;
+                    break;
+                case "App\\Notifications\\ObservacionNotification":
+                    props.auth.usernotifications++;
+                    break;
+            }
+        }
+    );
+    // store.inscritos_curso_desarrollo(props.curso?.id);
+    axios
+        .get('/api/v1/facilitadores/get', {
+            params: {
+                id: props.curso?.id
+            }
+        })
+        .then((res) => {
+            getFacilitadores.value = res.data
+            console.log(res.data);
+        })
+        .catch((err) => {
+            console.log(err.response.data);
+        });
+});
+
+const close_modal = () => {
+    reconocimiento.value = false
 }
 </script>
 
@@ -575,12 +600,50 @@ const descargar_lista_asistencia = () => {
                     <div class="flex justify-end mb-5">
                         <div class="flex justify-end items-end">
                             <v-btn
-                                @click="generar_reconocimiento"
+                                @click="reconocimiento = true"
                                 block
                                 size="large"
                                 color="blue-darken-1"
                             >Generar reconocimiento facilitadores.</v-btn
                             >
+                            <Modal :show="reconocimiento" @close="close_modal">
+                                <div class="grid grid-rows-1">
+                                    <div class="flex justify-center">
+                                        <div class="grid grid-cols-1">
+                                            <p class="p-5 text-xl">Facilitadores de este curso</p>
+                                            <div class="p-10">
+                                                <table class="border-collapse border border-slate-500">
+                                                    <thead>
+                                                    <tr>
+                                                        <th class="border border-slate-600 p-2">ID</th>
+                                                        <th class="border border-slate-600">Nombre</th>
+                                                        <th class="border border-slate-600 p-2">Reconocimiento</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr v-for="f in getFacilitadores" :key="f.id">
+                                                        <td class="border border-slate-600 p-2">
+                                                            {{f.id}}
+                                                        </td>
+                                                        <td class="border border-slate-600 p-2 text-center">
+                                                            {{f.nombre_completo}}
+                                                        </td>
+                                                        <td class="border border-slate-600 p-2 text-center">
+                                                            <v-btn
+                                                                icon="mdi-file-pdf-box"
+                                                                color="success"
+                                                                @click="generar_reconocimiento(f.id)"
+                                                            >
+                                                            </v-btn>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Modal>
                         </div>
                     </div>
                     <div class="flex justify-end mb-10">

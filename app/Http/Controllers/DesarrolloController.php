@@ -64,33 +64,37 @@ class DesarrolloController extends Controller
 
     public function index_registros()
     {
-        $cursos_fd = DeteccionNecesidades::with('carrera', 'deteccion_facilitador', 'docente_inscrito')
-            ->where(function ($query) {
-                $query->where('estado', '=', 2)
-                    ->orWhere('aceptado', '=', 1);
-            })
-            ->where('tipo_FDoAP', '=', 1)
+//        $cursos_fd = DeteccionNecesidades::with('carrera', 'deteccion_facilitador', 'docente_inscrito')
+//            ->where(function ($query) {
+//                $query->where('estado', '=', 2)
+//                    ->orWhere('aceptado', '=', 1);
+//            })
+//            ->where('tipo_FDoAP', '=', 1)
+//            ->orderBy('id', 'desc')
+//            ->orderByRaw('deteccion_necesidades.estado ASC, ABS(DATEDIFF(NOW(), deteccion_necesidades.fecha_I)) ASC')
+//            ->get();
+//
+//        $cursos_ap = DeteccionNecesidades::with('carrera', 'deteccion_facilitador', 'docente_inscrito')
+//            ->where(function ($query) {
+//                $query->where('estado', '=', 2)
+//                    ->orWhere('aceptado', '=', 1);
+//            })
+//            ->where('tipo_FDoAP', '=', 2)
+//            ->orderBy('id', 'desc')
+//            ->orderByRaw('deteccion_necesidades.estado ASC, ABS(DATEDIFF(NOW(), deteccion_necesidades.fecha_I)) ASC')
+//            ->get();
+        $cursos = DeteccionNecesidades::with('carrera', 'deteccion_facilitador', 'docente_inscrito')
+            ->where('aceptado', '=', 1)
+            ->where('estado', '=', 2)
             ->orderBy('id', 'desc')
             ->orderByRaw('deteccion_necesidades.estado ASC, ABS(DATEDIFF(NOW(), deteccion_necesidades.fecha_I)) ASC')
             ->get();
-
-        $cursos_ap = DeteccionNecesidades::with('carrera', 'deteccion_facilitador', 'docente_inscrito')
-            ->where(function ($query) {
-                $query->where('estado', '=', 2)
-                    ->orWhere('aceptado', '=', 1);
-            })
-            ->where('tipo_FDoAP', '=', 2)
-            ->orderBy('id', 'desc')
-            ->orderByRaw('deteccion_necesidades.estado ASC, ABS(DATEDIFF(NOW(), deteccion_necesidades.fecha_I)) ASC')
-            ->get();
-
         $departamento = Departamento::all();
         $carrera = Carrera::all();
         $todas_carreras = DeteccionNecesidades::with('docente_inscrito')->get();
 
         return Inertia::render('Views/desarrollo/coordinacion/ShowRegistrosC', [
-            'cursos_fd' => $cursos_fd,
-            'cursos_ap' => $cursos_ap,
+            'cursos' => $cursos,
             'departamento' => $departamento,
             'carrera' => $carrera,
             'todas' => $todas_carreras,

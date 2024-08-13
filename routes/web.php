@@ -84,6 +84,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/ficha-tecnica', [PDFController::class, 'ficha_tecnica_pdf'])->name('pdf.ficha.tecnica');
         Route::get('/acta-calificaciones', [PDFController::class, 'acta_calificaciones_pdf'])->name('pdf.acta.calificaciones');
         Route::get('/constancia', [PDFController::class, 'constancia_pdf'])->name('pdf.constancia');
+        Route::get('/reconocimiento', [PDFController::class, 'reconocimiento'])->name('pdf.reconocimiento');
     });
 });
 

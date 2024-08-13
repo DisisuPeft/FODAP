@@ -190,4 +190,12 @@ class Docente extends Model
             return back()->withErrors('El ID que se compartió no existe en la base de datos.');
         }
     }
+
+    public function getFacilitadores($id){
+        return DB::table('docente AS d')
+            ->select('d.id', 'd.nombre_completo')
+            ->join('deteccion_has_facilitadores AS f', 'd.id', '=', 'f.docente_id')
+            ->join('deteccion_necesidades AS c', 'f.deteccion_id', '=', 'c.id')
+            ->where('c.id', '=', $id)->get();
+    }
 }

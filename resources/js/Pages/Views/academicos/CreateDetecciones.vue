@@ -46,7 +46,8 @@ const props = defineProps({
     },
     departamento: {
         type: Array
-    }
+    },
+    dates: Array,
 });
 
 const emit = defineEmits([
@@ -243,6 +244,19 @@ onMounted(() => {
                 break;
         }
     })
+    if (!props.dates[0]){
+        Swal.fire({
+            title: "La captura de deteccion de necesidades no esta habilitada.",
+            text: "Debes regresar a la página anterior.",
+            icon: "warning",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey:false,
+            showConfirmButton: false,
+            showDenyButton: false,
+            showCancelButton: false,
+        })
+    }
 });
 
 const format_errors = (errors) => {
@@ -302,7 +316,7 @@ const closeModal = () => {
 <!--                                </div>-->
 <!--                            </v-card>-->
 <!--                        </v-dialog>-->
-                        <Modal :show="dialog" @close="closeModal" :persistent="true">
+                        <Modal :show="dialog">
                             <div class="grid grid-rows-1">
                                 <div class="flex justify-center items-center m-5">
                                     <p class="text-xl ">Tipo de diagnostico que desea realizar</p>

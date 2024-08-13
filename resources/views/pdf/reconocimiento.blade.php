@@ -60,7 +60,7 @@
     <table width="100%" style="">
         <tr>
             <td style="text-align: center; vertical-align: middle; font-size: 14pt;">
-                OTORGA LA PRESENTE
+                OTORGA EL PRESENTE
             </td>
         </tr>
     </table>
@@ -68,7 +68,7 @@
     <table width="100%" style="margin-left: 4px">
         <tr>
             <td style="text-align: center; vertical-align: middle;  font-size: 22pt; font-weight: bold">
-                CONSTANCIA
+                RECONOCIMIENTO
             </td>
         </tr>
     </table>
@@ -92,7 +92,7 @@
     <table width="100%" style="margin-left: 4px">
         <tr>
             <td style="text-align: center; vertical-align: middle; sans-serif; font-size: 14pt;">
-                Por su destacada participación en el
+                Por haber impartido el
                 @if($curso->tipo_actividad == 1)
                     Taller
                 @elseif($curso->tipo_actividad == 2)
@@ -125,7 +125,7 @@
                 @else
                     Agosto-Diciembre
                 @endif
-                {{$year}} se llevó a cabo en este instituto, del {{$formatFechasI[2]}} al {{$formatFechasF[2]}} de {{$month[0]}} de {{$formatFechasF[0]}}, con una duración de {{$docente->inscrito[0]->total_horas}} horas.
+                {{$year}} se llevó a cabo en este instituto, del {{$formatFechasI[2]}} al {{$formatFechasF[2]}} de {{$month[0]}} de {{$formatFechasF[0]}}, con una duración de {{$curso->total_horas}} horas.
             </td>
         </tr>
     </table>
@@ -169,45 +169,11 @@
             <td style="text-align: center; vertical-align: middle; font-size: 8pt;">
                 {{mb_strtoupper($director[0]->nameDirector, 'UTF-8')}}
             </td>
-            <td style="text-align: center; vertical-align: middle; font-size: 8pt;">
-                            @if(count($facilitador) != 0)
-                                {{mb_strtoupper($facilitador[0]->nombre_completo, 'UTF-8')}}
-                            @else
-                                {{mb_strtoupper($curso->facilitador_externo, 'UTF-8')}}
-                            @endif
-            </td>
-            @if (count($facilitador) > 1)
-                <td style="text-align: center; vertical-align: middle; font-size: 8pt;">
-                    {{ mb_strtoupper($facilitador[1]->nombre_completo, 'UTF-8') }}
-                </td>
-            @endif
-            @if (count($facilitador) > 2)
-                <td style="text-align: center; vertical-align: middle; font-size: 8pt;">
-                    {{ mb_strtoupper($facilitador[2]->nombre_completo, 'UTF-8') }}
-                </td>
-            @endif
         </tr>
         <tr>
             <td style="text-align: center; vertical-align: middle; font-size: 7pt;  font-weight: bold;">
                 DIRECTOR
             </td>
-            <td style="text-align: center; vertical-align: middle; font-size: 7pt;  font-weight: bold;" >
-                FACILITADOR (A)
-            </td>
-            @if (count($facilitador) > 1)
-                <td style="text-align: center; vertical-align: middle; font-size: 7pt;  font-weight: bold;">
-                    <!-- Firma del facilitador -->
-                    FACILITADOR (A)
-                    <!-- Puedes agregar la imagen de la firma u otro contenido aquí -->
-                </td>
-            @endif
-            @if (count($facilitador) > 2)
-                <td style="text-align: center; vertical-align: middle; font-size: 7pt;  font-weight: bold;">
-                    <!-- Firma del facilitador -->
-                    FACILITADOR (A)
-                    <!-- Puedes agregar la imagen de la firma u otro contenido aquí -->
-                </td>
-            @endif
         </tr>
     </table>
 </body>
