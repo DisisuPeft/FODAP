@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { computed, ref } from "vue";
+import {computed, onMounted, ref} from "vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { Link } from "@inertiajs/vue3";
@@ -9,6 +9,7 @@ import { useForm } from "@inertiajs/vue3";
 import InputLabel from "@/Components/InputLabel.vue";
 import Loading from "@/Components/Loading.vue";
 import CustomSnackBar from "@/Components/CustomSnackBar.vue";
+import {notify} from "@/jsfiels/alertas.js";
 
 const props = defineProps({
     cursos_anio: Number,
@@ -113,7 +114,10 @@ const fullYears = computed(() => {
     return years;
 });
 
-console.log(props.docente_carrera);
+// console.log(props.docente_carrera);
+onMounted(() => {
+    notify('¡Atención', 'warning', 'Esta sección del sistema presenta errores en los calculos por lo que sigue en revisión. Cuando este correcto, esta alerta desparecera.')
+})
 </script>
 
 <template>
