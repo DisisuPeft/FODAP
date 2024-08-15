@@ -14,13 +14,28 @@ const curso_store = Curso();
 const props = defineProps({
     cursos: Array,
     auth: Object,
-    facilitadores: Array,
-    errors: Object
+    errors: Object,
+    carrera: Array,
+    departamento: Array
 });
 
 const pdf_dialog = ref(false);
 const search = ref("");
 const message = ref("")
+const anio_filter = ref();
+const departamento_filtro = ref();
+const carrera_filter = ref();
+const periodo = ref()
+const tipo = ref()
+
+const tipos_cursos = [
+    { id: 1, text: "FORMACION DOCENTE" },
+    { id: 2, text: "ACTUALIZACION PROFESIONAL" },
+];
+const period = [
+    { id: 1, text: "ENERO-JUNIO" },
+    { id: 2, text: "AGOSTO-DICIEMBRE" },
+];
 const estado = computed(() => {
     if (props.cursos.length === 0) {
         return 1;
@@ -140,6 +155,63 @@ const claves_curso = () => {
         }
     })
 }
+const filterCurso = computed(() => {
+    const busqueda = search.value.toLowerCase().trim();
+    // const anio = anio_filter.value;
+    const departamento = departamento_filtro.value;
+    const carrera = carrera_filter.value;
+    let formacion = tipo.value;
+    // let p = periodo.value;
+
+    let cursosFiltrados = [...props.cursos];
+
+    if (busqueda) {
+        cursosFiltrados = cursosFiltrados.filter((item) => {
+            return item.nombreCurso.toLowerCase().includes(busqueda);
+        });
+    }
+
+    if (formacion) {
+        cursosFiltrados = cursosFiltrados.filter((c) => {
+            // console.log(c.tipo_FDoAP, formacion);
+            return c.tipo_FDoAP === formacion;
+        });
+    }
+    // if (p) {
+    //     cursosFiltrados = cursosFiltrados.filter((c) => {
+    //         return c.periodo === p;
+    //     });
+    // }
+
+    // if (anio) {
+    //     cursosFiltrados = cursosFiltrados.filter((item) => {
+    //         const parse_anio = new Date(item.fecha_I).getFullYear();
+    //         return parse_anio === anio;
+    //     });
+    // }
+    if (departamento) {
+        cursosFiltrados = cursosFiltrados.filter((item) => {
+            return item.id_departamento === departamento;
+        });
+    }
+    if (carrera) {
+        cursosFiltrados = cursosFiltrados.filter((item) => {
+            return item.carrera_dirigido === carrera;
+        });
+    }
+
+    return cursosFiltrados;
+});
+const fullYears = computed(() => {
+    const maxYears = new Date().getFullYear() + 1;
+    const minYears = maxYears - 7;
+    const years = [];
+    for (let i = maxYears; i >= minYears; i--) {
+        years.push(i);
+    }
+
+    return years;
+});
 </script>
 
 <template>
@@ -185,9 +257,80 @@ const claves_curso = () => {
         <div class="mt-2 mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-4 mt-2 sm:p-8 bg-white shadow sm:rounded-lg">
                 <template v-if="props.cursos.length !== 0">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+                        <div class="col-span-1">
+                            <label class="block text-sm font-medium text-gray-700">Buscar por nombre de curso</label>
+                            <input class="mt-1 block w-full border-gray-300 rounded-md shadow-lg" v-model="search">
+                        </div>
+<!--                        <div class="col-span-1">-->
+<!--                            <label class="block text-sm font-medium text-gray-700">Filtrar por año</label>-->
+<!--                            <select id="level" class="mt-1 block w-full border-gray-300 rounded-md shadow-xl" v-model="anio_filter">-->
+<!--                                <option></option>-->
+<!--                                <option-->
+<!--                                    v-for="an in fullYears"-->
+<!--                                    :value="an"-->
+<!--                                    :key="an"-->
+<!--                                >-->
+<!--                                    {{ an }}-->
+<!--                                </option>-->
+<!--                            </select>-->
+<!--                        </div>-->
+                        <div class="col-span-1">
+                            <label class="block text-sm font-medium text-gray-700">Filtrar por departamento académico</label>
+                            <select id="level" class="mt-1 block w-full border-gray-300 rounded-md shadow-xl" v-model="departamento_filtro">
+                                <option></option>
+                                <option
+                                    v-for="d in props.departamento"
+                                    :value="d.id"
+                                    :key="d.id"
+                                >
+                                    {{ d.nameDepartamento }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-span-1">
+                            <label class="block text-sm font-medium text-gray-700">Filtrar por área académica</label>
+                            <select id="level" class="mt-1 block w-full border-gray-300 rounded-md shadow-xl" v-model="carrera_filter">
+                                <option></option>
+                                <option
+                                    v-for="c in props.carrera"
+                                    :value="c.id"
+                                    :key="c.id"
+                                >
+                                    {{ c.nameCarrera }}
+                                </option>
+                            </select>
+                        </div>
+<!--                        <div class="col-span-1">-->
+<!--                            <label class="block text-sm font-medium text-gray-700">Filtrar por periodo (enero-junio/agosto-diciembre)</label>-->
+<!--                            <select id="level" class="mt-1 block w-full border-gray-300 rounded-md shadow-xl" v-model="periodo">-->
+<!--                                <option></option>-->
+<!--                                <option-->
+<!--                                    v-for="p in period"-->
+<!--                                    :value="p.id"-->
+<!--                                    :key="p.id"-->
+<!--                                >-->
+<!--                                    {{ p.text }}-->
+<!--                                </option>-->
+<!--                            </select>-->
+<!--                        </div>-->
+                        <div class="col-span-1">
+                            <label class="block text-sm font-medium text-gray-700">Filtrar por Formación docente o Actualización profesional</label>
+                            <select id="level" class="mt-1 block w-full border-gray-300 rounded-md shadow-xl" v-model="tipo">
+                                <option></option>
+                                <option
+                                    v-for="cursos in tipos_cursos"
+                                    :value="cursos.id"
+                                    :key="cursos.id"
+                                >
+                                    {{ cursos.text }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
                     <v-virtual-scroll
-                        :items="props.cursos"
-                        height="300"
+                        :items="filterCurso"
+                        height="800"
                         item-height="50"
                         class="mt-4"
                     >

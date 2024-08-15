@@ -114,10 +114,13 @@ class DesarrolloController extends Controller
             })
             ->orderBy('id', 'desc')
             ->get();
-
+        $carrera = Carrera::all();
+        $departamento = Departamento::all();
 
         return Inertia::render('Views/cursos/desarrollo/DesarrolloCursos', [
             'cursos' => $cursos,
+            'carrera' => $carrera,
+            'departamento' => $departamento
         ]);
     }
 
