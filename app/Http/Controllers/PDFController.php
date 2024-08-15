@@ -353,8 +353,8 @@ class PDFController extends Controller
         $anio = date('Y');
         $month_get = $this->parse_date($actual_date);
 
-        $fecha = $docente->inscrito[0]->fecha_I;
-        $fecha2 = $docente->inscrito[0]->fecha_F;
+        $fecha = $curso->fecha_I;
+        $fecha2 = $curso->fecha_F;
         $formatFechasI = explode("-", $fecha);
         $formatFechasF = explode("-", $fecha2);
 //            $director = Director::all();

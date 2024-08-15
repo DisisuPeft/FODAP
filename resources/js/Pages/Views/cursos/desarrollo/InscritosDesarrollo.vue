@@ -776,19 +776,26 @@ const close_modal = () => {
                     <div class="flex justify-center">
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
                             <div class="flex justify-center items-center">
-                                <NavLink
-                                    :href="
+                                <template v-if="!props.curso.ficha_tecnica">
+                                    <NavLink
+                                        :href="
                                     route('crear.ficha', [
                                         props.auth.user.docente_id,
                                         props.curso?.id,
                                     ])
                                 "
-                                    as="button"
-                                >
-                                    <v-btn color="blue-darken-1">
+                                        as="button"
+                                    >
+                                        <v-btn color="blue-darken-1">
+                                            Crear ficha técnica
+                                        </v-btn>
+                                    </NavLink>
+                                </template>
+                                <template v-else>
+                                    <v-btn color="blue-darken-1" @click="notify('¡Atención!', 'warning', 'La ficha técnica ya ha sido creada.')">
                                         Crear ficha técnica
                                     </v-btn>
-                                </NavLink>
+                                </template>
                             </div>
                             <div class="flex justify-center items-center">
                                 <v-btn
