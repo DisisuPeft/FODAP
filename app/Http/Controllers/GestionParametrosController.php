@@ -553,7 +553,7 @@ class   GestionParametrosController extends Controller
         }
     }
 
-    public function update_password(Request $request, $id)
+    public function update_password(Request $request, $from, $id)
     {
         $rules = [
             'password' => ['min:8', 'confirmed', 'required'],
@@ -564,10 +564,19 @@ class   GestionParametrosController extends Controller
             'password.confirmed' => 'Las contraseñas no coinciden.',
             'password.min' => 'La contraseña debe contener mas de 8 caracteres.',
         ]);
-
+//        dd($request->all(), $id, $from);
+    //Cambiar la logica de este metodo
         if(!$validator->fails()){
-            $user = User::find($id);
 
+            $user = null;
+
+            if ($from == 'admin'){
+                $docente = Docente::find($id);
+                $user = User::find($docente->user_id);
+            }else if($from == 'user'){
+                $user = User::find($id);
+            }
+            //dd($user); //al buscar el usuario es 1, por lo que encuentra el correo del dda
             if (!$user) {
                 return back()->withErrors('Usuario no encontrado.');
             }
@@ -582,7 +591,11 @@ class   GestionParametrosController extends Controller
                 return redirect()->route('main');
             }
 
-            return Redirect::route('edit.user', ['id' => $id]);
+            if ($from == 'admin'){
+                return redirect()->route('edit.docentes', ['id' => $user->docente_id]);
+            }else{
+                return Redirect::route('edit.user', ['id' => $id]);
+            }
         }else{
             return back()->withErrors($validator)->withInput();
         }

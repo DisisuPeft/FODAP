@@ -75,7 +75,7 @@ const submit_passwordform = (form) => {
         timerProgressBar: true
     }).then(res => {
         if (res.isConfirmed){
-            form.put(route('update.password', user.value.id), {
+            form.put(route('update.password', ["user", user.value.id]), {
                 preserveScroll: true,
                 onSuccess: () => {
                     form.reset()

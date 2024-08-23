@@ -57,7 +57,7 @@ Route::middleware('auth')->group(function () {
 
 //    Route::put('password', [PasswordController::class, 'update'])->name('password.update');
 
-    Route::put('/password/update/{id}', [GestionParametrosController::class, 'update_password'])->name('update.password');
+    Route::put('/password/update/{from}/{id}', [GestionParametrosController::class, 'update_password'])->name('update.password');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->name('logout');

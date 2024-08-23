@@ -63,7 +63,7 @@ const submit_passwordform = (form) => {
         timerProgressBar: true
     }).then(res => {
         if (res.isConfirmed){
-            form.put(route('update.password', props.user.id), {
+            form.put(route('update.password', ["admin", props.user.id]), {
                 preserveScroll: true,
                 onSuccess: () => {
                     form.reset()

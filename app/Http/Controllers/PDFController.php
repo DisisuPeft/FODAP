@@ -77,9 +77,18 @@ class PDFController extends Controller
             $path = "Deteccion.pdf";
             $this->save_file($pdf, $path);
             //            return $this->download_file($path);
-            return response()->json([
-                'message' => 'Ok'
-            ]);
+            if (Storage::disk('public')->exists($path)){
+                return response()->json([
+                    'message' => 'Documento generado.',
+                    'status' => 200
+                ]);
+            }else{
+//                return ["No se almaceno el archivo de manera correcta, intente generarlo nuevamente. Si el problema persiste se debe revisar el codigo.", "error"];
+                return response()->json([
+                    'message' => 'No se almaceno el archivo de manera correcta, intente generarlo nuevamente. Si el problema persiste se debe revisar el codigo.',
+                    'status' => 500,
+                ]);
+            }
         }
     }
     public function PIFDAP_pdf(PIFDAPRequest $request)

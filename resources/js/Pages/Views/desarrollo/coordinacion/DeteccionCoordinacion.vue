@@ -124,7 +124,7 @@ const pdfDeteccion = () => {
         })
         .then((res) => {
             // cursos.value = res.data.cursos
-            if (res.data.message) {
+            if (res.data.status === 500) {
                 message.value = res.data.message;
                 loading.value = false
                 pdf_dialog.value = false
@@ -218,10 +218,10 @@ const fullYears = computed(() => {
                                         <option></option>
                                         <option
                                             v-for="p in periodos"
-                                            :value="p.value"
-                                            :key="p.value"
+                                            :value="p.id"
+                                            :key="p.id"
                                         >
-                                            {{ d.text }}
+                                            {{ p.name }}
                                         </option>
                                     </select>
                                 </div>
@@ -231,13 +231,16 @@ const fullYears = computed(() => {
                                 >Año:
                                 </label>
                                 <div class="pt-5">
-                                    <v-select
-                                        v-model="form.anio"
-                                        :items="fullYears"
-                                        item-title="name"
-                                        item-value="id"
-                                        variant="solo"
-                                    ></v-select>
+                                    <select id="level" class="mt-1 block w-full border-gray-300 rounded-md shadow-xl" v-model="form.anio">
+                                        <option></option>
+                                        <option
+                                            v-for="an in fullYears"
+                                            :value="an"
+                                            :key="an"
+                                        >
+                                            {{ an }}
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
                             <!--                                </div>-->

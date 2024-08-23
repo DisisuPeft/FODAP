@@ -156,7 +156,7 @@ const submit_passwordform = (form) => {
     }).then(res => {
         if (res.isConfirmed){
             AlertLoading('Guardando la información...', 'Esto puede tardar unos minutos')
-            form.put(route('update.password', props.docente.id), {
+            form.put(route('update.password', ["admin", props.docente.id]), {
                 preserveScroll: true,
                 onSuccess: () => {
                     form.reset()
