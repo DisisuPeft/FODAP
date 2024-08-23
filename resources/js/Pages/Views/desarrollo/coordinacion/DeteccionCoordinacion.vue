@@ -196,13 +196,16 @@ const fullYears = computed(() => {
                                 >Carrera a la que va dirigida:
                                 </label>
                                 <div class="pt-5">
-                                    <v-select
-                                        v-model="form.carrera"
-                                        :items="props.carrera"
-                                        item-title="nameCarrera"
-                                        item-value="id"
-                                        variant="solo"
-                                    ></v-select>
+                                    <select id="level" class="mt-1 block w-full border-gray-300 rounded-md shadow-xl" v-model="form.carrera">
+                                        <option></option>
+                                        <option
+                                            v-for="c in props.carrera"
+                                            :value="c.id"
+                                            :key="c.id"
+                                        >
+                                            {{ c.nameCarrera }}
+                                        </option>
+                                    </select>
                                 </div>
                                 <!--                                        </div>-->
                                 <label
@@ -211,13 +214,16 @@ const fullYears = computed(() => {
                                 >Periodo:
                                 </label>
                                 <div class="pt-5">
-                                    <v-select
-                                        v-model="form.periodo"
-                                        :items="periodos"
-                                        item-title="name"
-                                        item-value="id"
-                                        variant="solo"
-                                    ></v-select>
+                                    <select id="level" class="mt-1 block w-full border-gray-300 rounded-md shadow-xl" v-model="form.periodo">
+                                        <option></option>
+                                        <option
+                                            v-for="p in periodos"
+                                            :value="p.value"
+                                            :key="p.value"
+                                        >
+                                            {{ d.text }}
+                                        </option>
+                                    </select>
                                 </div>
                                 <label
                                     for="anio"
