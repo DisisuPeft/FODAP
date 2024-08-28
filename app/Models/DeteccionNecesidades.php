@@ -682,7 +682,7 @@ class DeteccionNecesidades extends Model
             array("carrera" => "Quimica", "total" => $totales_quimica,  "Total_de_hombres_capacitados" => $totales_quimica_masculinos, "Total_de_mujeres_capacitadas" => $totales_quimica_femenino),
             array("carrera" => "Gestión Empresarial", "total" => $totales_ige,  "Total_de_hombres_capacitados" => $totales_ige_masculinos, "Total_de_mujeres_capacitadas" => $totales_ige_femenino),
             array("carrera" => "Logística", "total" => $totales_logistica,  "Total_de_hombres_capacitados" => $totales_logistica_masculinos, "Total_de_mujeres_capacitadas" => $totales_logistica_femenino),
-            array("carrera" => "Mecatrónica", "total" => $totales_mecatronica,  "Total_de_hombres_capacitados" => $totales_mecatronica_masculinos, "Total_de_mujeres_capacitadas" => $totales_mecatronica_masculinos),
+            array("carrera" => "Mecatrónica", "total" => $totales_mecatronica,  "Total_de_hombres_capacitados" => $totales_mecatronica_masculinos, "Total_de_mujeres_capacitadas" => $totales_mecatronica_femenino),
             array("carrera" => "Ciencias Basicas", "total" => $totales_cb,  "Total_de_hombres_capacitados" => $totales_cb_masculinos, "Total_de_mujeres_capacitadas" => $totales_cb_femenino),
             array("carrera" => "Ciencias Económico Administrativo", "total" => $totales_cea,  "Total_de_hombres_capacitados" => $totales_cea_masculinos, "Total_de_mujeres_capacitadas" => $totales_cea_femenino),
             array("carrera" => "Todas las carreras", "total" => $totales_todos,  "Total_de_hombres_capacitados" => $totales_masculinos, "Total_de_mujeres_capacitadas" => $totales_femenino)
