@@ -3,10 +3,9 @@
 namespace App\Exports;
 
 use App\Http\Controllers\EstadisticasController;
-use App\Models\DeteccionNecesidades;
 use Maatwebsite\Excel\Concerns\FromCollection;
 
-class PeriodoExports implements FromCollection
+class FDAPExport implements FromCollection
 {
     public $payload;
 
@@ -18,6 +17,6 @@ class PeriodoExports implements FromCollection
     */
     public function collection()
     {
-        return collect(EstadisticasController::estadistica_cursos_periodo($this->payload));
+        return collect(EstadisticasController::fd_ap_cursos($this->payload));
     }
 }

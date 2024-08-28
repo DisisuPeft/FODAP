@@ -22,14 +22,14 @@ class ExcelExportsController extends Controller
     {
         return Excel::store(new ClaveValidacionExport(), '/public/claves_validacion.xlsx');
     }
-    public function export_cursos_periodo()
+    public function export_cursos_periodo(Request $request)
     {
-        return Excel::store(new PeriodoExports(), '/public/periodos.xlsx');
+        return Excel::store(new PeriodoExports($request), '/public/periodos.xlsx');
     }
-    public function export_total_docentes()
+    public function export_total_docentes(Request $request)
     {
-        return EstadisticasController::docente_carrera();
-        //        return Excel::store(new DocenteCapacitadosExports, '/public/capacitado.xlsx');
+//        return EstadisticasController::docente_carrera();
+        return Excel::store(new DocenteCapacitadosExports($request), '/public/capacitados.xlsx');
     }
     public function export_formato_constancia(Request $request)
     {

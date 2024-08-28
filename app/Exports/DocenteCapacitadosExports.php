@@ -8,11 +8,16 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 
 class DocenteCapacitadosExports implements FromCollection
 {
+    public $payload;
+
+    public function __construct($payload){
+        $this->payload = $payload;
+    }
     /**
      * @return \Illuminate\Support\Collection
      */
     public function collection()
     {
-        return collect(EstadisticasController::docente_carrera());
+        return collect(EstadisticasController::docente_carrera($this->payload));
     }
 }

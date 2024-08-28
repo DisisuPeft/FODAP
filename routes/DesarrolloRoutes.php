@@ -116,6 +116,8 @@ Route::middleware(['auth', 'role:Jefe del Departamento de Desarrollo Academico|C
     Route::get('/exportar/claves-curso/', [ExcelExportsController::class, 'export_Claves_curso'])->name('excel.claves.curso');
     Route::get('/exportar/claves-validacion/', [ExcelExportsController::class, 'export_Claves_curso_validacion'])->name('excel.claves.curso.validacion');
     Route::get('/exportar/periodos', [ExcelExportsController::class, 'export_cursos_periodo'])->name('reporte.periodos');
+    Route::get('/exportar/docentes-capacitados', [ExcelExportsController::class, 'export_total_docentes'])->name('reporte.docentes.capacitados');
+    Route::get('/exportar/fdap', [EstadisticasController::class, 'export_excel_FDAP'])->name('reporte.FDAP');
     Route::get('/formato/export', [ExcelExportsController::class, 'export_formato_constancia'])->name('formato.constancia');
     Route::get('/formato/export/reconocimiento', [ExcelExportsController::class, 'export_formato_constancia_reconocimiento'])->name('formato.constancia.reconocimiento');
 

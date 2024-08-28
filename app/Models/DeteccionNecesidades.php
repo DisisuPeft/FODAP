@@ -346,370 +346,332 @@ class DeteccionNecesidades extends Model
         }
         return $facilitadores;
     }
-    public static function docente_carrera_consult()
+    public static function docente_carrera_consult($pay)
     {
         // Mecanica
+//        $sql = "SELECT COUNT(DISTINCT d.id) FROM inscripcion i
+//                JOIN deteccion_necesidades c ON i.curso_id = c.id
+//                JOIN docente d ON i.docente_id = d.id
+//                WHERE YEAR(c.fecha_F) = :year
+//                AND c.carrera_dirigido = 1";
         $totales_mecanica = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where('deteccion_necesidades.carrera_dirigido', '=', 1)
+            ->where('deteccion_necesidades.carrera_dirigido', 1)
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
+        /*DB::select($sql, ['year' => $pay->year]);
+        /*DB::table('inscripcion')
+        ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+        ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+        ->where('deteccion_necesidades.carrera_dirigido', '=', 1)
+        ->whereYear('fecha_F', '=', $pay->year)
+        ->distinct()
+        ->count();*/
         $totales_mecanica_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 1)
-                    ->where('docente.sexo', '=', 1);
-            })
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 1)
+            ->where('docente.sexo', '=', 1)
+            ->whereYear('fecha_F', '=', $pay->year)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_mecanica_femenino = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 1)
-                    ->where('docente.sexo', '=', 2);
-            })
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 1)
+            ->where('docente.sexo', '=', 2)
+            ->whereYear('fecha_F', '=', $pay->year)
             ->distinct()
-            ->select('docente.id')
-            ->count();
-        //Sistemas
+            ->count('docente.id');
+//        //Sistemas
         $totales_sistemas = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
             ->where('deteccion_necesidades.carrera_dirigido', '=', 2)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_sistemas_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 2)
-                    ->where('docente.sexo', '=', 1);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 2)
+            ->where('docente.sexo', '=', 1)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_sistemas_femenino = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 2)
-                    ->where('docente.sexo', '=', 2);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 2)
+            ->where('docente.sexo', '=', 2)
             ->distinct()
-            ->select('docente.id')
-            ->count();
-        //Industrial
+            ->count('docente.id');
+//        //Industrial
         $totales_industrial = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
             ->where('deteccion_necesidades.carrera_dirigido', '=', 3)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_industrial_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 3)
-                    ->where('docente.sexo', '=', 1);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 3)
+            ->where('docente.sexo', '=', 1)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_industrial_femenino = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 3)
-                    ->where('docente.sexo', '=', 2);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 3)
+            ->where('docente.sexo', '=', 2)
             ->distinct()
-            ->select('docente.id')
-            ->count();
-        //Electronica
+            ->count('docente.id');
+//        //Electronica
         $totales_electronica = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
             ->where('deteccion_necesidades.carrera_dirigido', '=', 4)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_electronica_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 4)
-                    ->where('docente.sexo', '=', 1);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 4)
+            ->where('docente.sexo', '=', 1)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_electronica_femenino = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 4)
-                    ->where('docente.sexo', '=', 2);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 4)
+            ->where('docente.sexo', '=', 2)
             ->distinct()
-            ->select('docente.id')
-            ->count();
-        //electrica
+            ->count('docente.id');
+//        //electrica
         $totales_electrica = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
             ->where('deteccion_necesidades.carrera_dirigido', '=', 5)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_electrica_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 5)
-                    ->where('docente.sexo', '=', 1);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 5)
+            ->where('docente.sexo', '=', 1)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_electrica_femenino = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 5)
-                    ->where('docente.sexo', '=', 2);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 5)
+            ->where('docente.sexo', '=', 2)
             ->distinct()
-            ->select('docente.id')
-            ->count();
-        //bioquimica
+            ->count('docente.id');
+//        //bioquimica
         $totales_bioquimica = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
             ->where('deteccion_necesidades.carrera_dirigido', '=', 6)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_bioquimica_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 6)
-                    ->where('docente.sexo', '=', 1);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 6)
+            ->where('docente.sexo', '=', 1)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_bioquimica_femenino = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 6)
-                    ->where('docente.sexo', '=', 2);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 6)
+            ->where('docente.sexo', '=', 2)
             ->distinct()
-            ->select('docente.id')
-            ->count();
-        //quimica
+            ->count('docente.id');
+//        //quimica
         $totales_quimica = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
             ->where('deteccion_necesidades.carrera_dirigido', '=', 7)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_quimica_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 7)
-                    ->where('docente.sexo', '=', 1);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 7)
+            ->where('docente.sexo', '=', 1)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_quimica_femenino = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 7)
-                    ->where('docente.sexo', '=', 2);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 7)
+            ->where('docente.sexo', '=', 2)
             ->distinct()
-            ->select('docente.id')
-            ->count();
-        //IGE
+            ->count('docente.id');
+//        //IGE
         $totales_ige = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
             ->where('deteccion_necesidades.carrera_dirigido', '=', 8)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_ige_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 8)
-                    ->where('docente.sexo', '=', 1);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 8)
+            ->where('docente.sexo', '=', 1)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_ige_femenino = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 8)
-                    ->where('docente.sexo', '=', 2);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 8)
+            ->where('docente.sexo', '=', 2)
             ->distinct()
-            ->select('docente.id')
-            ->count();
-        //logistica
+            ->count('docente.id');
+//        //logistica
         $totales_logistica = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
             ->where('deteccion_necesidades.carrera_dirigido', '=', 9)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_logistica_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 9)
-                    ->where('docente.sexo', '=', 1);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 9)
+            ->where('docente.sexo', '=', 1)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_logistica_femenino = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 9)
-                    ->where('docente.sexo', '=', 2);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 9)
+            ->where('docente.sexo', '=', 2)
             ->distinct()
-            ->select('docente.id')
-            ->count();
-        //mecatronica
+            ->count('docente.id');
+//        //mecatronica
         $totales_mecatronica = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
             ->where('deteccion_necesidades.carrera_dirigido', '=', 10)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_mecatronica_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 10)
-                    ->where('docente.sexo', '=', 1);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 10)
+            ->where('docente.sexo', '=', 1)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_mecatronica_femenino = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 10)
-                    ->where('docente.sexo', '=', 2);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 10)
+            ->where('docente.sexo', '=', 2)
             ->distinct()
-            ->select('docente.id')
-            ->count();
-        //ciencias basicas
+            ->count('docente.id');
+//        //ciencias basicas
         $totales_cb = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
             ->where('deteccion_necesidades.carrera_dirigido', '=', 11)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_cb_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 11)
-                    ->where('docente.sexo', '=', 1);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 11)
+            ->where('docente.sexo', '=', 1)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_cb_femenino = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 11)
-                    ->where('docente.sexo', '=', 2);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 11)
+            ->where('docente.sexo', '=', 2)
             ->distinct()
-            ->select('docente.id')
-            ->count();
-        //Economico administrativo
+            ->count('docente.id');
+//        //Economico administrativo
         $totales_cea = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
             ->where('deteccion_necesidades.carrera_dirigido', '=', 12)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_cea_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 12)
-                    ->where('docente.sexo', '=', 1);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 12)
+            ->where('docente.sexo', '=', 1)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_cea_femenino = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('deteccion_necesidades.carrera_dirigido', '=', 12)
-                    ->where('docente.sexo', '=', 2);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('deteccion_necesidades.carrera_dirigido', '=', 12)
+            ->where('docente.sexo', '=', 2)
             ->distinct()
-            ->select('docente.id')
-            ->count();
-
-        //TOTALES
+            ->count('docente.id');
+//
+//        //TOTALES
         $totales_todos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('docente.sexo', '=', 1);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('docente.sexo', '=', 1)
             ->distinct()
-            ->select('docente.id')
-            ->count();
+            ->count('docente.id');
         $totales_femenino = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where(function ($query) {
-                $query->where('docente.sexo', '=', 2);
-            })
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->where('docente.sexo', '=', 2)
             ->distinct()
-            ->select('docente.id', 'docente.*')
-            ->get();
+            ->count('docente.id');
+
         return array(
             array("carrera" => "Mecánica", "total" => $totales_mecanica, "Total_de_hombres_capacitados" => $totales_mecanica_masculinos, "Total_de_mujeres_capacitadas" => $totales_mecanica_femenino),
             array("carrera" => "Sistemas Computacionales", "total" => $totales_sistemas,  "Total_de_hombres_capacitados" => $totales_sistemas_masculinos, "Total_de_mujeres_capacitadas" => $totales_sistemas_femenino),
@@ -744,5 +706,17 @@ class DeteccionNecesidades extends Model
             ->select('docente.*', 'calificaciones.calificacion', 'inscripcion.curso_id AS inscripcion_curso_id')
             ->distinct() // Agregar el método distinct aquí
             ->get();
+    }
+
+
+    public function docentes_sexo($pay){
+        return DB::table('inscripcion')
+            ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
+            ->distinct()
+            ->select(DB::raw("docente.nombre_completo, docente.sexo"))
+            ->get();
+//            ->count('docente.id');
     }
 }

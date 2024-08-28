@@ -3,13 +3,14 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import {computed, onMounted, ref} from "vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import { Link } from "@inertiajs/vue3";
+import {Link, router} from "@inertiajs/vue3";
 import axios from "axios";
 import { useForm } from "@inertiajs/vue3";
 import InputLabel from "@/Components/InputLabel.vue";
 import Loading from "@/Components/Loading.vue";
 import CustomSnackBar from "@/Components/CustomSnackBar.vue";
-import {notify} from "@/jsfiels/alertas.js";
+import {errorMsg, notify, success_alert} from "@/jsfiels/alertas.js";
+import Modal from "@/Components/Modal.vue";
 
 const props = defineProps({
     cursos_anio: Number,
@@ -17,6 +18,7 @@ const props = defineProps({
     cursos_tipo: Array,
     docente_carrera: Array,
     total_cursos_ap_fd: Array,
+    docentes_genero: Array
 });
 const showingNavigationDropdown = ref(false);
 const showingNavigationDropdown2 = ref(false);
@@ -24,14 +26,13 @@ const showingNavigationDropdown3 = ref(false);
 const showingNavigationDropdown4 = ref(false);
 const loading = ref(false);
 const message = ref("");
-const color = ref("");
-const timeout = ref();
-const snackbar = ref(false);
+const modal = ref(false)
 
-const date = computed(() => {
-    let date = new Date();
-    return date.getFullYear();
-});
+
+const close = () => {
+    modal.value = false
+}
+const year = ref()
 
 const request_anio = useForm({
     anio: null,
@@ -40,7 +41,11 @@ const request_anio = useForm({
 function download_excel_tipo() {
     loading.value = true;
     axios
-        .get(route("excel.cursos.tipo"))
+        .get(route("excel.cursos.tipo"), {
+            params: {
+                year: year.value
+            }
+        })
         .then((res) => {
             loading.value = false;
             const url = "/storage/estadisticas_tipo.xlsx";
@@ -49,30 +54,22 @@ function download_excel_tipo() {
             link.setAttribute("download", "estadisticas_tipo.xlsx");
             document.body.appendChild(link);
             link.click();
-            snackbar.value = true;
-            color.value = "success";
-            timeout.value = 5000;
-            message.value = "Excel generado con exito";
-            setTimeout(() => {
-                snackbar.value = true;
-            }, timeout.value);
+            success_alert('Exito!', 'Documento Excel descargado.')
         })
         .catch((error) => {
-            snackbar.value = true;
-            color.value = "error";
-            timeout.value = 5000;
-            message.value = "El archivo no se pudo descargar";
-            setTimeout(() => {
-                snackbar.value = false;
-            }, timeout.value);
-            console.log(error);
+            loading.value = false;
+            errorMsg('Error', 'Se debe de revisar en codigo.')
         });
 }
 
 function download_excel_periodos() {
     loading.value = true;
     axios
-        .get(route("reporte.periodos"))
+        .get(route("reporte.periodos"), {
+            params: {
+                year: year.value
+            }
+        })
         .then((res) => {
             loading.value = false;
             const url = "/storage/periodos.xlsx";
@@ -80,28 +77,62 @@ function download_excel_periodos() {
             link.href = url;
             link.setAttribute("download", "periodos.xlsx");
             document.body.appendChild(link);
-            snackbar.value = true;
-            color.value = "success";
-            timeout.value = 5000;
-            message.value = "Excel generado con exito";
-            setTimeout(() => {
-                snackbar.value = true;
-            }, timeout.value);
-            link.click();
+            link.click()
+            success_alert('Exito!', 'Documento Excel descargado.')
         })
         .catch((error) => {
             loading.value = false;
-            snackbar.value = true;
-            color.value = "error";
-            timeout.value = 5000;
-            message.value = "El archivo no se pudo descargar";
-            setTimeout(() => {
-                snackbar.value = false;
-            }, timeout.value);
-            console.log(error);
+            errorMsg('Error', 'Se debe de revisar en codigo.')
         });
 }
 
+function download_excel_docentes_capacitados() {
+    loading.value = true;
+    axios
+        .get(route("reporte.docentes.capacitados"), {
+            params: {
+                year: year.value
+            }
+        })
+        .then((res) => {
+            loading.value = false;
+            const url = "/storage/capacitados.xlsx";
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "capacitados.xlsx");
+            document.body.appendChild(link);
+            link.click()
+            success_alert('Exito!', 'Documento Excel descargado.')
+        })
+        .catch((error) => {
+            loading.value = false;
+            errorMsg('Error', 'Se debe de revisar en codigo.')
+        });
+}
+
+function download_excel_FDAP() {
+    loading.value = true;
+    axios
+        .get(route("reporte.FDAP"), {
+            params: {
+                year: year.value
+            }
+        })
+        .then((res) => {
+            loading.value = false;
+            const url = "/storage/estadisticas_FDAP.xlsx";
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "estadisticas_FDAP.xlsx");
+            document.body.appendChild(link);
+            link.click()
+            success_alert('Exito!', 'Documento Excel descargado.')
+        })
+        .catch((error) => {
+            loading.value = false;
+            errorMsg('Error', 'Se debe de revisar en codigo.')
+        });
+}
 const fullYears = computed(() => {
     const maxYears = new Date().getFullYear() + 1;
     const minYears = maxYears - 2;
@@ -114,9 +145,24 @@ const fullYears = computed(() => {
     return years;
 });
 
+const submit_anio = () => {
+    console.log(year.value)
+    router.visit(route('index.estadisticas'),
+        {
+            method: "get",
+            data: {
+                year: year.value,
+            },
+            replace: false,
+            preserveState: true,
+        }
+    )
+}
 // console.log(props.docente_carrera);
 onMounted(() => {
-    notify('¡Atención', 'warning', 'Esta sección del sistema presenta errores en los calculos por lo que sigue en revisión. Cuando este correcto, esta alerta desparecera.')
+    // notify('¡Atención', 'warning', 'Esta sección del sistema presenta errores en los calculos por lo que sigue en revisión. Cuando este correcto, esta alerta desparecera.')
+    let date = new Date()
+    year.value = date.getFullYear()
 })
 </script>
 
@@ -127,13 +173,6 @@ onMounted(() => {
         </template>
 
         <div class="">
-            <CustomSnackBar
-                :message="message"
-                :color="color"
-                v-model="snackbar"
-                @update:model-value="snackbar = $event"
-            >
-            </CustomSnackBar>
             <Loading v-model="loading" @update:loading="loading = $event">
                 <v-fade-transition leave-absolute>
                     <v-progress-circular
@@ -150,28 +189,38 @@ onMounted(() => {
             <div class="mt-2 mx-auto sm:px-6 lg:px-8 space-y-6">
                 <div class="p-4 mt-2 sm:p-8 bg-white shadow sm:rounded-lg">
                     <div class="grid grid-cols-1 md:grid-cols-3">
-                        <div class="flex justify-start">
-                            <InputLabel
-                                for="anio"
-                                value="Seleccionar año de estadisticas"
-                            />
+                        <div class="flex justify-start ml-16 p-5">
+<!--                            <InputLabel-->
+<!--                                for="anio"-->
+<!--                                value="Seleccionar año de estadisticas"-->
+<!--                            />-->
+                            <p class="text-xl">
+                                Seleccionar año de estadisticas
+                            </p>
                         </div>
-                        <div class="flex justify-end">
-                            <v-select
-                                variant="solo"
-                                class="w-48"
-                                :items="fullYears"
-                                style="width: 20px"
-                                v-model="request_anio.anio"
-                            >
-                            </v-select>
-                        </div>
-                        <div class="flex justify-start ml-10 items-center">
-                            <v-btn
-                                icon="mdi-calendar-search"
-                                color="blue-darken"
-                            ></v-btn>
-                        </div>
+<!--                        <form @submit.prevent="submit_anio">-->
+                            <div class="grid grid-cols-1 md:grid-cols-2">
+                                <div class="flex justify-end">
+                                    <select id="level" class="mt-1 block w-full border-gray-300 rounded-md shadow-xl" v-model="year">
+                                        <option></option>
+                                        <option
+                                            v-for="y in fullYears"
+                                            :value="y"
+                                            :key="y"
+                                        >
+                                            {{ y }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="flex justify-start ml-10 items-center">
+                                    <v-btn
+                                        icon="mdi-calendar-search"
+                                        color="blue-darken"
+                                        @click="submit_anio"
+                                    ></v-btn>
+                                </div>
+                            </div>
+<!--                        </form>-->
                     </div>
 
                     <div
@@ -180,7 +229,7 @@ onMounted(() => {
                         <div class="grid gap-5 grid-cols-1 md:grid-cols-2">
                             <div class="flex justify-center items-center">
                                 <p class="text-center text-4xl ma-5">
-                                    Cursos realizados en {{ date }}
+                                    Cursos realizados en {{ year }}
                                 </p>
                             </div>
                             <div class="flex justify-center items-center">
@@ -248,7 +297,7 @@ onMounted(() => {
                                                 class="border-2 border-black pa-2"
                                             >
                                                 Total de "tipo de curso" en
-                                                {{ date }}
+                                                {{ year }}
                                             </th>
                                         </tr>
                                     </thead>
@@ -337,7 +386,7 @@ onMounted(() => {
                                             <th
                                                 class="border-2 border-black pa-2"
                                             >
-                                                Total de cursos {{ date }}
+                                                Total de cursos {{ year }}
                                             </th>
                                         </tr>
                                     </thead>
@@ -384,7 +433,7 @@ onMounted(() => {
                                 <p class="ma-10 text-center text-2xl">
                                     Total de docentes capacitados por curso
                                     impartido en
-                                    {{ date }}
+                                    {{ year }}
                                 </p>
                                 <div
                                     class="flex justify-center items-center mt-2"
@@ -408,14 +457,57 @@ onMounted(() => {
                                 hidden: !showingNavigationDropdown3,
                             }"
                         >
-                            <div class="flex justify-end mr-16">
-                                <v-btn
-                                    prepend-icon="mdi-microsoft-excel"
-                                    color="green-lighten-1"
-                                    @click="download_excel_periodos"
-                                >
-                                    Generar Excel
-                                </v-btn>
+                            <div class="flex justify-center">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <template v-if="props.docentes_genero">
+                                        <div class="flex justify-center mr-16">
+                                            <v-btn
+                                                color="red"
+                                                @click="modal = true"
+                                            >
+                                                Genero N/E
+                                            </v-btn>
+                                        </div>
+                                    </template>
+                                    <Modal :show="modal" @close="close">
+                                        <div class="grid grid-rows-1">
+                                            <div class="flex justify-center">
+                                                <div class="grid grid-cols-1">
+                                                    <p class="p-5 text-xl">Docentes sin genero establecido</p>
+                                                    <div class="p-10">
+                                                        <table class="border-collapse border border-slate-500">
+                                                            <thead>
+                                                            <tr>
+                                                                <th class="border border-slate-600">Nombre</th>
+                                                                <th class="border border-slate-600 p-2">Genero</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr v-for="docente in docentes_genero" :key="docente.id">
+                                                                <td class="border border-slate-600 p-2">
+                                                                    {{docente.nombre_completo}}
+                                                                </td>
+                                                                <td class="border border-slate-600 p-2 text-center">
+                                                                    {{docente.sexo ? docente.sexo : 'Sin genero'}}
+                                                                </td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Modal>
+                                    <div class="flex justify-center mr-16">
+                                        <v-btn
+                                            prepend-icon="mdi-microsoft-excel"
+                                            color="green-lighten-1"
+                                            @click="download_excel_docentes_capacitados"
+                                        >
+                                            Generar Excel
+                                        </v-btn>
+                                    </div>
+                                </div>
                             </div>
                             <div class="ma-10 flex justify-center">
                                 <table
@@ -430,7 +522,7 @@ onMounted(() => {
                                                 class="border-2 border-black pa-2"
                                             >
                                                 Total de docentes capacitados en
-                                                {{ date }}
+                                                {{ year }}
                                             </th>
                                             <th
                                                 class="border-2 border-black pa-2"
@@ -502,7 +594,7 @@ onMounted(() => {
                             >
                                 <p class="ma-10 text-center text-2xl">
                                     Total de cursos de formación docente y
-                                    actualización profesional en {{ date }}
+                                    actualización profesional en {{ year }}
                                 </p>
                                 <div
                                     class="flex justify-center items-center mt-2"
@@ -526,6 +618,15 @@ onMounted(() => {
                                 hidden: !showingNavigationDropdown4,
                             }"
                         >
+                            <div class="flex justify-end mr-10">
+                                <v-btn
+                                    prepend-icon="mdi-microsoft-excel"
+                                    color="green-lighten-1"
+                                    @click="download_excel_FDAP"
+                                >
+                                    Generar Excel
+                                </v-btn>
+                            </div>
                             <div class="ma-10 flex justify-center">
                                 <table
                                     class="table-auto border-collapse border-2 border-black"
@@ -538,7 +639,7 @@ onMounted(() => {
                                             <th
                                                 class="border-2 border-black pa-2"
                                             >
-                                                Total en {{ date }}
+                                                Total en {{ year }}
                                             </th>
                                         </tr>
                                     </thead>
