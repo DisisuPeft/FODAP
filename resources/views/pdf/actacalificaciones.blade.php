@@ -20,7 +20,7 @@
             /*margin: 40px*/
         }
         .contenido {
-            margin: 50px
+            margin: 80px
         }
         .header {
             display: flex;
@@ -51,8 +51,9 @@
             width: 75%;
             border-collapse: collapse;
             border: 1px solid black;
-            margin-top: 50px;
+            /*margin-top: 50px;*/
             margin-left: 100px;
+            top: 100px
         }
 
 
