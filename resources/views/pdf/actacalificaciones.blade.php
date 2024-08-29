@@ -123,7 +123,7 @@
             <tbody>
             <tr>
                 <td>{{$count++}}</td>
-                <td>{{$docente->docente_calificacion->nombre_completo}}</td>
+                <td>{{$docente->docente_calificacion?->nombre_completo}}</td>
                 <td>
                     @if($docente->calificacion == 0)
                         NO APROBADO

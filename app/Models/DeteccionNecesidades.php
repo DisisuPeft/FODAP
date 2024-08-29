@@ -713,9 +713,10 @@ class DeteccionNecesidades extends Model
         return DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+//            ->leftjoin('carreras', 'docente.carrera_id', '=', 'carreras.id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
             ->distinct()
-            ->select(DB::raw("docente.nombre_completo, docente.sexo"))
+            ->select(DB::raw("docente.nombre_completo, docente.sexo, carreras.nameCarrera AS carrera_f"))
             ->get();
 //            ->count('docente.id');
     }
