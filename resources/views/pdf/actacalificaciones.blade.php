@@ -24,7 +24,7 @@
         .contenido {
             /*margin: 50px 50px 250px 50px;*/
             /*position: relative;*/
-            margin: 0 50px;
+            margin: 50px 50px;
         }
         .header {
             display: flex;
