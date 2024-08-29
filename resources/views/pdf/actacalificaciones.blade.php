@@ -7,7 +7,6 @@
     <style>
         @page {
             size: A4;
-            margin: 0;
         }
         body {
             background-image: url({{ public_path('/storage/Membretado/'.$year.'/img_acta_calificaciones.jpg') }});
@@ -17,11 +16,11 @@
             min-height: 100vh; /* Asegura que el cuerpo tenga al menos la altura de la ventana gráfica (viewport height) */
             display: flex;
             flex-direction: column;
+            margin: 30px
         }
         .header {
             display: flex;
             position: relative;
-            top: 200px;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -33,7 +32,6 @@
         .text-position {
             display: flex;
             position: relative;
-            top: 220px;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -47,7 +45,7 @@
             width: 75%;
             border-collapse: collapse;
             border: 1px solid black;
-            margin-top: 250px;
+            margin-top: 50px;
             margin-left: 100px;
         }
 
@@ -77,8 +75,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            top: 400px;
-            margin-top: 200px;
+            margin-top: 50px;
         }
         .words_strong {
             font-weight: bold;
