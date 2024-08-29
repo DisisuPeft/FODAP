@@ -78,7 +78,7 @@
             justify-content: center;
             align-items: center;
             top: 400px;
-            margin-top: 100px;
+            margin-top: 200px;
         }
         .words_strong {
             font-weight: bold;
