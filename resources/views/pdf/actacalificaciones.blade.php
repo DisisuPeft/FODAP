@@ -16,7 +16,11 @@
             min-height: 100vh; /* Asegura que el cuerpo tenga al menos la altura de la ventana gráfica (viewport height) */
             display: flex;
             flex-direction: column;
-            margin: 30px
+            /*margin: 40px*/
+            margin: 0
+        }
+        .contenido {
+            margin: 50px
         }
         .header {
             display: flex;
@@ -94,63 +98,65 @@
 </head>
 
 <body>
-    <div class="header">
-        <p>ACTA DE CALIFICACIONES</p>
-    </div>
-    <div class="text-position">
-        <p><b>NOMBRE DEL CURSO/TALLER</b>: {{$curso->nombreCurso}}</p>
-        <p><b>FECHA DE REALIZACIÓN</b>: {{$curso->fecha_I}} - {{$curso->fecha_F}}</p>
-        <p><b>ÁREA ACADÉMICA</b>: {{$curso->carrera->nameCarrera}}</p>
-    </div>
+    <div class="contenido">
+        <div class="header">
+            <p>ACTA DE CALIFICACIONES</p>
+        </div>
+        <div class="text-position">
+            <p><b>NOMBRE DEL CURSO/TALLER</b>: {{$curso->nombreCurso}}</p>
+            <p><b>FECHA DE REALIZACIÓN</b>: {{$curso->fecha_I}} - {{$curso->fecha_F}}</p>
+            <p><b>ÁREA ACADÉMICA</b>: {{$curso->carrera->nameCarrera}}</p>
+        </div>
 
-    <table class="custom_table">
-        <thead>
-        <tr>
-            <th>NÚM.</th>
-            <th>NOMBRE DEL DOCENTE</th>
-            <th>APROBADO /
-                NO APROBADO
-            </th>
-        </tr>
-        </thead>
-        @php
-            $count = 1;
-        @endphp
-        @foreach($curso->calificaciones_curso as $docente)
-            <tbody>
+        <table class="custom_table">
+            <thead>
             <tr>
-                <td>{{$count++}}</td>
-                <td>{{$docente->docente_calificacion?->nombre_completo}}</td>
-                <td>
-                    @if($docente->calificacion == 0)
-                        NO APROBADO
-                    @else
-                        APROBADO
-                    @endif
-                </td>
+                <th>NÚM.</th>
+                <th>NOMBRE DEL DOCENTE</th>
+                <th>APROBADO /
+                    NO APROBADO
+                </th>
             </tr>
-            </tbody>
-        @endforeach
-    </table>
-    <div style="page-break-before: auto"></div>
-    <div class="final_part">
-        @if(count($facilitadores) > 0)
-            <div style="text-align: center;" class="">
-                @for ($i = 0; $i < min(3, count($facilitadores)); $i++)
-                    <div style="display: inline-block; margin: 0 10px;">
-                        <p class="">FACILITADOR {{ $i + 1 }}</p>
-                        <p class="">{{ mb_strtoupper($facilitadores[$i]->nombre_completo, 'UTF-8') }}</p>
-                        <p class="">NOMBRE Y FIRMA</p>
-                    </div>
-                @endfor
-            </div>
-        @else
-            <div style="display: inline-block; margin: 0 10px;" class="">
-                <p class="">FACILITADOR</p>
-                <p class="">{{ mb_strtoupper($curso->facilitador_externo, 'UTF-8') }}</p>
-                <p class="">NOMBRE Y FIRMA</p>
-            </div>
-        @endif
+            </thead>
+            @php
+                $count = 1;
+            @endphp
+            @foreach($curso->calificaciones_curso as $docente)
+                <tbody>
+                <tr>
+                    <td>{{$count++}}</td>
+                    <td>{{$docente->docente_calificacion?->nombre_completo}}</td>
+                    <td>
+                        @if($docente->calificacion == 0)
+                            NO APROBADO
+                        @else
+                            APROBADO
+                        @endif
+                    </td>
+                </tr>
+                </tbody>
+            @endforeach
+        </table>
+        <div style="page-break-before: auto"></div>
+        <div class="final_part">
+            @if(count($facilitadores) > 0)
+                <div style="text-align: center;" class="">
+                    @for ($i = 0; $i < min(3, count($facilitadores)); $i++)
+                        <div style="display: inline-block; margin: 0 10px;">
+                            <p class="">FACILITADOR {{ $i + 1 }}</p>
+                            <p class="">{{ mb_strtoupper($facilitadores[$i]->nombre_completo, 'UTF-8') }}</p>
+                            <p class="">NOMBRE Y FIRMA</p>
+                        </div>
+                    @endfor
+                </div>
+            @else
+                <div style="display: inline-block; margin: 0 10px;" class="">
+                    <p class="">FACILITADOR</p>
+                    <p class="">{{ mb_strtoupper($curso->facilitador_externo, 'UTF-8') }}</p>
+                    <p class="">NOMBRE Y FIRMA</p>
+                </div>
+            @endif
+        </div>
     </div>
 </body>
 
