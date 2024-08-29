@@ -51,9 +51,8 @@
             width: 75%;
             border-collapse: collapse;
             border: 1px solid black;
-            /*margin-top: 50px;*/
+            margin-top: 100px;
             margin-left: 100px;
-            top: 200px
         }
 
 
@@ -82,7 +81,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 100px;
+            margin-top: 200px;
         }
         .words_strong {
             font-weight: bold;
