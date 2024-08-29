@@ -123,11 +123,11 @@
             @php
                 $count = 1;
             @endphp
-            @foreach($curso->calificaciones_curso as $docente)
+            @foreach($teachers as $docente)
                 <tbody>
                 <tr>
                     <td>{{$count++}}</td>
-                    <td>{{$docente->docente_calificacion?->nombre_completo}}</td>
+                    <td>{{$docente->nombre_completo}}</td>
                     <td>
                         @if($docente->calificacion == 0)
                             NO APROBADO

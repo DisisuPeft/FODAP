@@ -210,9 +210,22 @@ class PDFController extends Controller
         $year = date('Y');
         if ($request->id){
             $curso = DeteccionNecesidades::with('calificaciones_curso', 'carrera', 'deteccion_facilitador')->find($request->id);
+            $teachers = DB::table('docente')
+                ->orderBy('nombre', 'asc')
+                ->join('inscripcion', 'inscripcion.docente_id', '=', 'docente.id')
+                ->leftJoin('calificaciones', function ($join) {
+                    $join->on('calificaciones.docente_id', '=', 'docente.id')
+                        ->on('calificaciones.curso_id', '=', 'inscripcion.curso_id');
+                })
+                ->where('inscripcion.curso_id', '=', $curso->id)
+                ->select('docente.nombre_completo', 'calificaciones.calificacion AS calificacion')
+                ->distinct()
+                ->orderBy('docente.nombre_completo')
+                ->get();
+//            dd($teachers);
             if ($curso){
                 $facilitadores = $curso->deteccion_facilitador;
-                $pdf = Pdf::loadView('pdf.actacalificaciones', compact('year', 'curso', 'facilitadores'))
+                $pdf = Pdf::loadView('pdf.actacalificaciones', compact('year', 'curso', 'facilitadores', 'teachers'))
                     ->output();
                 $path = 'acta_de_calificaciones.pdf';
 
