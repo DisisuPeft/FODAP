@@ -9,6 +9,7 @@
             size: A4;
             margin: 0
         }
+
         body {
             background-image: url({{ public_path('/storage/Membretado/'.$year.'/img_acta_calificaciones.jpg') }});
             background-size: cover; /* O ajusta según tus necesidades (p. ej., contain) */
@@ -17,10 +18,13 @@
             min-height: 100vh; /* Asegura que el cuerpo tenga al menos la altura de la ventana gráfica (viewport height) */
             display: flex;
             flex-direction: column;
+            position: sticky;
             /*margin: 40px*/
         }
         .contenido {
-            margin: 50px
+            /*margin: 50px 50px 250px 50px;*/
+            /*position: relative;*/
+            margin: 0 50px;
         }
         .header {
             display: flex;
@@ -47,7 +51,7 @@
             top: 100px;
         }
         .custom_table {
-            table-layout: fixed;
+            table-layout: auto;
             width: 75%;
             border-collapse: collapse;
             border: 1px solid black;
@@ -81,7 +85,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 200px;
+            margin-top: 140px;
         }
         .words_strong {
             font-weight: bold;
@@ -139,7 +143,7 @@
                 </tbody>
             @endforeach
         </table>
-        <div style="page-break-before: auto"></div>
+        <div style="page-break-before: always"></div>
         <div class="final_part">
             @if(count($facilitadores) > 0)
                 <div style="text-align: center;" class="">
