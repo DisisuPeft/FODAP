@@ -32,17 +32,26 @@ class DocenteController extends Controller
         date_default_timezone_set('America/Mexico_City');
         CoursesController::state_curso();
 
+//        $cursos = DeteccionNecesidades::with(['carrera', 'deteccion_facilitador', 'docente_inscrito', 'lugar'])
+//            ->where('aceptado', '=', 1)
+////            ->where('id_departamento', '=', auth()->user()->departamento_id)
+//            ->orWhere('carrera_dirigido', '=', 13)
+//            ->where('estado', '=', 0)
+//            ->orWhere('estado', '=', 1)
+//            ->orderBy('id', 'desc')
+//            ->get();
+
         $cursos = DeteccionNecesidades::with(['carrera', 'deteccion_facilitador', 'docente_inscrito', 'lugar'])
-            ->where('aceptado', '=', 1)
-            ->where('id_departamento', '=', auth()->user()->departamento_id)
-            ->orWhere('carrera_dirigido', '=', 13)
             ->where(function ($query) {
                 $query->where('estado', '=', 0)
                     ->orWhere('estado', '=', 1);
             })
+            ->where(function ($query) {
+                $query->where('aceptado', '=', 1)
+                    ->orWhere('carrera_dirigido', '=', 13);
+            })
             ->orderBy('id', 'desc')
             ->get();
-
         return Inertia::render('Views/cursos/docentes/CursosDocentes', [
             'cursos' => $cursos
         ]);

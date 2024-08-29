@@ -33,49 +33,28 @@ const timeout = ref(0);
 const dialogInfo = ref(false)
 const id_ref = ref(null)
 let curso_selected = ref({})
-const snackEventActivator = () => {
-    snackbar.value = true;
-    message.value = "Parece que los recursos se han actualizado, por favor recarga la pagina"
-    color.value = "warning"
-    timeout.value = 5000
-    setTimeout(() => {
-        snackbar.value = false
-    }, timeout.value)
-};
-const snackErrorActivator = () => {
-    snackbar.value = true;
-    message.value = "Ops, algo salió mal. Por favor, debe revisar si actualizo sus datos."
-    color.value = "error"
-    timeout.value = 5000
-    setTimeout(() => {
-        snackbar.value = false
-    }, timeout.value)
-};
-const snackSuccessActivator = () => {
-    snackbar.value = true;
-    message.value = "¡Operación completada con éxito!"
-    color.value = "success"
-    timeout.value = 5000
-    setTimeout(() => {
-        snackbar.value = false
-    }, timeout.value)
-};
+
 const confirm_inscripcion = (item) => {
-    Swal.fire({
-        title: "¿Esta seguro que desea inscribirse a este curso?",
-        text: "Esta accion no se puede revertir, si requiere lo contrario informar a la coordinación de formacion docente",
-        showDenyButton: true,
-        showConfirmButton: true,
-        confirmButtonText: "Inscribirse",
-        denyButtonText: `Cancelar`,
-        icon: 'info',
-    }).then(res => {
-        if (res.isConfirmed){
-            submit(item)
-            // console.log(item)
-            // notify('Alerta', 'info', 'Error al intentar inscribirse a este curso, notifique a desarrollo academico')
-        }
-    })
+    // console.log(item)
+    if (item.id_departamento !== props.auth.user.departamento_id){
+        notify('Atención!', 'info', 'Este curso es externo a su departamento de adscripción. Acuda con el jefe del departamento que propuso el curso para que lo inscriba.')
+    }else{
+        Swal.fire({
+            title: "¿Esta seguro que desea inscribirse a este curso?",
+            text: "Esta accion no se puede revertir, si requiere lo contrario informar a la coordinación de formacion docente",
+            showDenyButton: true,
+            showConfirmButton: true,
+            confirmButtonText: "Inscribirse",
+            denyButtonText: `Cancelar`,
+            icon: 'info',
+        }).then(res => {
+            if (res.isConfirmed){
+                submit(item)
+                // console.log(item)
+                // notify('Alerta', 'info', 'Error al intentar inscribirse a este curso, notifique a desarrollo academico')
+            }
+        })
+    }
 }
 const submit = (item) => {
     form.post(route('inscripcion.docente', item), {
@@ -90,17 +69,17 @@ const submit = (item) => {
 const id_curso = useForm({
     curso: null
 })
-const desinscribirme = (id, item) => {
-    id_curso.curso = item
-    id_curso.post(route('mi.desinscrito', id), {
-        onSuccess: () => {
-            snackSuccessActivator()
-        },
-        onError: () => {
-            snackErrorActivator()
-        }
-    })
-}
+// const desinscribirme = (id, item) => {
+//     id_curso.curso = item
+//     id_curso.post(route('mi.desinscrito', id), {
+//         onSuccess: () => {
+//             snackSuccessActivator()
+//         },
+//         onError: () => {
+//             snackErrorActivator()
+//         }
+//     })
+// }
 
 function openDialog(curso){
     curso_selected.value = curso
@@ -130,7 +109,7 @@ onMounted(() => {
     });
 
     window.Echo.private("cursos-aceptados").listen("CursosAceptados", (event) => {
-        snackEventActivator()
+        // snackEventActivator()
     })
 });
 </script>
@@ -205,9 +184,14 @@ onMounted(() => {
                                                         Curso por realizar
                                                     </v-chip>
                                                 </template>
-                                                <template v-else>
+                                                <template v-else-if="item.estado === 1">
                                                     <v-chip variant="flat" color="success" prepend-icon="$info">
                                                         En curso
+                                                    </v-chip>
+                                                </template>
+                                                <template v-else>
+                                                    <v-chip variant="flat" color="error" prepend-icon="$error">
+                                                        Finalizado
                                                     </v-chip>
                                                 </template>
                                             </div>
@@ -249,15 +233,15 @@ onMounted(() => {
 <!--                                                    </v-icon> Ver-->
 <!--                                                </button>-->
 <!--                                            </div>-->
-                                            <div class="flex justify-center">
+                                            <div class="flex justify-center p-2">
                                                 <div v-if="item.docente_inscrito.some(inscrito => inscrito.id === props.auth.user.docente_id)" class="w-[120px]">
                                                     <v-alert variant="outlined" color="success">
                                                         <strong class=""> Inscrito </strong>
                                                     </v-alert>
                                                 </div>
-
+<!--                                                Aqui lleva esta condicion item.estado !== 2-->
                                                 <div v-else-if="item.estado !== 2">
-                                                    <secondary-button type="submit" @click="confirm_inscripcion(item.id)">Inscribirse</secondary-button>
+                                                    <secondary-button type="submit" @click="confirm_inscripcion(item)">Inscribirse</secondary-button>
                                                 </div>
                                             </div>
                                         </div>
