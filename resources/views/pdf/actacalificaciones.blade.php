@@ -20,7 +20,7 @@
             /*margin: 40px*/
         }
         .contenido {
-            margin: 80px
+            margin: 50px
         }
         .header {
             display: flex;
@@ -53,7 +53,7 @@
             border: 1px solid black;
             /*margin-top: 50px;*/
             margin-left: 100px;
-            top: 100px
+            top: 200px
         }
 
 
@@ -82,7 +82,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 50px;
+            margin-top: 100px;
         }
         .words_strong {
             font-weight: bold;
