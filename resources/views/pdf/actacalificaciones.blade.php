@@ -51,7 +51,7 @@
             width: 75%;
             border-collapse: collapse;
             border: 1px solid black;
-            margin-top: 100px;
+            margin-top: 130px;
             margin-left: 100px;
         }
 
