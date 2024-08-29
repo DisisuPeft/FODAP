@@ -7,6 +7,7 @@
     <style>
         @page {
             size: A4;
+            margin: 0
         }
         body {
             background-image: url({{ public_path('/storage/Membretado/'.$year.'/img_acta_calificaciones.jpg') }});
@@ -17,7 +18,6 @@
             display: flex;
             flex-direction: column;
             /*margin: 40px*/
-            margin: 0
         }
         .contenido {
             margin: 50px
@@ -25,6 +25,7 @@
         .header {
             display: flex;
             position: relative;
+            top: 100px;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -43,6 +44,7 @@
             margin-left: 100px;
             font-family: "Arial", "Helvetica", sans-serif;
             font-size: 10pt;
+            top: 100px;
         }
         .custom_table {
             table-layout: fixed;
