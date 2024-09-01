@@ -122,5 +122,7 @@ Route::middleware(['auth', 'role:Jefe del Departamento de Desarrollo Academico|C
     Route::get('/formato/export/reconocimiento', [ExcelExportsController::class, 'export_formato_constancia_reconocimiento'])->name('formato.constancia.reconocimiento');
 
 
-
+    //correccion a cursos
+    Route::post('/desarrollo/correccion/{id}', [DesarrolloController::class, 'addCorreccion'])->name('add.correccion');
+    Route::put('/desarrollo/correccion/update/{id}', [DesarrolloController::class, 'updateCorreccion'])->name('update.correccion');
 });

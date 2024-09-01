@@ -333,12 +333,29 @@ onMounted(() => {
                                             props.deteccion.objetivoEvento
                                         }}</span>
                                     </div>
+                                    <template v-if="props.deteccion.correccion">
+                                        <div class="flow-root ... pt-5">
+                                            <strong class="text-xl">Correcciones para este curso: </strong>
+                                            <v-alert
+                                                border="bottom"
+                                                border-color="warning accent-5"
+                                                elevation="2"
+                                            >
+                                                <p class="text-xl">
+                                                    {{
+                                                        props.deteccion
+                                                            .correccion.observaciones
+                                                    }}</p
+                                                >
+                                            </v-alert>
+                                        </div>
+                                    </template>
                                     <template v-if="props.deteccion.obs === 1">
                                         <div class="flow-root ... pt-5">
                                             <strong>Observaciones: </strong>
                                             <v-alert
                                                 border="bottom"
-                                                border-color="warning accent-5"
+                                                border-color="info accent-5"
                                                 elevation="2"
                                             >
                                                 <strong class="text-xl">

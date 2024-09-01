@@ -4,20 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Events\ReadNotification;
 use App\Models\User;
+use FontLib\Table\Type\name;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class NotificationController extends Controller
 {
-    public function notifications(){
+    public static function notifications(){
         if(auth()->user() != null){
             $user = User::find(auth()->user()->id);
-            return Inertia::render('Notifications', [
-                'notifications' => $user->unreadNotifications,
-            ]);
-
+            return $user->unreadNotifications;
         }
+        return null;
     }
 
     public function notifications_api(){

@@ -9,6 +9,9 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import NavLink from "@/Components/NavLink.vue";
 import DangerButton from "@/Components/DangerButton.vue";
 import EliminarDeteccionConfirmation from "@/Pages/Views/dialogs/EliminarDeteccionConfirmation.vue";
+import {AlertLoading, errorMsg, success_alert} from "@/jsfiels/alertas.js";
+import Swal from "sweetalert2";
+import TextAreaInput from "@/Components/TextAreaInput.vue";
 
 const props = defineProps({
     deteccion: Object,
@@ -16,7 +19,7 @@ const props = defineProps({
 });
 
 const dialog = ref(false);
-
+const message = ref("")
 // const formatFechaF = computed(() => {
 //     return new Date(props.deteccion.fecha_F).toLocaleDateString('es-MX');
 // })
@@ -35,7 +38,108 @@ const formAceptado = useForm({
     aceptado: 1,
 })
 
+function aceptar(){
+    Swal.fire({
+        title: '¿Seguro desea aceptar este curso?',
+        text: 'Esta acción no se puede revertir',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        icon: "info",
+        timerProgressBar: true
+    }).then(res => {
+        if (res.isConfirmed){
+            AlertLoading('Guardando curso...', 'Esta accion puede tardar unos minutos')
+            formAceptado.post(route('store.aceptado', props.deteccion.id),{
+                onSuccess: () => {
+                    success_alert('Exito', 'El curso se acepto con exito.')
+                },
+                onError: () => {
+                    // console.log(props.errors)
+                    errorMsg('Error', `${format_errors(props.errors)}`)
+                    message.value = ""
+                },
+            })
+        }
+    })
+}
+const format_errors = (errors) => {
+    for (const errorsKey in errors) {
+        message.value += errors[errorsKey]
+    }
+    return message.value.split('.').join('. ');
+}
 
+const formC = useForm({
+    correccion: ""
+})
+function addCorrecciones(){
+    Swal.fire({
+        title: '¿Seguro desea agregar estas correcciones?',
+        text: 'Esta acción se puede revertir',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        icon: "info",
+        timerProgressBar: true
+    }).then(res => {
+        if (res.isConfirmed){
+            AlertLoading('Guardando curso...', 'Esta accion puede tardar unos minutos')
+            if(!props.deteccion?.correccion){
+                formC.post(route('add.correccion', props.deteccion.id),{
+                    onSuccess: () => {
+                        success_alert('Exito', 'Se han añadido correcciones.')
+                    },
+                    onError: () => {
+                        // console.log(props.errors)
+                        errorMsg('Error', `${format_errors(props.errors)}`)
+                        message.value = ""
+                    },
+                })
+            }else{
+                formC.put(route('update.correccion', props.deteccion.id),{
+                    onSuccess: () => {
+                        success_alert('Exito', 'Se han actualizado las correcciones.')
+                    },
+                    onError: () => {
+                        // console.log(props.errors)
+                        errorMsg('Error', `${format_errors(props.errors)}`)
+                        message.value = ""
+                    },
+                })
+            }
+        }
+    })
+}
+
+function obs(){
+    Swal.fire({
+        title: '¿Seguro desea agregar esta observacion?',
+        text: 'Esta acción se puede revertir',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        icon: "info",
+        timerProgressBar: true
+    }).then(res => {
+        if (res.isConfirmed){
+            AlertLoading('Guardando curso...', 'Esta accion puede tardar unos minutos')
+            form.put(route('update.observaciones', props.deteccion.id),{
+                onSuccess: () => {
+                    success_alert('Exito', 'Se han añadido observaciones.')
+                },
+                onError: () => {
+                    // console.log(props.errors)
+                    errorMsg('Error', `${format_errors(props.errors)}`)
+                    message.value = ""
+                },
+            })
+        }
+    })
+}
 onMounted(() => {
     window.Echo.private(`App.Models.User.${props.auth.user.id}`).notification((notification) => {
         switch (notification.type){
@@ -53,6 +157,12 @@ onMounted(() => {
                 break;
         }
     })
+
+    if(!props.deteccion?.correccion){
+        return formC.correccion
+    }else{
+        formC.correccion = props.deteccion?.correccion.observaciones
+    }
 });
 </script>
 
@@ -87,7 +197,7 @@ onMounted(() => {
                 <template v-if="props.deteccion.aceptado === 0">
                     <div class="grid grid-cols-2">
                         <div class="flex justify-center">
-                            <form @submit.prevent="formAceptado.post(route('store.aceptado', props.deteccion.id))">
+                            <form @submit.prevent="aceptar">
                                 <PrimaryButton class="mt-5">Aceptar curso</PrimaryButton>
                             </form>
                         </div>
@@ -219,7 +329,23 @@ onMounted(() => {
                                         </div>
                                     </template>
                                     <template v-if="props.deteccion.aceptado === 0">
-                                        <form @submit.prevent="form.put(route('update.observaciones', props.deteccion.id))">
+                                        <form @submit.prevent="addCorrecciones">
+                                            <div class="flow-root ... pt-5">
+                                                <strong class="text-xl">Añadir Correcciones: </strong>
+                                                <TextAreaInput
+                                                    id="correcion"
+                                                    type="text"
+                                                    class="mt-1 rounded w-full"
+                                                    v-model="formC.correccion"
+                                                    required
+                                                />
+                                                <PrimaryButton class="mt-4">Guardar.</PrimaryButton>
+
+                                            </div>
+                                        </form>
+                                    </template>
+                                    <template v-if="props.deteccion.aceptado === 0">
+                                        <form @submit.prevent="obs">
                                             <div class="flow-root ... pt-5">
                                                 <strong class="text-xl">Añadir Observaciones: </strong>
                                                 <TextInput

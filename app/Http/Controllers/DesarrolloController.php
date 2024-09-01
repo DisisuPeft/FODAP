@@ -13,6 +13,7 @@ use App\Http\Requests\DocenteRequest;
 use App\Models\Calificaciones;
 use App\Models\Carrera;
 use App\Models\ClaveCurso;
+use App\Models\CursoObservaciones;
 use App\Models\Departamento;
 use App\Models\DeteccionNecesidades;
 use App\Models\Docente;
@@ -28,6 +29,7 @@ use App\Notifications\ObservacionNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 
@@ -291,26 +293,78 @@ class DesarrolloController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
+        $validador = Validator::make($request->all(), [
             'observaciones' => ['required']
+        ], [
+            'observaciones.required' => 'El campo Observaciones es obligatorio.',
         ]);
 
-        $deteccion = DeteccionNecesidades::where('id', $id)->first();
+        if (!$validador){
+            $deteccion = DeteccionNecesidades::where('id', $id)->first();
 
-        $deteccion->update([
-            'observaciones' => $request->observaciones,
-            'obs' => 1
-        ]);
+            if ($deteccion){
+                $update =  $deteccion->update([
+                    'observaciones' => $request->observaciones,
+                    'obs' => 1
+                ]);
+                if ($update){
+                    //        User::where('departamento_id', $deteccion->id_departamento)->role(['Jefes Academicos'])->each(function (User $user) use ($deteccion) {
+//            $user->notify(new ObservacionNotification($deteccion, $user));
+//        });
 
-        User::where('departamento_id', $deteccion->id_departamento)->role(['Jefes Academicos'])->each(function (User $user) use ($deteccion) {
-            $user->notify(new ObservacionNotification($deteccion, $user));
-        });
+//        event(new ObservacionEvent($deteccion));
+                    //preguntar al jefe si en este punto se debe aumentar la revision
 
-        event(new ObservacionEvent($deteccion));
-
-        return Redirect::route('show.Cdetecciones', ['id' => $id]);
+                    return Redirect::route('show.Cdetecciones', ['id' => $id]);
+                }else{
+                    return back()->withErrors('No se pudo agregar la observacion');
+                }
+            }else{
+                return back()->withErrors('El curso no existe.');
+            }
+        }else{
+            return back()->withErrors($validador);
+        }
     }
 
+    public function addCorreccion($id, Request $request){
+        $cursoObs = new CursoObservaciones();
+        $validador = Validator::make($request->all(), [
+            'correccion' => ['required']
+        ], [
+            'correccion.required' => 'El campo Correccion es obligatorio.',
+        ]);
+        if (!$validador->fails()) {
+            $add = $cursoObs->addObservaciones($id, $request);
+            if ($add){
+                return Redirect::route('show.Cdetecciones', ['id' => $id]);
+            }else{
+                return back()->withErrors('Ocurrio un error al crear las correcciones.');
+            }
+        }else{
+            return Redirect::back()->withErrors($validador);
+        }
+
+    }
+
+    public function updateCorreccion($id, Request $request){
+        $cursoObsU = new CursoObservaciones();
+        $validador = Validator::make($request->all(), [
+            'correccion' => ['required']
+        ], [
+            'correccion.required' => 'El campo Correccion es obligatorio.',
+        ]);
+        if (!$validador->fails()) {
+            $add = $cursoObsU->updateObservaciones($id, $request);
+            if ($add){
+                return Redirect::route('show.Cdetecciones', ['id' => $id]);
+            }else{
+                return back()->withErrors('Ocurrio un error al actualizar las correcciones.');
+            }
+        }else{
+            return Redirect::back()->withErrors($validador);
+        }
+    }
     public function index_curso_inscrito_desarrollo($id)
     {
         $docente = Docente::orderBy('nombre', 'asc')->get();

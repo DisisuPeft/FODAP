@@ -14,7 +14,7 @@ const docente = computed(() => usePage().props.info[0]);
 const user = computed(() => usePage().props.auth.user);
 const store = FODAPStore()
 const notificationObject = ref({});
-
+const menu = ref(false)
 const submit_read_notification = () => {
     router.reload()
 }
@@ -129,13 +129,90 @@ onMounted(() => {
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
                             <div class="hidden sm:flex sm:items-center sm:ml-6">
                                 <div class="ml-3 relative">
-                                    <NavLink :href="route('index.notifications')" as="button">
-                                        <v-btn class="text-none">
-                                            <v-badge color="red" :content="$page.props.auth.usernotifications">
-                                                <v-icon>mdi-bell</v-icon>
-                                            </v-badge>
-                                        </v-btn>
-                                    </NavLink>
+<!--                                    <NavLink :href="route('index.notifications')" as="button">-->
+                                    <div class="text-center">
+                                        <v-menu
+                                            v-model="menu"
+                                            :close-on-content-click="false"
+                                            transition="scale-transition"
+
+                                        >
+                                            <template v-slot:activator="{ props }">
+                                                <v-btn class="text-none" v-bind="props">
+                                                    <v-badge color="red" :content="$page.props.auth.usernotifications">
+                                                        <v-icon>mdi-bell</v-icon>
+                                                    </v-badge>
+                                                </v-btn>
+                                            </template>
+
+                                            <v-card min-width="300">
+                                                <v-card-title>Notificaciones</v-card-title>
+                                                <v-list>
+                                                    <template v-if="$page.props.auth.usernotify.length !== 0">
+                                                        <v-list-item
+                                                            class=""
+                                                            v-for="(item, i) in $page.props.auth.usernotify"
+                                                            :key="i"
+                                                        >
+                                                            <v-list-item-title>{{ item.data.email }} {{item.data.messegue}}</v-list-item-title>
+                                                            <v-list-item-action>
+                                                                <template v-if="$page.props.auth.user.role !== 4">
+                                                                    <NavLink :href="item.data.route + '/' + item.data.id" type="button" as="button">
+                                                                        <v-chip variant="flat" color="info" prepend-icon="mdi-eye-arrow-right-outline">
+                                                                            Ver notificacion
+                                                                        </v-chip>
+                                                                    </NavLink>
+                                                                </template>
+                                                                <template v-if="$page.props.auth.user.role === 4">
+                                                                    <NavLink :href="item.data.route" type="button" as="button">
+                                                                        <v-chip variant="flat" color="info" prepend-icon="mdi-eye-arrow-right-outline">
+                                                                            Ver notificacion
+                                                                        </v-chip>
+                                                                    </NavLink>
+                                                                </template>
+                                                                <NavLink :href="route('markNotification')" type="button" as="button" method="post" :data="{id: item.id}">
+                                                                    <v-chip variant="flat" color="success" prepend-icon="mdi-check-circle">
+                                                                        Marcar como leído
+                                                                    </v-chip>
+                                                                </NavLink>
+                                                            </v-list-item-action>
+                                                        </v-list-item>
+                                                    </template>
+                                                    <template v-else>
+                                                        <div class="flex justify-center">
+                                                            <p class="text-xl">
+                                                                Sin notificaciones recientes.
+                                                            </p>
+                                                        </div>
+                                                    </template>
+                                                </v-list>
+                                                <v-card-actions>
+                                                    <v-spacer></v-spacer>
+                                                    <div class="flex justify-end mt-12">
+                                                        <template v-if="$page.props.auth.usernotify.length !== 0">
+                                                            <NavLink :href="route('markNotification')" method="post" as="button">
+                                                                <v-btn color="success" prepend-icon="mdi-check-circle-outline" width="400">Marcar como leidas</v-btn>
+                                                            </NavLink>
+                                                        </template>
+                                                    </div>
+<!--                                                    <v-btn-->
+<!--                                                        variant="text"-->
+<!--                                                        @click="menu = false"-->
+<!--                                                    >-->
+<!--                                                        Cancel-->
+<!--                                                    </v-btn>-->
+<!--                                                    <v-btn-->
+<!--                                                        color="primary"-->
+<!--                                                        variant="text"-->
+<!--                                                        @click="menu = false"-->
+<!--                                                    >-->
+<!--                                                        Save-->
+<!--                                                    </v-btn>-->
+                                                </v-card-actions>
+                                            </v-card>
+                                        </v-menu>
+                                    </div>
+<!--                                    </NavLink>-->
                                 </div>
                             </div>
                         </div>

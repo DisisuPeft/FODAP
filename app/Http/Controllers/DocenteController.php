@@ -62,8 +62,21 @@ class DocenteController extends Controller
         date_default_timezone_set('America/Mexico_City');
         CoursesController::state_curso();
         $docente = Docente::with('inscrito')->where('id', '=', auth()->user()->docente_id)->first();
+        $cursosInscrito = DB::table('inscripcion')
+            ->join('deteccion_necesidades', 'inscripcion.curso_id', '=', 'deteccion_necesidades.id')
+//            ->leftjoin('deteccion_has_facilitadores', 'deteccion_necesidades.id', '=', 'deteccion_has_facilitadores.deteccion_id')
+            ->leftjoin('lugar','deteccion_necesidades.id_lugar','=','lugar.id')
+            ->leftJoin('calificaciones', function ($join) {
+                $join->on('calificaciones.curso_id', '=', 'inscripcion.curso_id')
+                    ->where('calificaciones.docente_id', '=', auth()->user()->docente_id);
+            })
+            ->where('inscripcion.docente_id', '=', auth()->user()->docente_id)
+            ->orderByRaw('deteccion_necesidades.estado ASC, ABS(DATEDIFF(NOW(), deteccion_necesidades.fecha_I)) ASC')
+            ->select('deteccion_necesidades.*', 'inscripcion.id AS InscripcionID', 'calificaciones.calificacion AS calificacion', 'calificaciones.id AS calificacionID', 'lugar.nombreAula AS aula')
+            ->get();
         return Inertia::render('Views/cursos/docentes/RegistrosIndex', [
-            'cursos' => $docente
+            'cursos' => $docente,
+            'cursosInscrito' => $cursosInscrito
         ]);
     }
 

@@ -10,6 +10,7 @@ use App\Http\Controllers\Installer;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SessionController;
 use App\Models\Docente;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Inertia\Middleware;
@@ -43,6 +44,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
                 'usernotifications' => $request->user() ? $request->user()->unreadNotifications()->count() : null,
+                'usernotify' => $request->user() ? NotificationController::notifications() : null,
 
             ],
             'info' => [

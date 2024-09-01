@@ -53,7 +53,7 @@ class DeteccionNecesidades extends Model
         'anio_realizacion'
     ];
 
-    protected $with = ['clave_curso', 'clave_validacion'];
+    protected $with = ['clave_curso', 'clave_validacion', 'correccion'];
     //relaciones
     public function deteccion_facilitador()
     {
@@ -105,6 +105,13 @@ class DeteccionNecesidades extends Model
         return $this->hasOne(ClaveValidacion::class, 'curso_id', 'id');
     }
 
+    public function correccion(){
+        return $this->hasOne(CursoObservaciones::class, 'curso_id', 'id');
+    }
+
+    public function revision(){
+        return $this->hasOne(CursoRevision::class, 'curso_id', 'id');
+    }
     //seccion
 
     public function formacion_docente()
@@ -716,8 +723,10 @@ class DeteccionNecesidades extends Model
 //            ->leftjoin('carreras', 'docente.carrera_id', '=', 'carreras.id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
             ->distinct()
-            ->select(DB::raw("docente.nombre_completo, docente.sexo, carreras.nameCarrera AS carrera_f"))
+            ->select(DB::raw("docente.nombre_completo, docente.sexo"))
             ->get();
 //            ->count('docente.id');
     }
+
+
 }
