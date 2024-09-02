@@ -8,11 +8,13 @@ use App\Http\Requests\StoreFileRequest;
 use App\Http\Requests\StoreImageRequest;
 use App\Mail\PermisosUserEdit;
 use App\Models\Carrera;
+use App\Models\ClaveDocumentos;
 use App\Models\ConfigDates;
 use App\Models\Departamento;
 use App\Models\DeteccionNecesidades;
 use App\Models\Director;
 use App\Models\Docente;
+use App\Models\Documentos;
 use App\Models\Lugar;
 use App\Models\NombreInstituto;
 use App\Models\Subdireccion;
@@ -51,6 +53,7 @@ class   GestionParametrosController extends Controller
         $fechas = ConfigDates::latest('id')->first();
         $instituto = NombreInstituto::all();
         $roles = Role::all();
+        $documentos = $this->getDocumentos();
 
         return Inertia::render('Views/desarrollo/GestionEdit', [
             'docente' => $docente,
@@ -63,7 +66,8 @@ class   GestionParametrosController extends Controller
             'fechas' => $fechas,
             'director' => $director,
             'instituto' => $instituto,
-            'roles' => $roles->except([5,1,2,4])
+            'roles' => $roles->except([5,1,2,4]),
+            'documentos' => $documentos,
         ]);
     }
 
@@ -887,5 +891,40 @@ class   GestionParametrosController extends Controller
             $fechas = [$currentDate->between($startDate, $endDate), $tiemporestante];
             return $fechas;
         }
+    }
+
+    public function getDocumentos(){
+        $documentos = new Documentos();
+        return $documentos->getDocumentos();
+    }
+
+    public function crearDocumento(Request $request){
+        $documentos = new Documentos();
+        $clave = new ClaveDocumentos();
+        $tipo_documentos = $documentos->createDocumentos($request);
+        if ($tipo_documentos[0]){
+            $clave_documento = $clave->saveClaveDocumentos(strtoupper($request->input('clave')), $tipo_documentos[1]->id);
+            if($clave_documento){
+                return redirect()->route('parametros.edit')->with('message', 'Tipo de documento creado.');
+            }else{
+                return back()->withErrors('Error al crear la clave del documento.');
+            }
+        }
+        return back()->withErrors('Error al crear el documento.');
+    }
+
+    public function editDocumento($id, Request $request)
+    {
+        $documentos = new Documentos();
+        $clave_documentos = new ClaveDocumentos();
+        $tipo_documentos = $documentos->updateDocumentos($id, $request);
+        if ($tipo_documentos[0]){
+            $clave_documento = $clave_documentos->updateclaveDocumentos($tipo_documentos[1]->id, strtoupper($request->input('clave')));
+            if ($clave_documento){
+                return redirect()->route('parametros.edit')->with('message', 'Tipo de documento editado.');
+            }
+            return back()->withErrors('Error al editar la clave del documento.');
+        }
+        return back()->withErrors('Error al editar el documento.');
     }
 }

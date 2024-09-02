@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use PhpParser\Comment\Doc;
 
 class Documentos extends Model
 {
@@ -14,9 +15,11 @@ class Documentos extends Model
     protected $fillable = [
       'nombre'
     ];
-
+    protected $with = [
+        'clave_documento'
+    ];
     public function getDocumentos(){
-        return DB::table('documentos')->select('nombre')->orderBy('nombre')->get();
+        return Documentos::all();
     }
 
     public function getDocumento($id)
@@ -28,9 +31,9 @@ class Documentos extends Model
             'nombre' => $payload->nombre
         ]);
         if ($documento){
-            return true;
+            return [true, $documento];
         }
-        return false;
+        return [false, null];
     }
 
     public function updateDocumentos($id, $payload){
@@ -40,11 +43,11 @@ class Documentos extends Model
                 'nombre' => $payload->nombre
             ]);
             if ($update){
-                return true;
+                return [true, $documento];
             }
-            return false;
+            return [false, null];
         }
-        return false;
+        return [false, null];
     }
 
     public function deleteDocumentos($id){

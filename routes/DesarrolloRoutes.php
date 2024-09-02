@@ -125,4 +125,9 @@ Route::middleware(['auth', 'role:Jefe del Departamento de Desarrollo Academico|C
     //correccion a cursos
     Route::post('/desarrollo/correccion/{id}', [DesarrolloController::class, 'addCorreccion'])->name('add.correccion');
     Route::put('/desarrollo/correccion/update/{id}', [DesarrolloController::class, 'updateCorreccion'])->name('update.correccion');
+
+
+    //tipos de documentos
+    Route::post('/desarrollo/guardar/tipo-documento', [GestionParametrosController::class, 'crearDocumento'])->name('add.tipo.documento');
+    Route::put('/desarrollo/editar/tipo-documento/{id}', [GestionParametrosController::class, 'editDocumento'])->name('edit.tipo.documento');
 });

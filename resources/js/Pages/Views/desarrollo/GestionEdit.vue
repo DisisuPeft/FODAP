@@ -31,34 +31,17 @@ import InputError from "@/Components/InputError.vue";
 const search = ref("");
 const dialogSub = ref(false);
 const dialogDirector = ref(false);
-const snackbar = ref(false);
+
 const message = ref("");
-const color = ref();
-const timeout = ref(0);
 const dialogInstituto = ref(false);
 const create_carrera = ref(false)
 const create_cuenta = ref(false)
 const passwordFielType = ref("password");
 const passwordInput = ref(null);
 const currentPasswordInput = ref(null);
-const snackErrorActivator = () => {
-    snackbar.value = true;
-    message.value = "No se pudo procesar la solicitud";
-    color.value = "error";
-    timeout.value = 5000;
-    setTimeout(() => {
-        snackbar.value = false;
-    }, timeout.value);
-};
-const snackSuccessActivator = () => {
-    snackbar.value = true;
-    message.value = "Procesado correctamente";
-    color.value = "success";
-    timeout.value = 5000;
-    setTimeout(() => {
-        snackbar.value = false;
-    }, timeout.value);
-};
+const modal_documentos = ref(false)
+const modal_editar_documento = ref(false)
+
 const props = defineProps({
     docente: Array,
     carrera: Array,
@@ -71,7 +54,11 @@ const props = defineProps({
     errors: Object,
     director: Array,
     instituto: Array,
-    roles: Array
+    roles: Array,
+    documentos: Array,
+    flash: {
+        type: [String, Object]
+    }
 });
 
 const form = useForm({
@@ -412,6 +399,110 @@ const crear_cuenta = () => {
 const show_visibilty = () => {
     passwordFielType.value = passwordFielType.value === "password" ? "text" : "password";
 }
+
+const form_documento = useForm({
+   nombre: "",
+   clave: "",
+})
+const id = ref(null)
+function submit_documentos(){
+    Swal.fire({
+        title: 'Esta por crear un documento que el sistema emite.',
+        text: 'Esta acción se puede revertir',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        icon: "info",
+        timerProgressBar: true
+    }).then(res => {
+        if (res.isConfirmed){
+            AlertLoading('Guardando los datos...', 'Esta accion puede tardar unos minutos')
+            form_documento.post(route('add.tipo.documento'), {
+                onSuccess: () => {
+                    form_documento.reset();
+                    success_alert('Exito', props.flash?.message)
+                    // router.reload()
+                },
+                onError: () => {
+                    // console.log(props.errors)
+                    notify('Alerta','warning', `${format_errors(props.errors)}`)
+                    message.value = ""
+                },
+            });
+        }
+    })
+}
+
+function submit_documentos_edit(){
+    Swal.fire({
+        title: 'Esta por editar un documento que el sistema emite.',
+        text: 'Esta acción se puede revertir',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        icon: "info",
+        timerProgressBar: true
+    }).then(res => {
+        if (res.isConfirmed){
+            AlertLoading('Guardando los datos...', 'Esta accion puede tardar unos minutos')
+            form_documento.put(route('edit.tipo.documento', id.value), {
+                onSuccess: () => {
+                    form_documento.reset();
+                    success_alert('Exito', props.flash?.message)
+                    // router.reload()
+                },
+                onError: () => {
+                    // console.log(props.errors)
+                    notify('Alerta','warning', `${format_errors(props.errors)}`)
+                    message.value = ""
+                },
+            });
+        }
+    })
+}
+
+function submit_documentos_delete(id){
+    Swal.fire({
+        title: 'Esta por eliminar el registro del documento que el sistema emite.',
+        text: 'Esta acción no se puede revertir',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        icon: "info",
+        timerProgressBar: true
+    }).then(res => {
+        if (res.isConfirmed){
+            AlertLoading('Guardando los datos...', 'Esta accion puede tardar unos minutos')
+            form_documento.post(route('delete.tipo.documento'), {
+                onSuccess: () => {
+                    form_documento.reset();
+                    success_alert('Exito', props.flash?.message)
+                    // router.reload()
+                },
+                onError: () => {
+                    // console.log(props.errors)
+                    notify('Alerta','warning', `${format_errors(props.errors)}`)
+                    message.value = ""
+                },
+            });
+        }
+    })
+}
+function edit_documentos(documento){
+    form_documento.nombre = documento.nombre
+    form_documento.clave = documento.clave_documento.clave
+    id.value = documento.id
+    modal_editar_documento.value = true
+}
+function cerrar(){
+    form_documento.reset()
+    modal_documentos.value = false
+    modal_editar_documento.value = false
+}
+
 </script>
 
 <template>
@@ -858,6 +949,146 @@ const show_visibilty = () => {
                     </h2>
                 </header>
 
+                <div>
+                    <div class="mt-15 mt-16">
+                        <strong class="text-lg text-gray-600">
+                            Tipos de documentos que el sistema genera.
+                        </strong>
+                    </div>
+                    <template v-if="props.documentos.length > 0">
+                        <div class="grid grid-rows-1 m-2 p-2">
+                            <div class="flex justify-start">
+                                <table class="border-collapse border border-slate-500">
+                                    <thead>
+                                        <tr>
+                                            <th class="border border-slate-600 p-2">Nombre</th>
+                                            <th class="border border-slate-600 p-2">clave</th>
+                                            <th class="border border-slate-600 p-2">Opciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="documento in props.documentos" :key="documento.id">
+                                            <td class="border border-slate-600 p-2">
+                                                {{documento.nombre}}
+                                            </td>
+                                            <td class="border border-slate-600 p-2 text-center">
+                                                {{documento.clave_documento.clave}}
+                                            </td>
+                                            <td class="border border-slate-600 p-2 text-center">
+                                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <div class="flex justify-center">
+                                                        <v-btn icon color="success" @click="edit_documentos(documento)"><v-icon>mdi-pencil</v-icon></v-btn>
+                                                    </div>
+                                                    <div class="flex justify-center">
+                                                        <v-btn icon color="error" ><v-icon>mdi-delete</v-icon></v-btn>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <p class="p-4 m-4 text-2xl">No exiten registros</p>
+                    </template>
+                    <div class="flex justify-start">
+                        <button class="rounded-xl bg-sky-500 p-3 hover:bg-sky-700 ml-4" @click="modal_documentos = true">
+                            <p class="text-lg text-white">Crear</p>
+                        </button>
+                    </div>
+                    <Modal :show="modal_documentos">
+                        <div class="grid grid-rows-1">
+                            <div class="flex justify-end">
+                                <v-btn
+                                    elevation="0"
+                                    size="large"
+                                    icon
+                                    @click="cerrar"
+                                >
+                                    <v-icon>mdi-close</v-icon>
+                                </v-btn>
+                            </div>
+                        </div>
+                        <div class="grid grid-rows-1 p-5">
+<!--                            <form @submit.prevent="submit_documentos('create')">-->
+                                <div class="flex justify-center p-2">
+                                    Nombre del documento
+                                </div>
+                                <TextInput
+                                    id="nombre_documento"
+                                    type="text"
+                                    class="mt-1 block w-full"
+                                    v-model="form_documento.nombre"
+                                    required
+                                    autocomplete="text"
+                                />
+                                <div class="flex justify-center p-2">
+                                    Clave del documento
+                                </div>
+                                <input
+                                    type="text"
+                                    class="mt-1 block w-full rounded-md border border-4 text-uppercase"
+                                    required
+                                    autocomplete="text"
+                                    v-model="form_documento.clave"
+                                >
+                                <div class="flex justify-end p-5">
+                                    <button class="rounded-xl bg-sky-500 p-3 hover:bg-sky-700" @click="submit_documentos">
+                                        <p class="text-lg text-white">Guardar</p>
+                                    </button>
+                                </div>
+<!--                            </form>-->
+                        </div>
+                    </Modal>
+                    <Modal :show="modal_editar_documento">
+                        <div class="grid grid-rows-1">
+                            <div class="flex justify-end">
+                                <v-btn
+                                    elevation="0"
+                                    size="large"
+                                    icon
+                                    @click="cerrar"
+                                >
+                                    <v-icon>mdi-close</v-icon>
+                                </v-btn>
+                            </div>
+                        </div>
+                        <div class="grid grid-rows-1 p-5">
+                            <!--                            <form @submit.prevent="submit_documentos('create')">-->
+                            <div class="flex justify-center p-2">
+                                Nombre del documento
+                            </div>
+                            <TextInput
+                                id="nombre_documento"
+                                type="text"
+                                class="mt-1 block w-full"
+                                v-model="form_documento.nombre"
+                                required
+                                autocomplete="text"
+                            />
+                            <div class="flex justify-center p-2">
+                                Clave del documento
+                            </div>
+                            <input
+                                type="text"
+                                class="mt-1 block w-full rounded-md border border-4 text-uppercase"
+                                required
+                                autocomplete="text"
+                                v-model="form_documento.clave"
+                            >
+                            <div class="flex justify-end p-5">
+                                <button class="rounded-xl bg-sky-500 p-3 hover:bg-sky-700" @click="submit_documentos_edit">
+                                    <p class="text-lg text-white">Guardar</p>
+                                </button>
+                            </div>
+                            <!--                            </form>-->
+                        </div>
+                    </Modal>
+                </div>
+
+
                 <div class="mt-15 mt-16">
                     <strong class="text-lg text-gray-600">
                         Subir CVU editable.
@@ -1073,13 +1304,6 @@ const show_visibilty = () => {
 <!--            </div>-->
         </div>
 
-        <CustomSnackBar
-            :message="message"
-            :color="color"
-            :timeout="timeout"
-            v-model="snackbar"
-            @update:modelValue="snackbar = $event"
-        ></CustomSnackBar>
     </AuthenticatedLayout>
 </template>
 

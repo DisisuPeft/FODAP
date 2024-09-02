@@ -89,9 +89,7 @@ onMounted(() => {
             </v-card-actions>
         </v-card>
     </v-dialog>
-    <CustomSnackBar :timeout="timeout" :color="color" :message="message" v-model="snackbarD" @update:modelValue="snackbarD = $event">
 
-    </CustomSnackBar>
 </template>
 
 <style scoped>

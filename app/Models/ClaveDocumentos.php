@@ -34,10 +34,10 @@ class ClaveDocumentos extends Model
         return DB::table('clave_documentos')->where('clave', $id)->first();
     }
     public function updateclaveDocumentos($id, $payload){
-        $c = ClaveCurso::where('id', $id)->first();
+        $c = ClaveDocumentos::where('documento_id', $id)->first();
         if ($c){
             $update = $c->update([
-               'clave' => $payload->clave,
+               'clave' => $payload,
             ]);
             if ($update){
                 return true;
@@ -47,7 +47,7 @@ class ClaveDocumentos extends Model
         return false;
     }
     public function deleteClaveDocumentos($id){
-        $clave = ClaveCurso::where('id', $id)->first();
+        $clave = ClaveCurso::where('documento_id', $id)->first();
         if ($clave){
             $delete = $clave->delete();
             if ($delete){
