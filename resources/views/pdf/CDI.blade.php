@@ -24,8 +24,8 @@
         }
         .grid-container{
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Crea 3 columnas de igual ancho */
-            grid-template-rows: auto; /* Las filas se ajustan automáticamente al contenido */
+            grid-template-columns: repeat(1, 1fr); /* Crea 3 columnas de igual ancho */
+            /*grid-template-rows: ; !* Las filas se ajustan automáticamente al contenido *!*/
             gap: 10px; /* Espacio entre los elementos del grid */
         }
         .grid-item {
