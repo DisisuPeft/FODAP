@@ -326,7 +326,7 @@
         </tr>
     </table>
     <div class="footer">
-        <p style="float:left">ITTG-AD-PO-006-04</p>
+        <p style="float:left">{{$key->clave ?? ''}}</p>
         <p style="float:right;">Rev. {{0}}</p>
     </div>
 </body>

@@ -50,7 +50,8 @@ function submit(){
     axios.get(route('pdf.pifdap'), {
         params: {
             periodo: form.value.periodo,
-            anio: form.value.anio
+            anio: form.value.anio,
+            tipo_documento: "Programa institucional de formacion docente y actualizacion profesional"
         }
     }).then(res => {
 

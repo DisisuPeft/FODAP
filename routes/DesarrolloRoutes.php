@@ -130,4 +130,5 @@ Route::middleware(['auth', 'role:Jefe del Departamento de Desarrollo Academico|C
     //tipos de documentos
     Route::post('/desarrollo/guardar/tipo-documento', [GestionParametrosController::class, 'crearDocumento'])->name('add.tipo.documento');
     Route::put('/desarrollo/editar/tipo-documento/{id}', [GestionParametrosController::class, 'editDocumento'])->name('edit.tipo.documento');
+    Route::delete('/desarrollo/eliminar/tipo-documento/{id}', [GestionParametrosController::class, 'deleteDocumentos'])->name('delete.tipo.documentos');
 });

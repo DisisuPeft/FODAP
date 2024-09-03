@@ -108,6 +108,7 @@ const crear_carrera = () => {
                     errorMsg('Error', `${format_errors(props.errors)}`)
                     message.value = ""
                 },
+                preserveScroll: true
             });
         }
     })
@@ -145,6 +146,7 @@ function submit() {
                     errorMsg('Error', `${format_errors(props.errors)}`)
                     message.value = ''
                 },
+                preserveScroll: true
             });
         }
     })
@@ -172,6 +174,7 @@ const upload_cvu = () => {
                     errorMsg('Atención', `${format_errors(props.errors)}`)
                     message.value = "";
                 },
+                preserveScroll: true
             });
         }
     })
@@ -199,6 +202,7 @@ const upload_acta = () => {
                     errorMsg('Error', `${format_errors(props.errors)}`)
                     message.value = "";
                 },
+                preserveScroll: true
             });
         }
     })
@@ -226,6 +230,7 @@ const upload_constancia = () => {
                     errorMsg('Error', `${format_errors(props.errors)}`)
                     message.value = "";
                 },
+                preserveScroll: true
             });
         }
     })
@@ -253,6 +258,7 @@ const upload_logotec = () => {
                     errorMsg('Error', `${format_errors(props.errors)}`)
                     message.value = "";
                 },
+                preserveScroll: true
             });
         }
     })
@@ -279,7 +285,9 @@ const upload_tecnm = () => {
                     errorMsg('Error', `${format_errors(props.errors)}`)
                     message.value = "";
                 },
+                preserveScroll: true
             });
+
         }
     })
 };
@@ -305,6 +313,7 @@ const upload_educacion = () => {
                     errorMsg('Error', `${format_errors(props.errors)}`)
                     message.value = "";
                 },
+                preserveScroll: true
             });
         }
     })
@@ -392,6 +401,7 @@ const crear_cuenta = () => {
                     notify('Alerta','warning', `${format_errors(props.errors)}`)
                     message.value = ""
                 },
+                preserveScroll: true
             });
         }
     })
@@ -422,6 +432,7 @@ function submit_documentos(){
                 onSuccess: () => {
                     form_documento.reset();
                     success_alert('Exito', props.flash?.message)
+                    modal_documentos.value = false
                     // router.reload()
                 },
                 onError: () => {
@@ -429,6 +440,7 @@ function submit_documentos(){
                     notify('Alerta','warning', `${format_errors(props.errors)}`)
                     message.value = ""
                 },
+                preserveScroll: true
             });
         }
     })
@@ -452,12 +464,14 @@ function submit_documentos_edit(){
                     form_documento.reset();
                     success_alert('Exito', props.flash?.message)
                     // router.reload()
+                    modal_editar_documento.value = false
                 },
                 onError: () => {
                     // console.log(props.errors)
                     notify('Alerta','warning', `${format_errors(props.errors)}`)
                     message.value = ""
                 },
+                preserveScroll: true
             });
         }
     })
@@ -476,7 +490,7 @@ function submit_documentos_delete(id){
     }).then(res => {
         if (res.isConfirmed){
             AlertLoading('Guardando los datos...', 'Esta accion puede tardar unos minutos')
-            form_documento.post(route('delete.tipo.documento'), {
+            form_documento.delete(route('delete.tipo.documentos', id), {
                 onSuccess: () => {
                     form_documento.reset();
                     success_alert('Exito', props.flash?.message)
@@ -487,6 +501,7 @@ function submit_documentos_delete(id){
                     notify('Alerta','warning', `${format_errors(props.errors)}`)
                     message.value = ""
                 },
+                preserveScroll: true
             });
         }
     })
@@ -972,7 +987,7 @@ function cerrar(){
                                                 {{documento.nombre}}
                                             </td>
                                             <td class="border border-slate-600 p-2 text-center">
-                                                {{documento.clave_documento.clave}}
+                                                {{documento.clave_documento?.clave}}
                                             </td>
                                             <td class="border border-slate-600 p-2 text-center">
                                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -980,7 +995,7 @@ function cerrar(){
                                                         <v-btn icon color="success" @click="edit_documentos(documento)"><v-icon>mdi-pencil</v-icon></v-btn>
                                                     </div>
                                                     <div class="flex justify-center">
-                                                        <v-btn icon color="error" ><v-icon>mdi-delete</v-icon></v-btn>
+                                                        <v-btn icon color="error" @click="submit_documentos_delete(documento.id)"><v-icon>mdi-delete</v-icon></v-btn>
                                                     </div>
                                                 </div>
                                             </td>

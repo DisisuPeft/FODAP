@@ -52,18 +52,21 @@ class Documentos extends Model
 
     public function deleteDocumentos($id){
         $documento = Documentos::find($id);
-
         if ($documento){
             $delete = $documento->delete();
             if ($delete){
-                return true;
+                return [true, $documento];
             }
-            return false;
+            return [false, null];
         }
-        return false;
+        return [false, null];
     }
 
     public function clave_documento(){
         return $this->hasOne(ClaveDocumentos::class, 'documento_id', 'id');
     }
+
+//    public function getClaveDocumento($data){
+//        return Documentos::where('nombre', $data)->get();
+//    }
 }

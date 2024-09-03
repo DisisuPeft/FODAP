@@ -117,6 +117,7 @@ const pdfDeteccion = () => {
                 anio: form.anio,
                 carrera: form.carrera,
                 periodo: form.periodo,
+                tipo_documento: "Deteccion de necesidades"
             },
         })
         .then((res) => {

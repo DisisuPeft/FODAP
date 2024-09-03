@@ -117,7 +117,7 @@
         <img src="{{public_path('/storage/img/logo.jpg')}}" alt="">
     </div>
     <div class="footer">
-        <p>ITTG-AC-PO-006-02</p>
+        <p>{{$key->clave ?? ''}}</p>
         <p style="float:right;margin-top: 23px">Rev.{{0}}</p>
     </div>
 {{--    Tabla de formacion docente--}}

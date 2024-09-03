@@ -927,4 +927,19 @@ class   GestionParametrosController extends Controller
         }
         return back()->withErrors('Error al editar el documento.');
     }
+
+    public function deleteDocumentos($id)
+    {
+        $documentos = new Documentos();
+        $clave = new ClaveDocumentos();
+        $tipo_documentos = $documentos->deleteDocumentos($id);
+        if ($tipo_documentos[0]){
+            $clave_documento = $clave->deleteClaveDocumentos($id);
+            if ($clave_documento){
+                return redirect()->route('parametros.edit')->with('message', 'Tipo de documento eliminado.');
+            }
+            return back()->withErrors('Error eliminar la clave del documento.');
+        }
+        return back()->withErrors('Error al eliminar el documento.');
+    }
 }

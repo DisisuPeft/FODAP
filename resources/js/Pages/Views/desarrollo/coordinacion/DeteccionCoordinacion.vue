@@ -120,6 +120,7 @@ const pdfDeteccion = () => {
                 anio: form.anio,
                 carrera: form.carrera,
                 periodo: form.periodo,
+                tipo_documento: "Deteccion de necesidades"
             },
         })
         .then((res) => {
@@ -166,7 +167,7 @@ const periodos = [
 ];
 const fullYears = computed(() => {
     const maxYears = new Date().getFullYear() + 1;
-    const minYears = maxYears - 7;
+    const minYears = maxYears - 2;
     const years = [];
     for (let i = maxYears; i >= minYears; i--) {
         years.push(i);
@@ -185,7 +186,7 @@ const fullYears = computed(() => {
             <v-row justify="start" class="ml-16">
                 <v-btn color="blue-darken-1" rounded size="large" @click="pdf_dialog = true">Generar PDF</v-btn>
                 <Modal :show="pdf_dialog" @close="closeModal">
-                    <div class="grid grid-rows-1 p-10 m-5">
+                    <div class="grid grid-rows-1 p-5 m-5">
                         <div class="flex justify-center">
                             <!--                                <div class="grid grid-rows-3">-->
                             <div class="grid grid-cols-1 gap-4">

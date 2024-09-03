@@ -297,12 +297,12 @@
             </thead>
             <tbody>
             <tr>
-                <td> 
+                <td>
                     @if($cursos[0]->carrera->id == 13)
-                    
+
                     @else
                         {{$presidente->nombre}}
-                    @endif    
+                    @endif
                 </td>
                 <td> </td>
             </tr>
@@ -497,8 +497,7 @@
             </p>
         </div>
         <div class="footer" style="padding-top:10px">
-            <!--  i will make this dinamic for sure -->
-            <p style="display:inline;float:left">ITTG-AC-PO-006-01  </p>
+            <p style="display:inline;float:left">{{$key->clave ?? ''}}</p>
             <p style="display:inline;float:right"> Rev.{{0}} </p>
         </div>
     </div>
@@ -678,7 +677,7 @@
     </div>
     <div class="footer" style="padding-top:10px">
         <!--  i will make this dinamic for sure -->
-        <p style="display:inline;float:left"> ITTG-AC-PO-006-01  </p>
+        <p style="display:inline;float:left">{{$key->clave ?? ''}}</p>
         <p style="display:inline;float:right"> Rev.{{0}} </p>
     </div>
 </div>

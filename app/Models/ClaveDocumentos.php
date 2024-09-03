@@ -20,7 +20,7 @@ class ClaveDocumentos extends Model
     }
 
     public function saveClaveDocumentos($clave, $documento_id){
-        $c = ClaveCurso::create([
+        $c = ClaveDocumentos::create([
             'clave' => $clave,
             'documento_id' => $documento_id
         ]);
@@ -47,7 +47,7 @@ class ClaveDocumentos extends Model
         return false;
     }
     public function deleteClaveDocumentos($id){
-        $clave = ClaveCurso::where('documento_id', $id)->first();
+        $clave = ClaveDocumentos::where('documento_id', $id)->first();
         if ($clave){
             $delete = $clave->delete();
             if ($delete){
@@ -56,5 +56,13 @@ class ClaveDocumentos extends Model
             return false;
         }
         return false;
+    }
+
+    public function getClaveDocumento($data){
+        return DB::table('clave_documentos')
+            ->join('documentos', 'clave_documentos.documento_id', '=', 'documentos.id')
+            ->where('documentos.nombre', '=', $data)
+            ->select('clave_documentos.clave')
+            ->first();
     }
 }

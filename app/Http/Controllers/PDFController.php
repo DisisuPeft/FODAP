@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PIFDAPRequest;
 use App\Http\Requests\RequestPDFDeteccion;
+use App\Models\ClaveDocumentos;
 use App\Models\Departamento;
 use App\Models\DeteccionNecesidades;
 use App\Models\Director;
 use App\Models\Docente;
+use App\Models\Documentos;
 use App\Models\FichaTecnica;
 use App\Models\NombreInstituto;
 use App\Models\Subdireccion;
@@ -60,7 +62,9 @@ class PDFController extends Controller
 
     public function deteccion_pdf(RequestPDFDeteccion $request)
     {
+        $clave_documentos = new ClaveDocumentos();
         $request->validated();
+        $key = $clave_documentos->getClaveDocumento($request->tipo_documento);
         $cursos = $this->pdf_request_deteccion($request);
         $subdireccion = Subdireccion::all();
         $presidente = DB::table('carreras')
@@ -68,12 +72,13 @@ class PDFController extends Controller
             ->join('docente', 'carreras.presidente_academia', '=', 'docente.id')
             ->where('carreras.id', '=', $request->carrera)
             ->first();
+
         if (count($cursos) == 0) {
             return response()->json([
                 'message' => 'No se encontro ningun dato con ese criterio de busqueda'
             ]);
         } else {
-            $pdf = Pdf::loadView('pdf.deteccion', compact('cursos', 'subdireccion', 'presidente'))->output();
+            $pdf = Pdf::loadView('pdf.deteccion', compact('cursos', 'subdireccion', 'presidente', 'key'))->output();
             $path = "Deteccion.pdf";
             $this->save_file($pdf, $path);
             //            return $this->download_file($path);
@@ -94,6 +99,8 @@ class PDFController extends Controller
     public function PIFDAP_pdf(PIFDAPRequest $request)
     {
         $request->validated();
+        $clave_documentos = new ClaveDocumentos();
+        $key = $clave_documentos->getClaveDocumento($request->tipo_documento);
         $FD = $this->FD_request($request);
         $AP = $this->AP_request($request);
         $subdireccion = Subdireccion::all();
@@ -105,7 +112,7 @@ class PDFController extends Controller
         if (count($FD) == 0 && count($AP) == 0) {
             return ['No se encontro ningun dato con ese criterio de busqueda', "error"];
         } else {
-            $pdf = Pdf::loadView('pdf.PIFDAP', compact('FD', 'AP', 'anio', 'periodo', 'subdireccion', 'departamento'))
+            $pdf = Pdf::loadView('pdf.PIFDAP', compact('FD', 'AP', 'anio', 'periodo', 'subdireccion', 'departamento', 'key'))
                 ->setPaper('letter', 'landscape')
                 ->output();
             $path = 'PIFDAP.pdf';
@@ -122,6 +129,8 @@ class PDFController extends Controller
     public function cdi_pdf(Request $request)
     {
 //        dd($request);
+        $clave_documentos = new ClaveDocumentos();
+        $key = $clave_documentos->getClaveDocumento($request->tipo_documento);
         $band = 0;
         $null_values = [];
         $string_out = "";
@@ -159,7 +168,7 @@ class PDFController extends Controller
             $null_values[] = '. El docente debe verificar sus datos.';
             $mensajeConcatenado = implode(" ", $null_values);
 //            dd($mensajeConcatenado);
-            $pdf = Pdf::loadView('pdf.CDI', compact('curso', 'docente'))
+            $pdf = Pdf::loadView('pdf.CDI', compact('curso', 'docente', 'key'))
                         ->output();
             $path = 'CDI.pdf';
             $this->save_file($pdf, $path);
