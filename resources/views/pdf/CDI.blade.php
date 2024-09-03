@@ -22,6 +22,18 @@
             /*justify-content: center;*/
             /*align-content: center;*/
         }
+        .grid-container{
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Crea 3 columnas de igual ancho */
+            grid-template-rows: auto; /* Las filas se ajustan automáticamente al contenido */
+            gap: 10px; /* Espacio entre los elementos del grid */
+        }
+        .grid-item {
+            background-color: lightblue;
+            border: 1px solid #ccc;
+            padding: 20px;
+            text-align: center;
+        }
 
         .footer p {
             font-size: 9pt;
@@ -326,8 +338,14 @@
         </tr>
     </table>
     <div class="footer">
-        <p style="float:left">{{$keyVar->clave}}</p>
-        <p style="float:right;">Rev. {{0}}</p>
+        <div class="grid-container">
+            <div class="grid-item">
+                <p>{{$keyVar->clave}}</p>
+            </div>
+            <div class="grid-item">
+                <p>Rev. {{0}}</p>
+            </div>
+        </div>
     </div>
 </body>
 
