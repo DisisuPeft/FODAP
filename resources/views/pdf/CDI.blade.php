@@ -347,7 +347,7 @@
 {{--            </div>--}}
 {{--        </div>--}}
 {{--    </div>--}}
-    <table width="100%" style="font-size:10px;">
+    <table width="100%" style="font-size:10px; margin-right: 50px">
         <br><br><br>
 {{--        <tr style="font-weight:bold;">--}}
 {{--            <td width="15%" align="center"></td>--}}
@@ -362,11 +362,11 @@
 {{--        </tr>--}}
         <tr>
             <td align="center" width="45%">
-                <p>{{$keyVar->clave}}</p>--}}
+                <p>{{$keyVar->clave}}</p>
             </td>
             <td width="10%"></td>
             <td align="center" width="33%">
-                <p>Rev. {{0}}</p>--}}
+                <p>Rev. {{0}}</p>
             </td>
         </tr>
 {{--        <tr style="font-size:10px; font-weight:bold;">--}}
