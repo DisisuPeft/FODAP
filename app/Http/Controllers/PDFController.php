@@ -130,7 +130,7 @@ class PDFController extends Controller
     {
 //        dd();
         $clave_documentos = new ClaveDocumentos();
-        $key = $clave_documentos->getClaveDocumento($request->input('tipo_documento'));
+        $keyVar = $clave_documentos->getClaveDocumento($request->input('tipo_documento'));
 //        dd($key, $request->input('tipo_documento'));k
         $band = 0;
         $null_values = [];
@@ -169,7 +169,7 @@ class PDFController extends Controller
             $null_values[] = '. El docente debe verificar sus datos.';
             $mensajeConcatenado = implode(" ", $null_values);
 //            dd($mensajeConcatenado);
-            $pdf = Pdf::loadView('pdf.CDI', compact('curso', 'docente', 'key'))
+            $pdf = Pdf::loadView('pdf.CDI', compact('curso', 'docente', 'keyVar'))
                         ->output();
             $path = 'CDI.pdf';
             $this->save_file($pdf, $path);
