@@ -10,34 +10,34 @@
             /*border: 1px solid #000;*/
         }
         .page_break { page-break-after: always; }
-        .footer {
-            width: 100%;
-            position: fixed;
-            bottom: 0.5cm;
-            /*position: fixed;*/
-            /*bottom: -1cm;*/
-            /*width: 100%;*/
-            /*height: 30px;*/
-            /*font-weight: normal;*/
-            /*justify-content: center;*/
-            /*align-content: center;*/
-        }
-        .grid-container{
-            display: grid;
-            grid-template-columns: repeat(1, 1fr); /* Crea 3 columnas de igual ancho */
-            /*grid-template-rows: ; !* Las filas se ajustan automáticamente al contenido *!*/
-            gap: 10px; /* Espacio entre los elementos del grid */
-        }
-        .grid-item {
-            background-color: lightblue;
-            border: 1px solid #ccc;
-            padding: 20px;
-            text-align: center;
-        }
+        /*.footer {*/
+        /*    width: 100%;*/
+        /*    position: fixed;*/
+        /*    bottom: 0.5cm;*/
+        /*    !*position: fixed;*!*/
+        /*    !*bottom: -1cm;*!*/
+        /*    !*width: 100%;*!*/
+        /*    !*height: 30px;*!*/
+        /*    !*font-weight: normal;*!*/
+        /*    !*justify-content: center;*!*/
+        /*    !*align-content: center;*!*/
+        /*}*/
+        /*.grid-container{*/
+        /*    display: grid;*/
+        /*    grid-template-columns: repeat(1, 1fr); !* Crea 3 columnas de igual ancho *!*/
+        /*    !*grid-template-rows: ; !* Las filas se ajustan automáticamente al contenido *!*!*/
+        /*    gap: 10px; !* Espacio entre los elementos del grid *!*/
+        /*}*/
+        /*.grid-item {*/
+        /*    background-color: lightblue;*/
+        /*    border: 1px solid #ccc;*/
+        /*    padding: 20px;*/
+        /*    text-align: center;*/
+        /*}*/
 
-        .footer p {
-            font-size: 9pt;
-        }
+        /*.footer p {*/
+        /*    font-size: 9pt;*/
+        /*}*/
 
         .center {
             text-align: center;
@@ -337,16 +337,47 @@
             <td class="tline titles center" style="width:8cm">FIRMA</td>
         </tr>
     </table>
-    <div class="footer">
-        <div class="grid-container">
-            <div class="grid-item">
-                <p>{{$keyVar->clave}}</p>
-            </div>
-            <div class="grid-item">
-                <p>Rev. {{0}}</p>
-            </div>
-        </div>
-    </div>
+{{--    <div class="footer">--}}
+{{--        <div class="grid-container">--}}
+{{--            <div class="grid-item">--}}
+{{--                <p>{{$keyVar->clave}}</p>--}}
+{{--            </div>--}}
+{{--            <div class="grid-item">--}}
+{{--                <p>Rev. {{0}}</p>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
+    <table width="100%" style="font-size:10px;">
+        <br><br><br>
+{{--        <tr style="font-weight:bold;">--}}
+{{--            <td width="15%" align="center"></td>--}}
+{{--            <td width="70%" align="center">Deberá entregar comprobación de gastos a más tardar 5(cinco) dias naturales después de su retorno a su area de trabajo, proporcionando facturas en la mayoría posible.</td>--}}
+{{--            <td width="15%" align="center"></td>--}}
+{{--        </tr>--}}
+        <br><br><br>
+{{--        <tr style="font-size:10px; font-weight:bold;">--}}
+{{--            <td width="45%" align="center">COMISIONADO:</td>--}}
+{{--            <td width="10%"></td>--}}
+{{--            <td width="45%" align="center">AUTORIZO:</td>--}}
+{{--        </tr>--}}
+        <tr>
+            <td align="center" width="45%">
+                <p>{{$keyVar->clave}}</p>--}}
+            </td>
+            <td width="10%"></td>
+            <td align="center" width="33%">
+                <p>Rev. {{0}}</p>--}}
+            </td>
+        </tr>
+{{--        <tr style="font-size:10px; font-weight:bold;">--}}
+{{--            <td width="5%"></td>--}}
+{{--            <td width="40%" align="center" style="">{{ strtoupper($solicitud[0]->solicita) }}</td>--}}
+{{--            <td width="10%"></td>--}}
+{{--            <td width="40%" align="center" style="">{{ strtoupper($solicitud[0]->autorizo) }}</td>--}}
+{{--            <td width="5%"></td>--}}
+{{--        </tr>--}}
+        <br>
+    </table>
 </body>
 
 </html>
