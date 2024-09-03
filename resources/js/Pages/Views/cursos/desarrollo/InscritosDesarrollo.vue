@@ -136,6 +136,7 @@ const submit = (inscripcion, id) => {
             params: {
                 docente: inscripcion,
                 id_curso: id,
+                tipo_documento: "Cedula de inscripcion"
             },
         })
         .then((res) => {
