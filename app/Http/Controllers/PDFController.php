@@ -128,10 +128,10 @@ class PDFController extends Controller
 
     public function cdi_pdf(Request $request)
     {
-//        dd($request);
+//        dd();
         $clave_documentos = new ClaveDocumentos();
-        $key = $clave_documentos->getClaveDocumento($request->tipo_documento);
-//        dd($key);
+        $key = $clave_documentos->getClaveDocumento($request->input('tipo_documento'));
+        dd($key, $request->input('tipo_documento'));
         $band = 0;
         $null_values = [];
         $string_out = "";
