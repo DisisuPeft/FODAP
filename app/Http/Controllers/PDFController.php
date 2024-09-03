@@ -131,6 +131,7 @@ class PDFController extends Controller
 //        dd($request);
         $clave_documentos = new ClaveDocumentos();
         $key = $clave_documentos->getClaveDocumento($request->tipo_documento);
+        dd($key);
         $band = 0;
         $null_values = [];
         $string_out = "";
