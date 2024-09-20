@@ -100,7 +100,8 @@ class EstadisticasController extends Controller
     //perdon por el spageti
     public static function docente_carrera($payload)
     {
-        return DeteccionNecesidades::docente_carrera_consult($payload);
+        $curso = new DeteccionNecesidades();
+        return $curso->docente_carrera_consult($payload);
     }
 
     public static function fd_ap_cursos($payload)

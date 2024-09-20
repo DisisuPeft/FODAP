@@ -29,10 +29,10 @@ const props = defineProps({
     errors: {}
 });
 const alert = ref(false);
-const message = ref("")
+const message = ref("");
 const transform_prop = computed(() => {
     return Boolean(props.administrator)
-})
+});
 const form = useForm({
     email: '',
     password: '',
@@ -40,7 +40,7 @@ const form = useForm({
 });
 const rol = computed(() =>{
     return parseInt(props.role);
-})
+});
 const submit = () => {
     form.post(route('login'), {
         onSuccess: () => {
@@ -62,7 +62,7 @@ const email_rules = [
 
 onMounted(() => {
     store.admin_get()
-})
+});
 
 const format_errors = (errors) => {
     for (const errorsKey in errors) {
