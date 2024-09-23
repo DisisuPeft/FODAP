@@ -143,7 +143,7 @@ class EstadisticasController extends Controller
 
     public function export_excel_capacitados(Request $request){
         $docente = new Docente();
-        return Excel::store(new DocentesCapExport($docente->docentes_capacitados($request->id)), '/public/capacitadosDocentes.xlsx');
+        return Excel::store(new DocentesCapExport($docente->docentes_capacitados($request->input('id'), $request->input('year'))), '/public/capacitadosDocentes.xlsx');
     }
 
 }

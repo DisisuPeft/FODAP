@@ -692,7 +692,7 @@ class DeteccionNecesidades extends Model
 //            array("carrera" => "Mecatrónica", "total" => $totales_mecatronica,  "Total_de_hombres_capacitados" => $totales_mecatronica_masculinos, "Total_de_mujeres_capacitadas" => $totales_mecatronica_femenino),
             array("carrera" => "Ciencias Basicas", "total" => $totales_cb,  "Total_de_hombres_capacitados" => $totales_cb_masculinos, "Total_de_mujeres_capacitadas" => $totales_cb_femenino, "departamento_id" => 1),
             array("carrera" => "Ciencias Económico Administrativo", "total" => $totales_cea,  "Total_de_hombres_capacitados" => $totales_cea_masculinos, "Total_de_mujeres_capacitadas" => $totales_cea_femenino, "departamento_id" => 8),
-            array("carrera" => "Todos los departamentos", "total" => $totales_todos,  "Total_de_hombres_capacitados" => $totales_masculinos, "Total_de_mujeres_capacitadas" => $totales_femenino)
+            array("carrera" => "Todos los departamentos", "total" => $totales_todos,  "Total_de_hombres_capacitados" => $totales_masculinos, "Total_de_mujeres_capacitadas" => $totales_femenino, "departamento_id" => null)
         );
     }
 

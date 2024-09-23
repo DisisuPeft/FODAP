@@ -200,7 +200,8 @@ class Docente extends Model
     }
 
 
-    public function docentes_capacitados($id){
+    public function docentes_capacitados($id, $year){
+//        Faltaria hacerlo por anio porque ahora genera el general
         return DB::table('docente')
             ->orderBy('nombre_completo')
             ->join('posgrado', 'posgrado.id', '=', 'docente.id_posgrado')
@@ -211,6 +212,7 @@ class Docente extends Model
             ->join('inscripcion', 'inscripcion.docente_id', '=', 'docente.id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->where('docente.departamento_id', '=', $id)
+            ->whereYear('deteccion_necesidades.fecha_F', '=', $year)
             ->select(
                 DB::raw(
                     'docente.nombre_completo,

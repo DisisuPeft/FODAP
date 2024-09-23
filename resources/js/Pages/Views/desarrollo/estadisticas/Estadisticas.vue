@@ -162,7 +162,8 @@ const submit_anio = () => {
 function get_documento(id){
     axios.get(route('formato.capacitados.docente'), {
         params: {
-            id: id
+            id: id,
+            year: year.value
         }
     }).then((res) => {
         loading.value = false;
@@ -600,17 +601,19 @@ onMounted(() => {
                                                     }}
                                                 </p>
                                             </td>
-                                            <td class="border-2 border-black">
-                                                <div class="flex justify-center p-2">
-                                                    <v-btn
-                                                        icon="mdi-microsoft-excel"
-                                                        color="green-lighten-1"
-                                                        @click="get_documento(t.departamento_id)"
-                                                    >
+                                            <template v-if="t.departamento_id !== null">
+                                                <td class="border-2 border-black">
+                                                    <div class="flex justify-center p-2">
+                                                        <v-btn
+                                                            icon="mdi-microsoft-excel"
+                                                            color="green-lighten-1"
+                                                            @click="get_documento(t.departamento_id)"
+                                                        >
 
-                                                    </v-btn>
-                                                </div>
-                                            </td>
+                                                        </v-btn>
+                                                    </div>
+                                                </td>
+                                            </template>
                                         </tr>
                                     </tbody>
                                 </table>
