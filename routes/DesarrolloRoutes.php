@@ -120,7 +120,7 @@ Route::middleware(['auth', 'role:Jefe del Departamento de Desarrollo Academico|C
     Route::get('/exportar/fdap', [EstadisticasController::class, 'export_excel_FDAP'])->name('reporte.FDAP');
     Route::get('/formato/export', [ExcelExportsController::class, 'export_formato_constancia'])->name('formato.constancia');
     Route::get('/formato/export/reconocimiento', [ExcelExportsController::class, 'export_formato_constancia_reconocimiento'])->name('formato.constancia.reconocimiento');
-
+    Route::get('/formato/export/capacitados', [EstadisticasController::class, 'export_excel_capacitados'])->name('formato.capacitados.docente');
 
     //correccion a cursos
     Route::post('/desarrollo/correccion/{id}', [DesarrolloController::class, 'addCorreccion'])->name('add.correccion');
@@ -131,4 +131,5 @@ Route::middleware(['auth', 'role:Jefe del Departamento de Desarrollo Academico|C
     Route::post('/desarrollo/guardar/tipo-documento', [GestionParametrosController::class, 'crearDocumento'])->name('add.tipo.documento');
     Route::put('/desarrollo/editar/tipo-documento/{id}', [GestionParametrosController::class, 'editDocumento'])->name('edit.tipo.documento');
     Route::delete('/desarrollo/eliminar/tipo-documento/{id}', [GestionParametrosController::class, 'deleteDocumentos'])->name('delete.tipo.documentos');
+
 });

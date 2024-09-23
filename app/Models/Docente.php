@@ -198,4 +198,38 @@ class Docente extends Model
             ->join('deteccion_necesidades AS c', 'f.deteccion_id', '=', 'c.id')
             ->where('c.id', '=', $id)->get();
     }
+
+
+    public function docentes_capacitados($id){
+        return DB::table('docente')
+            ->orderBy('nombre_completo')
+            ->join('posgrado', 'posgrado.id', '=', 'docente.id_posgrado')
+            ->join('tipo_plaza', 'tipo_plaza.id', '=', 'docente.tipo_plaza')
+            ->join('puesto', 'puesto.id', '=', 'docente.id_puesto')
+            ->join('departamento', 'departamento.id', '=', 'docente.departamento_id')
+            ->join('carreras', 'carreras.id', '=', 'docente.carrera_id')
+            ->join('inscripcion', 'inscripcion.docente_id', '=', 'docente.id')
+            ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
+            ->where('docente.departamento_id', '=', $id)
+            ->select(
+                DB::raw(
+                    'docente.nombre_completo,
+                    posgrado.nombre AS posgrado,
+                    tipo_plaza.nombre AS plaza,
+                    puesto.nombre AS puesto,
+                    carreras.nameCarrera AS carrera,
+                    departamento.nameDepartamento AS departamento,
+                    COUNT(inscripcion.curso_id) AS total_cursos')
+            )
+            ->distinct()
+            ->groupBy(
+                'docente.nombre_completo',
+                'posgrado.nombre',
+                'tipo_plaza.nombre',
+                'puesto.nombre',
+                'carreras.nameCarrera',
+                'departamento.nameDepartamento'
+            )
+            ->get();
+    }
 }

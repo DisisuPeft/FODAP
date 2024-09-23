@@ -158,6 +158,26 @@ const submit_anio = () => {
         }
     )
 }
+
+function get_documento(id){
+    axios.get(route('formato.capacitados.docente'), {
+        params: {
+            id: id
+        }
+    }).then((res) => {
+        loading.value = false;
+        const url = "/storage/capacitadosDocentes.xlsx";
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "capacitadosDocentes.xlsx");
+        document.body.appendChild(link);
+        link.click()
+        success_alert('Exito!', 'Documento Excel descargado.')
+    }).catch((error) => {
+            loading.value = false;
+            errorMsg('Error', 'Se debe de revisar en codigo.')
+    });
+}
 // console.log(props.docente_carrera);
 onMounted(() => {
     // notify('¡Atención', 'warning', 'Esta sección del sistema presenta errores en los calculos por lo que sigue en revisión. Cuando este correcto, esta alerta desparecera.')
@@ -516,7 +536,7 @@ onMounted(() => {
                                     <thead>
                                         <tr>
                                             <th class="border-2 border-black">
-                                                Carrera
+                                                Departamento
                                             </th>
                                             <th
                                                 class="border-2 border-black pa-2"
@@ -533,6 +553,11 @@ onMounted(() => {
                                                 class="border-2 border-black pa-2"
                                             >
                                                 Total de docentes femeninos
+                                            </th>
+                                            <th
+                                                class="border-2 border-black pa-2"
+                                            >
+                                                Generar Excel.
                                             </th>
                                         </tr>
                                     </thead>
@@ -574,6 +599,17 @@ onMounted(() => {
                                                         t.Total_de_mujeres_capacitadas
                                                     }}
                                                 </p>
+                                            </td>
+                                            <td class="border-2 border-black">
+                                                <div class="flex justify-center p-2">
+                                                    <v-btn
+                                                        icon="mdi-microsoft-excel"
+                                                        color="green-lighten-1"
+                                                        @click="get_documento(t.departamento_id)"
+                                                    >
+
+                                                    </v-btn>
+                                                </div>
                                             </td>
                                         </tr>
                                     </tbody>

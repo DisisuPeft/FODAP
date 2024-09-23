@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DocenteCapacitadosExports;
+use App\Exports\DocentesCapExport;
 use App\Exports\EstadisticasExport;
 use App\Exports\FDAPExport;
 use App\Models\DeteccionNecesidades;
@@ -137,6 +139,11 @@ class EstadisticasController extends Controller
     public static function export_excel_FDAP(Request $request)
     {
         return Excel::store(new FDAPExport($request), '/public/estadisticas_FDAP.xlsx');
+    }
+
+    public function export_excel_capacitados(Request $request){
+        $docente = new Docente();
+        return Excel::store(new DocentesCapExport($docente->docentes_capacitados($request->id)), '/public/capacitadosDocentes.xlsx');
     }
 
 }

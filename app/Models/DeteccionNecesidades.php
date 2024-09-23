@@ -364,7 +364,7 @@ class DeteccionNecesidades extends Model
         $totales_mecanica = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where('docente.departamento_id', 1)
+            ->where('docente.departamento_id', 5)
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
             ->distinct()
             ->count('docente.id');
@@ -379,7 +379,7 @@ class DeteccionNecesidades extends Model
         $totales_mecanica_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where('docente.departamento_id', '=', 1)
+            ->where('docente.departamento_id', '=', 5)
             ->where('docente.sexo', '=', 1)
             ->whereYear('fecha_F', '=', $pay->year)
             ->distinct()
@@ -387,7 +387,7 @@ class DeteccionNecesidades extends Model
         $totales_mecanica_femenino = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
-            ->where('docente.departamento_id', '=', 1)
+            ->where('docente.departamento_id', '=', 5)
             ->where('docente.sexo', '=', 2)
             ->whereYear('fecha_F', '=', $pay->year)
             ->distinct()
@@ -397,14 +397,14 @@ class DeteccionNecesidades extends Model
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 2)
+            ->where('docente.departamento_id', '=', 7)
             ->distinct()
             ->count('docente.id');
         $totales_sistemas_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 2)
+            ->where('docente.departamento_id', '=', 7)
             ->where('docente.sexo', '=', 1)
             ->distinct()
             ->count('docente.id');
@@ -412,7 +412,7 @@ class DeteccionNecesidades extends Model
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 2)
+            ->where('docente.departamento_id', '=', 7)
             ->where('docente.sexo', '=', 2)
             ->distinct()
             ->count('docente.id');
@@ -421,14 +421,14 @@ class DeteccionNecesidades extends Model
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 3)
+            ->where('docente.departamento_id', '=', 4)
             ->distinct()
             ->count('docente.id');
         $totales_industrial_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 3)
+            ->where('docente.departamento_id', '=', 4)
             ->where('docente.sexo', '=', 1)
             ->distinct()
             ->count('docente.id');
@@ -436,7 +436,7 @@ class DeteccionNecesidades extends Model
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 3)
+            ->where('docente.departamento_id', '=', 4)
             ->where('docente.sexo', '=', 2)
             ->distinct()
             ->count('docente.id');
@@ -445,14 +445,14 @@ class DeteccionNecesidades extends Model
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 4)
+            ->where('docente.departamento_id', '=', 3)
             ->distinct()
             ->count('docente.id');
         $totales_electronica_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 4)
+            ->where('docente.departamento_id', '=', 3)
             ->where('docente.sexo', '=', 1)
             ->distinct()
             ->count('docente.id');
@@ -460,7 +460,7 @@ class DeteccionNecesidades extends Model
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 4)
+            ->where('docente.departamento_id', '=', 3)
             ->where('docente.sexo', '=', 2)
             ->distinct()
             ->count('docente.id');
@@ -469,14 +469,14 @@ class DeteccionNecesidades extends Model
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 5)
+            ->where('docente.departamento_id', '=', 3)
             ->distinct()
             ->count('docente.id');
         $totales_electrica_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 5)
+            ->where('docente.departamento_id', '=', 3)
             ->where('docente.sexo', '=', 1)
             ->distinct()
             ->count('docente.id');
@@ -484,7 +484,7 @@ class DeteccionNecesidades extends Model
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 5)
+            ->where('docente.departamento_id', '=', 3)
             ->where('docente.sexo', '=', 2)
             ->distinct()
             ->count('docente.id');
@@ -517,14 +517,14 @@ class DeteccionNecesidades extends Model
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 7)
+            ->where('docente.departamento_id', '=', 6)
             ->distinct()
             ->count('docente.id');
         $totales_quimica_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 7)
+            ->where('docente.departamento_id', '=', 6)
             ->where('docente.sexo', '=', 1)
             ->distinct()
             ->count('docente.id');
@@ -532,7 +532,7 @@ class DeteccionNecesidades extends Model
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 7)
+            ->where('docente.departamento_id', '=', 6)
             ->where('docente.sexo', '=', 2)
             ->distinct()
             ->count('docente.id');
@@ -541,14 +541,14 @@ class DeteccionNecesidades extends Model
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 8)
+            ->where('docente.departamento_id', '=', 9)
             ->distinct()
             ->count('docente.id');
         $totales_ige_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 8)
+            ->where('docente.departamento_id', '=', 9)
             ->where('docente.sexo', '=', 1)
             ->distinct()
             ->count('docente.id');
@@ -556,7 +556,7 @@ class DeteccionNecesidades extends Model
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 8)
+            ->where('docente.departamento_id', '=', 9)
             ->where('docente.sexo', '=', 2)
             ->distinct()
             ->count('docente.id');
@@ -589,14 +589,14 @@ class DeteccionNecesidades extends Model
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 10)
+            ->where('docente.departamento_id', '=', 3)
             ->distinct()
             ->count('docente.id');
         $totales_mecatronica_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 10)
+            ->where('docente.departamento_id', '=', 3)
             ->where('docente.sexo', '=', 1)
             ->distinct()
             ->count('docente.id');
@@ -604,7 +604,7 @@ class DeteccionNecesidades extends Model
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 10)
+            ->where('docente.departamento_id', '=', 3)
             ->where('docente.sexo', '=', 2)
             ->distinct()
             ->count('docente.id');
@@ -613,14 +613,14 @@ class DeteccionNecesidades extends Model
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 11)
+            ->where('docente.departamento_id', '=', 1)
             ->distinct()
             ->count('docente.id');
         $totales_cb_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 11)
+            ->where('docente.departamento_id', '=', 1)
             ->where('docente.sexo', '=', 1)
             ->distinct()
             ->count('docente.id');
@@ -628,7 +628,7 @@ class DeteccionNecesidades extends Model
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 11)
+            ->where('docente.departamento_id', '=', 1)
             ->where('docente.sexo', '=', 2)
             ->distinct()
             ->count('docente.id');
@@ -637,14 +637,14 @@ class DeteccionNecesidades extends Model
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 12)
+            ->where('docente.departamento_id', '=', 8)
             ->distinct()
             ->count('docente.id');
         $totales_cea_masculinos = DB::table('inscripcion')
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 12)
+            ->where('docente.departamento_id', '=', 8)
             ->where('docente.sexo', '=', 1)
             ->distinct()
             ->count('docente.id');
@@ -652,7 +652,7 @@ class DeteccionNecesidades extends Model
             ->join('docente', 'docente.id', '=', 'inscripcion.docente_id')
             ->join('deteccion_necesidades', 'deteccion_necesidades.id', '=', 'inscripcion.curso_id')
             ->whereYear('deteccion_necesidades.fecha_F', $pay->year)
-            ->where('docente.departamento_id', '=', 12)
+            ->where('docente.departamento_id', '=', 8)
             ->where('docente.sexo', '=', 2)
             ->distinct()
             ->count('docente.id');
@@ -680,19 +680,19 @@ class DeteccionNecesidades extends Model
             ->count('docente.id');
 
         return array(
-            array("carrera" => "Mecánica", "total" => $totales_mecanica, "Total_de_hombres_capacitados" => $totales_mecanica_masculinos, "Total_de_mujeres_capacitadas" => $totales_mecanica_femenino),
-            array("carrera" => "Sistemas Computacionales", "total" => $totales_sistemas,  "Total_de_hombres_capacitados" => $totales_sistemas_masculinos, "Total_de_mujeres_capacitadas" => $totales_sistemas_femenino),
-            array("carrera" => "Industrial", "total" => $totales_industrial,  "Total_de_hombres_capacitados" => $totales_industrial_masculinos, "Total_de_mujeres_capacitadas" => $totales_industrial_femenino),
-            array("carrera" => "Electrónica", "total" => $totales_electronica,  "Total_de_hombres_capacitados" => $totales_electronica_masculinos, "Total_de_mujeres_capacitadas" => $totales_electronica_femenino),
-            array("carrera" => "Electrica", "total" => $totales_electrica,  "Total_de_hombres_capacitados" => $totales_electrica_masculinos, "Total_de_mujeres_capacitadas" => $totales_electrica_femenino),
-            array("carrera" => "Bioquimica", "total" => $totales_bioquimica,  "Total_de_hombres_capacitados" => $totales_bioquimica_masculinos, "Total_de_mujeres_capacitadas" => $totales_bioquimica_femenino),
-            array("carrera" => "Quimica", "total" => $totales_quimica,  "Total_de_hombres_capacitados" => $totales_quimica_masculinos, "Total_de_mujeres_capacitadas" => $totales_quimica_femenino),
-            array("carrera" => "Gestión Empresarial", "total" => $totales_ige,  "Total_de_hombres_capacitados" => $totales_ige_masculinos, "Total_de_mujeres_capacitadas" => $totales_ige_femenino),
-            array("carrera" => "Logística", "total" => $totales_logistica,  "Total_de_hombres_capacitados" => $totales_logistica_masculinos, "Total_de_mujeres_capacitadas" => $totales_logistica_femenino),
-            array("carrera" => "Mecatrónica", "total" => $totales_mecatronica,  "Total_de_hombres_capacitados" => $totales_mecatronica_masculinos, "Total_de_mujeres_capacitadas" => $totales_mecatronica_femenino),
-            array("carrera" => "Ciencias Basicas", "total" => $totales_cb,  "Total_de_hombres_capacitados" => $totales_cb_masculinos, "Total_de_mujeres_capacitadas" => $totales_cb_femenino),
-            array("carrera" => "Ciencias Económico Administrativo", "total" => $totales_cea,  "Total_de_hombres_capacitados" => $totales_cea_masculinos, "Total_de_mujeres_capacitadas" => $totales_cea_femenino),
-            array("carrera" => "Todas las carreras", "total" => $totales_todos,  "Total_de_hombres_capacitados" => $totales_masculinos, "Total_de_mujeres_capacitadas" => $totales_femenino)
+            array("carrera" => "Mecánica", "total" => $totales_mecanica, "Total_de_hombres_capacitados" => $totales_mecanica_masculinos, "Total_de_mujeres_capacitadas" => $totales_mecanica_femenino, "departamento_id" => 5),
+            array("carrera" => "Sistemas Computacionales", "total" => $totales_sistemas,  "Total_de_hombres_capacitados" => $totales_sistemas_masculinos, "Total_de_mujeres_capacitadas" => $totales_sistemas_femenino, "departamento_id" => 7),
+            array("carrera" => "Industrial", "total" => $totales_industrial,  "Total_de_hombres_capacitados" => $totales_industrial_masculinos, "Total_de_mujeres_capacitadas" => $totales_industrial_femenino, "departamento_id" => 4),
+//            array("carrera" => "Electrónica", "total" => $totales_electronica,  "Total_de_hombres_capacitados" => $totales_electronica_masculinos, "Total_de_mujeres_capacitadas" => $totales_electronica_femenino),
+            array("carrera" => "Electrónica, Electrica y Mecatrónica", "total" => $totales_electrica,  "Total_de_hombres_capacitados" => $totales_electrica_masculinos, "Total_de_mujeres_capacitadas" => $totales_electrica_femenino, "departamento_id" => 3),
+//            array("carrera" => "Bioquimica", "total" => $totales_bioquimica,  "Total_de_hombres_capacitados" => $totales_bioquimica_masculinos, "Total_de_mujeres_capacitadas" => $totales_bioquimica_femenino),
+            array("carrera" => "Bioquimica y Quimica", "total" => $totales_quimica,  "Total_de_hombres_capacitados" => $totales_quimica_masculinos, "Total_de_mujeres_capacitadas" => $totales_quimica_femenino, "departamento_id" => 6),
+            array("carrera" => "Logística y Gestión Empresarial", "total" => $totales_ige,  "Total_de_hombres_capacitados" => $totales_ige_masculinos, "Total_de_mujeres_capacitadas" => $totales_ige_femenino, "departamento_id" => 9),
+//            array("carrera" => "Logística", "total" => $totales_logistica,  "Total_de_hombres_capacitados" => $totales_logistica_masculinos, "Total_de_mujeres_capacitadas" => $totales_logistica_femenino),
+//            array("carrera" => "Mecatrónica", "total" => $totales_mecatronica,  "Total_de_hombres_capacitados" => $totales_mecatronica_masculinos, "Total_de_mujeres_capacitadas" => $totales_mecatronica_femenino),
+            array("carrera" => "Ciencias Basicas", "total" => $totales_cb,  "Total_de_hombres_capacitados" => $totales_cb_masculinos, "Total_de_mujeres_capacitadas" => $totales_cb_femenino, "departamento_id" => 1),
+            array("carrera" => "Ciencias Económico Administrativo", "total" => $totales_cea,  "Total_de_hombres_capacitados" => $totales_cea_masculinos, "Total_de_mujeres_capacitadas" => $totales_cea_femenino, "departamento_id" => 8),
+            array("carrera" => "Todos los departamentos", "total" => $totales_todos,  "Total_de_hombres_capacitados" => $totales_masculinos, "Total_de_mujeres_capacitadas" => $totales_femenino)
         );
     }
 
