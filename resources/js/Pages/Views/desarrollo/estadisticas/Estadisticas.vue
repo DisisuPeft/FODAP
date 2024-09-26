@@ -452,8 +452,7 @@ onMounted(() => {
                                 "
                             >
                                 <p class="ma-10 text-center text-2xl">
-                                    Total de docentes capacitados por curso
-                                    impartido en
+                                    Total de docentes por departamento adscrito capacitados en
                                     {{ year }}
                                 </p>
                                 <div
