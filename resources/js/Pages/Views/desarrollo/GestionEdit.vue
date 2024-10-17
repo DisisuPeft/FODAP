@@ -1217,7 +1217,7 @@ function cerrar() {
                             @update:modelValue="dialogSub = $event"
                             :errors="props.errors"
                         ></form-subdireccion>
-                        <template v-if="props.sub.length === 0">
+                        <div v-if="props.sub.length === 0">
                             <div
                                 class="flex justify-end mt-8 mr-12 items-center"
                             >
@@ -1225,7 +1225,7 @@ function cerrar() {
                                     >Crear/Guardar</primary-button
                                 >
                             </div>
-                        </template>
+                        </div>
                     </div>
 
                     <div class="flex justify-center">

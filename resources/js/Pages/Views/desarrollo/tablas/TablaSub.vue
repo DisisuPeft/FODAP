@@ -9,13 +9,11 @@ const props = defineProps({
         type: Boolean,
     },
 });
-const open = ref(false);
+// const open = ref(false);
 const emit = defineEmits(["update:modelValue"]);
 </script>
 
 <template>
-    <!-- <div class="grid grid-rows-2">
-        <div class="flex justify-center h-[80px]"> -->
     <v-table fixed-header height="120px" hover>
         <thead>
             <tr>
@@ -34,17 +32,6 @@ const emit = defineEmits(["update:modelValue"]);
             </tr>
         </tbody>
     </v-table>
-    <!-- </div>
-        <div class="flex justify-end h-[40px]" v-if="props.sub.length === 0">
-            <button
-                class="rounded-lg p-2 bg-sky-500 hover:bg-sky-700"
-                @click="open = true"
-            >
-                Crear
-            </button>
-            <DialogSubdireccion :></DialogSubdireccion>
-        </div> -->
-    <!-- </div> -->
 </template>
 
 <style scoped></style>
