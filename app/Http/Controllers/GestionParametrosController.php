@@ -66,7 +66,7 @@ class   GestionParametrosController extends Controller
             'fechas' => $fechas,
             'director' => $director,
             'instituto' => $instituto,
-            'roles' => $roles->except([5,1,2,4]),
+            'roles' => $roles->except([5]),
             'documentos' => $documentos,
         ]);
     }
@@ -837,7 +837,10 @@ class   GestionParametrosController extends Controller
             $file = $request->file('file');
 
             // Almacenar el archivo en la carpeta 'word_documents'
-            $file->storeAs('/img/', time().'_logo.'.$file->getClientOriginalExtension(), 'public');;
+            if(Storage::disk('public')->exists('/img/'.'logo.'.$file->getClientOriginalExtension())){
+                Storage::disk('public')->delete('/img/'.'logo.'.$file->getClientOriginalExtension());
+            }
+            $file->storeAs('/img/', 'logo.'.$file->getClientOriginalExtension(), 'public');;
 
             // Retornar éxito o hacer algo con la ruta del archivo almacenado
             return Redirect::route('parametros.edit');
@@ -849,8 +852,10 @@ class   GestionParametrosController extends Controller
         $request->validated();
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-
-            $file->storeAs('/img/', time().'_logoTecnm.'.$file->getClientOriginalExtension(), 'public');
+            if(Storage::disk('public')->exists('/img/'.'logoTecnm.'.$file->getClientOriginalExtension())){
+                Storage::disk('public')->delete('/img/'.'logoTecnm.'.$file->getClientOriginalExtension());
+            }
+            $file->storeAs('/img/', 'logoTecnm.'.$file->getClientOriginalExtension(), 'public');
 
             return Redirect::route('parametros.edit');
         }
@@ -862,8 +867,10 @@ class   GestionParametrosController extends Controller
         $request->validated();
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-
-            $file->storeAs('/img/', time().'_educacion.'.$file->getClientOriginalExtension(), 'public');
+            if(Storage::disk('public')->exists('/img/'.'educacion.'.$file->getClientOriginalExtension())){
+                Storage::disk('public')->delete('/img/'.'educacion.'.$file->getClientOriginalExtension());
+            }
+            $file->storeAs('/img/', 'educacion.'.$file->getClientOriginalExtension(), 'public');
 
             return Redirect::route('parametros.edit');
         }
