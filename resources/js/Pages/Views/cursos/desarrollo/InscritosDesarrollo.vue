@@ -15,8 +15,13 @@ import Calificaciones from "@/Components/Calificaciones.vue";
 import CalificacionesUpdate from "@/Components/CalificacionesUpdate.vue";
 import Modal from "@/Components/Modal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import {AlertLoading, errorMsg, notify, success_alert} from "@/jsfiels/alertas.js";
-import {no} from "vuetify/locale";
+import {
+    AlertLoading,
+    errorMsg,
+    notify,
+    success_alert,
+} from "@/jsfiels/alertas.js";
+import { no } from "vuetify/locale";
 import Swal from "sweetalert2";
 
 const store = Curso();
@@ -28,8 +33,8 @@ const props = defineProps({
     inscritos: Array,
     errors: Object,
     flash: {
-        type: [String, Object]
-    }
+        type: [String, Object],
+    },
 });
 const timeout = ref(0);
 
@@ -46,9 +51,9 @@ const docente = ref();
 const dialogCalificacionUpdate = ref(false);
 const show_ficha = ref(false);
 const color_ficha = ref("");
-const mm = ref([])
+const mm = ref([]);
 const reconocimiento = ref(false);
-const getFacilitadores = ref([])
+const getFacilitadores = ref([]);
 const reloadPage = () => {
     router.reload();
     snackbar.value = false;
@@ -69,59 +74,32 @@ const update_docente_calificacion = (docente_id, calification) => {
 //         return mm[i].value
 //     }
 // })
-const snackEventActivator = () => {
-    snackbar.value = true;
-    message.value =
-        "Parece que los recursos se han actualizado, por favor recarga la pagina";
-    color.value = "warning";
-    timeout.value = 8000;
-    setTimeout(() => {
-        snackbar.value = false;
-    }, timeout.value);
-};
-const snackErrorActivator = () => {
-    snackbar.value = true;
-    message.value = "No se pudo procesar la solicitud";
-    color.value = "error";
-    timeout.value = 5000;
-    setTimeout(() => {
-        snackbar.value = false;
-    }, timeout.value);
-};
-const snackSuccessActivator = () => {
-    snackbar.value = true;
-    message.value = "Procesado correctamente";
-    color.value = "success";
-    timeout.value = 5000;
-    setTimeout(() => {
-        snackbar.value = false;
-    }, timeout.value);
-};
+
 const addCalificacion = (form) => {
     form.post(route("add.calificacion.desarrollo"), {
         onSuccess: () => {
-            success_alert('Exito.', 'Calificación asignada.')
-            dialogCalificacion.value = false
-            form.reset()
+            success_alert("Exito.", "Calificación asignada.");
+            dialogCalificacion.value = false;
+            form.reset();
         },
         onError: () => {
-            notify('Alerta','warning', `${format_errors(props.errors)}`)
-            message.value = ""
-            dialogCalificacion.value = false
+            notify("Alerta", "warning", `${format_errors(props.errors)}`);
+            message.value = "";
+            dialogCalificacion.value = false;
         },
     });
 };
 const updateCalificacion = (form) => {
     form.post(route("update.calificacion.desarrollo"), {
         onSuccess: () => {
-            success_alert('Exito.', 'Calificación actualizada.')
-            dialogCalificacionUpdate.value = false
-            form.reset()
+            success_alert("Exito.", "Calificación actualizada.");
+            dialogCalificacionUpdate.value = false;
+            form.reset();
         },
         onError: () => {
-            notify('Alerta','warning', `${format_errors(props.errors)}`)
-            message.value = ""
-            dialogCalificacionUpdate.value = false
+            notify("Alerta", "warning", `${format_errors(props.errors)}`);
+            message.value = "";
+            dialogCalificacionUpdate.value = false;
         },
     });
 };
@@ -136,18 +114,18 @@ const submit = (inscripcion, id) => {
             params: {
                 docente: inscripcion,
                 id_curso: id,
-                tipo_documento: "Cedula de inscripcion"
+                tipo_documento: "Cedula de inscripcion",
             },
         })
         .then((res) => {
-            if (res.data[0] > 0){
-               mm.value = res.data[1]
-               notify('Advertencia', 'warning', `${res.data[1]}`)
-               loading.value = false
-            }else if (typeof res.data === 'string'){
-                notify('¡Atención!', 'info', `${res.data}`)
-            }else{
-                success_alert('Exito.', 'Documento generado.')
+            if (res.data[0] > 0) {
+                mm.value = res.data[1];
+                notify("Advertencia", "warning", `${res.data[1]}`);
+                loading.value = false;
+            } else if (typeof res.data === "string") {
+                notify("¡Atención!", "info", `${res.data}`);
+            } else {
+                success_alert("Exito.", "Documento generado.");
             }
             const url = "/storage/CDI.pdf";
             const link = document.createElement("a");
@@ -156,19 +134,23 @@ const submit = (inscripcion, id) => {
             document.body.appendChild(link);
             link.click();
             // success_alert('Exito.', 'Documento generado.')
-            loading.value = false
+            loading.value = false;
         })
         .catch((error) => {
             loading.value = false;
-            console.log(error.response.data)
-            notify('¡Atención!','warning', `El servidor respondio: ${error.response.data}`)
-            message.value = ""
+            console.log(error.response.data);
+            notify(
+                "¡Atención!",
+                "warning",
+                `El servidor respondio: ${error.response.data}`
+            );
+            message.value = "";
         });
 };
 
 const generar_ficha = () => {
     loading.value = true;
-    if(props.curso.ficha_tecnica) {
+    if (props.curso.ficha_tecnica) {
         axios
             .get(route("pdf.ficha.tecnica"), {
                 params: {
@@ -183,15 +165,22 @@ const generar_ficha = () => {
                 link.setAttribute("download", "ficha.pdf");
                 document.body.appendChild(link);
                 link.click();
-                notify('¡Atención!', 'info', `${res.data}`)
+                notify("¡Atención!", "info", `${res.data}`);
             })
             .catch((error) => {
                 loading.value = false;
-                errorMsg('¡Atención!', `El servidor respondio: ${error.response?.data}`)
+                errorMsg(
+                    "¡Atención!",
+                    `El servidor respondio: ${error.response?.data}`
+                );
             });
     } else {
         loading.value = false;
-        notify('Atención', 'warning', 'El PDF no se puede generar debido a que no se ha capturado la ficha tecnica del curso.')
+        notify(
+            "Atención",
+            "warning",
+            "El PDF no se puede generar debido a que no se ha capturado la ficha tecnica del curso."
+        );
     }
 };
 const submitActa = () => {
@@ -210,16 +199,20 @@ const submitActa = () => {
             document.body.appendChild(link);
             link.click();
             loading.value = false;
-            notify('¡Atención!', `${res.data[1]}`, `${res.data[0]}`)
+            notify("¡Atención!", `${res.data[1]}`, `${res.data[0]}`);
         })
         .catch((error) => {
             loading.value = false;
-            notify('¡Atención!','warning', `El servidor respondio: ${error.response.data}`)
+            notify(
+                "¡Atención!",
+                "warning",
+                `El servidor respondio: ${error.response.data}`
+            );
         });
 };
 const submitConstancia = (docente_id) => {
     loading.value = true;
-    if(props.curso?.estado === 1 || props.curso?.estado === 2){
+    if (props.curso?.estado === 1 || props.curso?.estado === 2) {
         axios
             .get(route("pdf.constancia"), {
                 params: {
@@ -228,7 +221,7 @@ const submitConstancia = (docente_id) => {
                 },
             })
             .then((res) => {
-                if(res.data[1] === 0){
+                if (res.data[1] === 0) {
                     const url = "/storage/constancia.pdf";
                     const link = document.createElement("a");
                     link.href = url;
@@ -236,21 +229,35 @@ const submitConstancia = (docente_id) => {
                     document.body.appendChild(link);
                     link.click();
                     loading.value = false;
-                    success_alert('Exito', 'Se ha descargado la contancia con exito')
-                }else{
+                    success_alert(
+                        "Exito",
+                        "Se ha descargado la contancia con exito"
+                    );
+                } else {
                     loading.value = false;
-                    console.log(res.data)
-                    errorMsg('Parece que hacen falta estos parametros: ', `${res.data[0]}`)
+                    console.log(res.data);
+                    errorMsg(
+                        "Parece que hacen falta estos parametros: ",
+                        `${res.data[0]}`
+                    );
 
                     // errorMsg('Parece que hacen falta estos parametros: ', `${}`)
                 }
             })
             .catch((error) => {
                 loading.value = false;
-                notify('¡Atención!','warning', `El servidor respondio: ${error.response.data}`)
+                notify(
+                    "¡Atención!",
+                    "warning",
+                    `El servidor respondio: ${error.response.data}`
+                );
             });
-    }else{
-        notify('¡Atención!', 'info', 'El curso aun no ha comenzado por lo que no se puede generar la constancia.')
+    } else {
+        notify(
+            "¡Atención!",
+            "info",
+            "El curso aun no ha comenzado por lo que no se puede generar la constancia."
+        );
     }
 };
 const id_curso = useForm({
@@ -259,10 +266,10 @@ const id_curso = useForm({
 const desinscribir = (id) => {
     id_curso.post(`/docente/desinscribir/${id}`, {
         onSuccess: () => {
-            success_alert('Exito.', `${props.flash?.message}`)
+            success_alert("Exito.", `${props.flash?.message}`);
         },
         onError: () => {
-            notify('Alerta','warning', `${format_errors(props.errors)}`)
+            notify("Alerta", "warning", `${format_errors(props.errors)}`);
         },
     });
 };
@@ -295,10 +302,14 @@ function descargar_formato_constancia() {
             document.body.appendChild(link);
             link.click();
             loading.value = false;
-            success_alert('Exito.', 'Excel generado.')
+            success_alert("Exito.", "Excel generado.");
         })
         .catch((error) => {
-            notify('Atención', 'warning', 'El archivo excel no se pudo generar, se debe revisar en el codigo fuente.')
+            notify(
+                "Atención",
+                "warning",
+                "El archivo excel no se pudo generar, se debe revisar en el codigo fuente."
+            );
         });
 }
 function descargar_formato_constancia_reconocimiento() {
@@ -319,10 +330,14 @@ function descargar_formato_constancia_reconocimiento() {
             document.body.appendChild(link);
             link.click();
             loading.value = false;
-            success_alert('Exito.', 'Excel generado.')
+            success_alert("Exito.", "Excel generado.");
         })
         .catch((error) => {
-            notify('Atención', 'warning', 'El archivo excel no se pudo generar, se debe revisar en el codigo fuente.')
+            notify(
+                "Atención",
+                "warning",
+                "El archivo excel no se pudo generar, se debe revisar en el codigo fuente."
+            );
         });
 }
 
@@ -332,44 +347,44 @@ function submit_inscripcion(form) {
         onSuccess: () => {
             dialog_inscripcion.value = false;
             loading.value = false;
-            success_alert('Exito.', 'Docente inscrito.')
+            success_alert("Exito.", "Docente inscrito.");
             form.reset();
         },
         onError: () => {
             dialog_inscripcion.value = false;
             loading.value = false;
-            notify('Alerta','warning', `${format_errors(props.errors)}`)
-            message.value = ""
+            notify("Alerta", "warning", `${format_errors(props.errors)}`);
+            message.value = "";
         },
     });
 }
 
 const IfEditFicha = () => {
-    if(props.auth.user.docente_id && props.curso.id) {
+    if (props.auth.user.docente_id && props.curso.id) {
         return true;
     }
-}
+};
 
 const format_errors = (errors) => {
     for (const errorsKey in errors) {
-        message.value += errors[errorsKey]
+        message.value += errors[errorsKey];
     }
-    return message.value.split('.').join('. ');
-}
+    return message.value.split(".").join(". ");
+};
 
 const generar_reconocimiento = (facilitador_id) => {
-    if (props.curso?.estado === 2){
+    if (props.curso?.estado === 2) {
         Swal.fire({
-            title: 'Esta por generar el reconocimiento.',
-            text: 'Esta acción puede tardar unos minutos.',
+            title: "Esta por generar el reconocimiento.",
+            text: "Esta acción puede tardar unos minutos.",
             showCancelButton: true,
             showConfirmButton: true,
-            confirmButtonText: 'Confirmar',
-            cancelButtonText: 'Cancelar',
+            confirmButtonText: "Confirmar",
+            cancelButtonText: "Cancelar",
             icon: "info",
-            timerProgressBar: true
-        }).then(res => {
-            if (res.isConfirmed){
+            timerProgressBar: true,
+        }).then((res) => {
+            if (res.isConfirmed) {
                 axios
                     .get(route("pdf.reconocimiento"), {
                         params: {
@@ -378,7 +393,7 @@ const generar_reconocimiento = (facilitador_id) => {
                         },
                     })
                     .then((res) => {
-                        if(res.data[1] === 0){
+                        if (res.data[1] === 0) {
                             const url = "/storage/reconocimiento.pdf";
                             const link = document.createElement("a");
                             link.href = url;
@@ -386,46 +401,68 @@ const generar_reconocimiento = (facilitador_id) => {
                             document.body.appendChild(link);
                             link.click();
                             loading.value = false;
-                            success_alert('Exito', 'Se ha descargado la contancia con exito')
-                        }else{
+                            success_alert(
+                                "Exito",
+                                "Se ha descargado la contancia con exito"
+                            );
+                        } else {
                             loading.value = false;
-                            console.log(res.data)
-                            errorMsg('Parece que hacen falta estos parametros: ', `${res.data[0]}`)
+                            console.log(res.data);
+                            errorMsg(
+                                "Parece que hacen falta estos parametros: ",
+                                `${res.data[0]}`
+                            );
 
                             // errorMsg('Parece que hacen falta estos parametros: ', `${}`)
                         }
                     })
                     .catch((error) => {
                         loading.value = false;
-                        notify('¡Atención!','warning', `El servidor respondio: ${error.response.data}`)
+                        notify(
+                            "¡Atención!",
+                            "warning",
+                            `El servidor respondio: ${error.response.data}`
+                        );
                     });
             }
-        })
-    }else{
-        notify('¡Atención!', 'info', 'El curso no ha concluido por lo que no se puede generar el reconocimiento.')
+        });
+    } else {
+        notify(
+            "¡Atención!",
+            "info",
+            "El curso no ha concluido por lo que no se puede generar el reconocimiento."
+        );
     }
-}
+};
 
 const descargar_lista_asistencia = () => {
-    if (props.curso?.estado === 1 || props.curso?.estado === 2){
+    if (props.curso?.estado === 1 || props.curso?.estado === 2) {
         Swal.fire({
-            title: 'Esta por generar la lista de asistencia.',
-            text: 'Esta acción puede tardar unos minutos.',
+            title: "Esta por generar la lista de asistencia.",
+            text: "Esta acción puede tardar unos minutos.",
             showCancelButton: true,
             showConfirmButton: true,
-            confirmButtonText: 'Confirmar',
-            cancelButtonText: 'Cancelar',
+            confirmButtonText: "Confirmar",
+            cancelButtonText: "Cancelar",
             icon: "info",
-            timerProgressBar: true
-        }).then(res => {
-            if (res.isConfirmed){
-                notify('¡Atención!', 'info', 'En breve se podra descargar la lista de asistencia.')
+            timerProgressBar: true,
+        }).then((res) => {
+            if (res.isConfirmed) {
+                notify(
+                    "¡Atención!",
+                    "info",
+                    "En breve se podra descargar la lista de asistencia."
+                );
             }
-        })
-    }else{
-        notify('¡Atención!', 'info', 'El curso aun no ha comenzado por lo que no se puede descargar la lista de asistencia.')
+        });
+    } else {
+        notify(
+            "¡Atención!",
+            "info",
+            "El curso aun no ha comenzado por lo que no se puede descargar la lista de asistencia."
+        );
     }
-}
+};
 
 onMounted(() => {
     window.Echo.private(`App.Models.User.${props.auth.user.id}`).notification(
@@ -448,13 +485,13 @@ onMounted(() => {
     );
     // store.inscritos_curso_desarrollo(props.curso?.id);
     axios
-        .get('/api/v1/facilitadores/get', {
+        .get("/api/v1/facilitadores/get", {
             params: {
-                id: props.curso?.id
-            }
+                id: props.curso?.id,
+            },
         })
         .then((res) => {
-            getFacilitadores.value = res.data
+            getFacilitadores.value = res.data;
             console.log(res.data);
         })
         .catch((err) => {
@@ -463,8 +500,8 @@ onMounted(() => {
 });
 
 const close_modal = () => {
-    reconocimiento.value = false
-}
+    reconocimiento.value = false;
+};
 </script>
 
 <template>
@@ -474,7 +511,10 @@ const close_modal = () => {
                 <div class="flex justify-start">
                     <div class="grid grid-cols-1">
                         <template
-                            v-if="props.curso.estado === 0 || props.curso.estado === 1"
+                            v-if="
+                                props.curso.estado === 0 ||
+                                props.curso.estado === 1
+                            "
                         >
                             <div class="flex justify-center sm:justify-start">
                                 <NavLink
@@ -513,11 +553,9 @@ const close_modal = () => {
                     </div>
                 </div>
             </div>
-                <div class="grid grid-cols-1 md:grid-cols-4">
-                    <div class="flex justify-center items-center m-3">
-
-                    </div>
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-4">
+                <div class="flex justify-center items-center m-3"></div>
+            </div>
         </template>
         <div class="grid grid-rows-1">
             <div class="flex justify-center">
@@ -544,7 +582,9 @@ const close_modal = () => {
                                     prepend-icon="mdi-microsoft-excel"
                                     v-bind="props"
                                     color="green-lighten-1"
-                                    @click="descargar_formato_constancia_reconocimiento"
+                                    @click="
+                                        descargar_formato_constancia_reconocimiento
+                                    "
                                 >
                                     Formato de reconocimiento
                                 </v-btn>
@@ -584,7 +624,7 @@ const close_modal = () => {
                                 block
                                 size="large"
                                 color="blue-darken-1"
-                            >Inscribir</v-btn
+                                >Inscribir</v-btn
                             >
                         </div>
                         <Inscripcion
@@ -605,39 +645,70 @@ const close_modal = () => {
                                 block
                                 size="large"
                                 color="blue-darken-1"
-                            >Generar reconocimiento facilitadores.</v-btn
+                                >Generar reconocimiento facilitadores.</v-btn
                             >
                             <Modal :show="reconocimiento" @close="close_modal">
                                 <div class="grid grid-rows-1">
                                     <div class="flex justify-center">
                                         <div class="grid grid-cols-1">
-                                            <p class="p-5 text-xl">Facilitadores de este curso</p>
+                                            <p class="p-5 text-xl">
+                                                Facilitadores de este curso
+                                            </p>
                                             <div class="p-10">
-                                                <table class="border-collapse border border-slate-500">
+                                                <table
+                                                    class="border-collapse border border-slate-500"
+                                                >
                                                     <thead>
-                                                    <tr>
-                                                        <th class="border border-slate-600 p-2">ID</th>
-                                                        <th class="border border-slate-600">Nombre</th>
-                                                        <th class="border border-slate-600 p-2">Reconocimiento</th>
-                                                    </tr>
+                                                        <tr>
+                                                            <th
+                                                                class="border border-slate-600 p-2"
+                                                            >
+                                                                ID
+                                                            </th>
+                                                            <th
+                                                                class="border border-slate-600"
+                                                            >
+                                                                Nombre
+                                                            </th>
+                                                            <th
+                                                                class="border border-slate-600 p-2"
+                                                            >
+                                                                Reconocimiento
+                                                            </th>
+                                                        </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <tr v-for="f in getFacilitadores" :key="f.id">
-                                                        <td class="border border-slate-600 p-2">
-                                                            {{f.id}}
-                                                        </td>
-                                                        <td class="border border-slate-600 p-2 text-center">
-                                                            {{f.nombre_completo}}
-                                                        </td>
-                                                        <td class="border border-slate-600 p-2 text-center">
-                                                            <v-btn
-                                                                icon="mdi-file-pdf-box"
-                                                                color="success"
-                                                                @click="generar_reconocimiento(f.id)"
+                                                        <tr
+                                                            v-for="f in getFacilitadores"
+                                                            :key="f.id"
+                                                        >
+                                                            <td
+                                                                class="border border-slate-600 p-2"
                                                             >
-                                                            </v-btn>
-                                                        </td>
-                                                    </tr>
+                                                                {{ f.id }}
+                                                            </td>
+                                                            <td
+                                                                class="border border-slate-600 p-2 text-center"
+                                                            >
+                                                                {{
+                                                                    f.nombre_completo
+                                                                }}
+                                                            </td>
+                                                            <td
+                                                                class="border border-slate-600 p-2 text-center"
+                                                            >
+                                                                <v-btn
+                                                                    icon="mdi-file-pdf-box"
+                                                                    color="success"
+                                                                    @click="
+                                                                        generar_reconocimiento(
+                                                                            f.id
+                                                                        )
+                                                                    "
+                                                                >
+                                                                </v-btn>
+                                                            </td>
+                                                        </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -653,7 +724,7 @@ const close_modal = () => {
                                 color="blue-darken-1"
                                 @click="submitActa"
                                 :disabled="!if_calificacion"
-                            >Descargar Acta de Calificaciones</v-btn
+                                >Descargar Acta de Calificaciones</v-btn
                             >
                         </template>
                     </div>
@@ -775,16 +846,18 @@ const close_modal = () => {
                         <p class="text-2xl">Ficha técnica</p>
                     </div>
                     <div class="flex justify-center">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
+                        <div
+                            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2"
+                        >
                             <div class="flex justify-center items-center">
                                 <template v-if="!props.curso.ficha_tecnica">
                                     <NavLink
                                         :href="
-                                    route('crear.ficha', [
-                                        props.auth.user.docente_id,
-                                        props.curso?.id,
-                                    ])
-                                "
+                                            route('crear.ficha', [
+                                                props.auth.user.docente_id,
+                                                props.curso?.id,
+                                            ])
+                                        "
                                         as="button"
                                     >
                                         <v-btn color="blue-darken-1">
@@ -793,7 +866,16 @@ const close_modal = () => {
                                     </NavLink>
                                 </template>
                                 <template v-else>
-                                    <v-btn color="blue-darken-1" @click="notify('¡Atención!', 'warning', 'La ficha técnica ya ha sido creada.')">
+                                    <v-btn
+                                        color="blue-darken-1"
+                                        @click="
+                                            notify(
+                                                '¡Atención!',
+                                                'warning',
+                                                'La ficha técnica ya ha sido creada.'
+                                            )
+                                        "
+                                    >
                                         Crear ficha técnica
                                     </v-btn>
                                 </template>
@@ -833,9 +915,9 @@ const close_modal = () => {
                                                     >
                                                         <SecondaryButton
                                                             @click="
-                                                            show_ficha = false
-                                                        "
-                                                        >Cerrar</SecondaryButton
+                                                                show_ficha = false
+                                                            "
+                                                            >Cerrar</SecondaryButton
                                                         >
                                                     </div>
                                                     <div
@@ -843,17 +925,18 @@ const close_modal = () => {
                                                     >
                                                         <NavLink
                                                             :href="
-                                                            route(
-                                                                'eliminar.ficha',
-                                                                props.curso?.ficha_tecnica
-                                                                    .id
-                                                            )
-                                                        "
+                                                                route(
+                                                                    'eliminar.ficha',
+                                                                    props.curso
+                                                                        ?.ficha_tecnica
+                                                                        .id
+                                                                )
+                                                            "
                                                             as="button"
                                                             method="delete"
                                                         >
                                                             <danger-button
-                                                            >Eliminar</danger-button
+                                                                >Eliminar</danger-button
                                                             >
                                                         </NavLink>
                                                     </div>
@@ -863,8 +946,8 @@ const close_modal = () => {
                                     </template>
                                     <template
                                         v-else-if="
-                                        props.curso?.ficha_tecnica === null
-                                    "
+                                            props.curso?.ficha_tecnica === null
+                                        "
                                     >
                                         <v-alert
                                             density="compact"
@@ -876,12 +959,20 @@ const close_modal = () => {
                                 </Modal>
                             </div>
                             <div class="flex justify-center items-center">
-                                <template v-if="props.auth?.user?.docente_id && props.curso?.id && props.curso.ficha_tecnica">
+                                <template
+                                    v-if="
+                                        props.auth?.user?.docente_id &&
+                                        props.curso?.id &&
+                                        props.curso.ficha_tecnica
+                                    "
+                                >
                                     <NavLink
-                                        :href="route('edit.ficha', [
-                                        props.auth.user.docente_id,
-                                        props.curso.id,
-                            ])"
+                                        :href="
+                                            route('edit.ficha', [
+                                                props.auth.user.docente_id,
+                                                props.curso.id,
+                                            ])
+                                        "
                                     >
                                         <v-btn color="blue-darken-1">
                                             Editar ficha técnica
@@ -889,7 +980,15 @@ const close_modal = () => {
                                     </NavLink>
                                 </template>
                                 <template v-else>
-                                    <v-btn color="blue-darken-1" @click="errorMsg('¡Atención!', `El id del docente que tiene iniciada la sesión: ${props.auth?.user?.docente_id}, el curso relacionado con el mismo con ID: ${props.curso?.id} y el ID de la ficha técnica relacionada con el curso: ${props.curso?.ficha_tecnica?.id}, estos valores se requieren para editar la ficha técnica. Si falta un ID no mostrara el formulario, pero si los primeros dos valores están presentes significa que no existe o no ha sido capturada la ficha técnica.`)">
+                                    <v-btn
+                                        color="blue-darken-1"
+                                        @click="
+                                            errorMsg(
+                                                '¡Atención!',
+                                                `El id del docente que tiene iniciada la sesión: ${props.auth?.user?.docente_id}, el curso relacionado con el mismo con ID: ${props.curso?.id} y el ID de la ficha técnica relacionada con el curso: ${props.curso?.ficha_tecnica?.id}, estos valores se requieren para editar la ficha técnica. Si falta un ID no mostrara el formulario, pero si los primeros dos valores están presentes significa que no existe o no ha sido capturada la ficha técnica.`
+                                            )
+                                        "
+                                    >
                                         Editar ficha técnica
                                     </v-btn>
                                 </template>
@@ -914,18 +1013,39 @@ const close_modal = () => {
                     <div>
                         <div class="p-5">
                             <div class="flow-root ...">
-                                <strong
-                                    >Asignaturas en la que se requiere formación
-                                    o actualización:
-                                </strong>
+                                <!-- v-if="form.tipo === 1 -->
+                                <template v-if="props.curso.tipo_FDoAP === 1">
+                                    <strong
+                                        >Dimensión(es) en la(s) que se requiere
+                                        Formación Docente
+                                    </strong>
+                                </template>
+                                <template
+                                    v-else-if="props.curso.tipo_FDoAP === 2"
+                                >
+                                    <strong
+                                        >Asignatura(s) en la(s) que se requiere
+                                        Actualización profesional
+                                    </strong>
+                                </template>
                                 <v-divider></v-divider>
                                 <span>{{ props.curso.asignaturaFA }}</span>
                             </div>
                             <div class="flow-root ... pt-7">
-                                <strong
-                                    >Contenidos temáticos en que se requiere la
-                                    formación o actualización:
-                                </strong>
+                                <template v-if="props.curso.tipo_FDoAP === 1">
+                                    <strong
+                                        >Competencia(s) en la(s) que se requiere
+                                        la Formación Docente
+                                    </strong>
+                                </template>
+                                <template
+                                    v-else-if="props.curso.tipo_FDoAP === 2"
+                                >
+                                    <strong
+                                        >Contenidos temáticos en que se requiere
+                                        Actualización Profesional
+                                    </strong>
+                                </template>
                                 <v-divider></v-divider>
                                 <span>{{ props.curso.contenidosTM }}</span>
                             </div>
@@ -982,18 +1102,23 @@ const close_modal = () => {
                                     >
                                 </template>
                             </div>
-                            <template v-if="props.curso?.deteccion_facilitador.length > 0">
+                            <template
+                                v-if="
+                                    props.curso?.deteccion_facilitador.length >
+                                    0
+                                "
+                            >
                                 <div class="flow-root ... pt-5">
                                     <strong>Facilitador(es): </strong>
                                     <div
                                         v-for="facilitador in props.curso
-                                        .deteccion_facilitador"
+                                            .deteccion_facilitador"
                                     >
-                                    <span
-                                    >{{ facilitador.nombre }}
-                                        {{ facilitador.apellidoPat }}
-                                        {{ facilitador.apellidoMat }}</span
-                                    >
+                                        <span
+                                            >{{ facilitador.nombre }}
+                                            {{ facilitador.apellidoPat }}
+                                            {{ facilitador.apellidoMat }}</span
+                                        >
                                     </div>
                                 </div>
                             </template>
@@ -1057,8 +1182,20 @@ const close_modal = () => {
                                     o evento:
                                 </strong>
                                 <span
-                                    >Del {{ props.curso.fecha_I.split('-').reverse().join('/') }} al
-                                    {{ props.curso.fecha_F.split('-').reverse().join('/') }}</span
+                                    >Del
+                                    {{
+                                        props.curso.fecha_I
+                                            .split("-")
+                                            .reverse()
+                                            .join("/")
+                                    }}
+                                    al
+                                    {{
+                                        props.curso.fecha_F
+                                            .split("-")
+                                            .reverse()
+                                            .join("/")
+                                    }}</span
                                 >
                             </div>
                             <div class="flow-root ... pt-5">
@@ -1086,23 +1223,29 @@ const close_modal = () => {
                                 </div>
                             </template>
                         </div>
-
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-1 p-5 m-5">
-                        <div class="flex justify-center md:justify-end mr-3 p-2">
+                        <div
+                            class="flex justify-center md:justify-end mr-3 p-2"
+                        >
                             <NavLink
                                 :href="route('curso.editar', props.curso.id)"
                                 as="button"
                                 type="button"
                             >
-                                <button class="rounded-lg text-center bg-blue-500 text-white p-5 hover:bg-blue-800">
+                                <button
+                                    class="rounded-lg text-center bg-blue-500 text-white p-5 hover:bg-blue-800"
+                                >
                                     Editar
                                 </button>
                             </NavLink>
                         </div>
                         <div class="flex justify-center md:justify-start mr-3">
                             <div class="flex items-center">
-                                <button class="rounded-lg text-center bg-red-500 text-white p-4 hover:bg-blue-800" @click="dialog = true">
+                                <button
+                                    class="rounded-lg text-center bg-red-500 text-white p-4 hover:bg-blue-800"
+                                    @click="dialog = true"
+                                >
                                     Eliminar
                                 </button>
                             </div>

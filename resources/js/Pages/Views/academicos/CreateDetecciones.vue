@@ -1,15 +1,15 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import DeteccionesForm from "@/Pages/Views/academicos/forms/DeteccionesForm.vue";
-import {computed, onMounted, ref, watch} from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import NavLink from "@/Components/NavLink.vue";
 import ResetForm from "@/Pages/Views/dialogs/ResetForm.vue";
-import {router, useForm, usePage} from "@inertiajs/vue3";
+import { router, useForm, usePage } from "@inertiajs/vue3";
 import InputLabel from "@/Components/InputLabel.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import CreateDocenteA from "@/Pages/Views/academicos/docentes/CreateDocenteA.vue";
 import CustomSnackBar from "@/Components/CustomSnackBar.vue";
-import {AlertLoading, errorMsg, success_alert} from "@/jsfiels/alertas.js";
+import { AlertLoading, errorMsg, success_alert } from "@/jsfiels/alertas.js";
 import Swal from "sweetalert2";
 import Modal from "@/Components/Modal.vue";
 
@@ -18,16 +18,16 @@ const props = defineProps({
         type: Array,
     },
     carrera_filtro: {
-        type: Array
+        type: Array,
     },
     todos_los_departamentos: {
-        type: Array
+        type: Array,
     },
     auth: {
-        type: Object
+        type: Object,
     },
     lugar: {
-        type: Array
+        type: Array,
     },
     errors: {
         type: Object,
@@ -36,27 +36,25 @@ const props = defineProps({
         type: Array,
     },
     puesto: {
-        type: Array
+        type: Array,
     },
     carrera: {
         type: Array,
     },
     posgrado: {
-        type: Array
+        type: Array,
     },
     departamento: {
-        type: Array
+        type: Array,
     },
     dates: Array,
 });
 
-const emit = defineEmits([
-    'update:modelValue'
-]);
+const emit = defineEmits(["update:modelValue"]);
 const user = computed(() => usePage().props.auth.user);
 // let dialogReset = ref(false);
 const message = ref("");
-const dialogDocente = ref(false)
+const dialogDocente = ref(false);
 const dialog = ref(true);
 let horas_totales = ref();
 
@@ -83,7 +81,7 @@ const form = useForm({
 
 const tipoSolicitud = ref([
     { text: "FORMACIÓN DOCENTE", value: 1 },
-    { text: "ACTUALIZACIÓN PROFESIONAL", value: 2 }
+    { text: "ACTUALIZACIÓN PROFESIONAL", value: 2 },
 ]);
 const modalidad = [
     { text: "Virtual", value: 1 },
@@ -96,16 +94,16 @@ const tipoCurso = ref([
     { value: 3, text: "CURSO-TALLER" },
     { value: 4, text: "FORO" },
     { value: 5, text: "SEMINARIO" },
-    {value:6, text:"DIPLOMADO"}
+    { value: 6, text: "DIPLOMADO" },
 ]);
 const period = ref([
-    {text: "enero-junio", value: 1},
-    {text: "agosto-diciembre", value: 2},
+    { text: "enero-junio", value: 1 },
+    { text: "agosto-diciembre", value: 2 },
 ]);
 
 const carreraFilter = computed(() => {
-    let filtro = props.carrera_filtro
-    const addTodas = { nameCarrera: "TODAS LAS CARRERAS", id: 13 }
+    let filtro = props.carrera_filtro;
+    const addTodas = { nameCarrera: "TODAS LAS CARRERAS", id: 13 };
 
     filtro.push(addTodas);
 
@@ -113,23 +111,31 @@ const carreraFilter = computed(() => {
 });
 
 const lugarSinOcupar = computed(() => {
-    return props.lugar.filter(e => {
-        return e.curso === null
-    })
+    return props.lugar.filter((e) => {
+        return e.curso === null;
+    });
 });
 const maxCount = [
-    value => {
-        if (value.length <= 3) return true
+    (value) => {
+        if (value.length <= 3) return true;
 
         return "Deben ser maximo tres facilitadores";
-    }
-]
+    },
+];
 
 function totalHoras(fechaInicio, fechaFinal, horaInicio, horaFinal) {
-    let fechaInicioParts = fechaInicio.split('-');
-    let fechaFinalParts = fechaFinal.split('-');
-    let fechaInicioObj = new Date(fechaInicioParts[0], fechaInicioParts[1] - 1, fechaInicioParts[2]);
-    let fechaFinalObj = new Date(fechaFinalParts[0], fechaFinalParts[1] - 1, fechaFinalParts[2]);
+    let fechaInicioParts = fechaInicio.split("-");
+    let fechaFinalParts = fechaFinal.split("-");
+    let fechaInicioObj = new Date(
+        fechaInicioParts[0],
+        fechaInicioParts[1] - 1,
+        fechaInicioParts[2]
+    );
+    let fechaFinalObj = new Date(
+        fechaFinalParts[0],
+        fechaFinalParts[1] - 1,
+        fechaFinalParts[2]
+    );
     // let horaInicioObj = new Date(`01/01/1970 ${horaInicio}`).toLocaleTimeString('es-MX', { timeZone: 'America/Mexico_City' });
     // let horaFinalObj = new Date(`01/01/1970 ${horaFinal}`).toLocaleTimeString('es-MX', { timeZone: 'America/Mexico_City' });
 
@@ -145,8 +151,12 @@ function totalHoras(fechaInicio, fechaFinal, horaInicio, horaFinal) {
         if (esDiaDeSemana(fechaInicioObj)) {
             diasHabiles++;
             // Calcular las horas entre la hora de inicio y la hora final en zona horaria de México
-            let tiempoInicio = new Date(`${fechaInicioObj.toISOString().slice(0, 10)}T${horaInicio}:00`).getTime();
-            let tiempoFinal = new Date(`${fechaInicioObj.toISOString().slice(0, 10)}T${horaFinal}:00`).getTime();
+            let tiempoInicio = new Date(
+                `${fechaInicioObj.toISOString().slice(0, 10)}T${horaInicio}:00`
+            ).getTime();
+            let tiempoFinal = new Date(
+                `${fechaInicioObj.toISOString().slice(0, 10)}T${horaFinal}:00`
+            ).getTime();
             // console.log(tiempoInicio, `${fechaInicioObj.toISOString().slice(0, 10)}T${horaInicio}:00`)
             let tiempoTranscurrido = tiempoFinal - tiempoInicio;
             let horaEnDia = tiempoTranscurrido / (1000 * 60 * 60); // Convertir a horas
@@ -158,187 +168,239 @@ function totalHoras(fechaInicio, fechaFinal, horaInicio, horaFinal) {
     return horasTotales;
 }
 
-async function submitDocente(form){
-    dialogDocente.value = false
+async function submitDocente(form) {
+    dialogDocente.value = false;
     Swal.fire({
-        title: 'Esta por crear un docente.',
-        text: '¿Esta seguro que desea crear este docente?',
+        title: "Esta por crear un docente.",
+        text: "¿Esta seguro que desea crear este docente?",
         showCancelButton: true,
         showConfirmButton: true,
-        confirmButtonText: 'Confirmar',
-        cancelButtonText: 'Cancelar',
+        confirmButtonText: "Confirmar",
+        cancelButtonText: "Cancelar",
         icon: "info",
-        timerProgressBar: true
-    }).then(res => {
-        if (res.isConfirmed){
-            AlertLoading('Guardando la información...', 'Esto puede tardar unos minutos')
-            form.post(route('create.docentes.academicos.up', "academicos"), {
+        timerProgressBar: true,
+    }).then((res) => {
+        if (res.isConfirmed) {
+            AlertLoading(
+                "Guardando la información...",
+                "Esto puede tardar unos minutos"
+            );
+            form.post(route("create.docentes.academicos.up", "academicos"), {
                 onSuccess: () => {
-                    dialogDocente.value = false
-                    form.reset()
-                    success_alert('Exito', 'Docente creado con exito')
+                    dialogDocente.value = false;
+                    form.reset();
+                    success_alert("Exito", "Docente creado con exito");
                 },
                 onError: () => {
-                    dialogDocente.value = false
-                    errorMsg('Atención', `${format_errors(props.errors)}`)
-                }
-            })
+                    dialogDocente.value = false;
+                    errorMsg("Atención", `${format_errors(props.errors)}`);
+                },
+            });
         }
-    })
+    });
 }
 
-watch(() => [form.fecha_I, form.fecha_F, form.hora_I, form.hora_F], ([newFechaI, newFechaF, newHoraI, newHoraF], [oldFechaI, oldFechaF, oldHoraI, oldHoraF]) => {
-    // console.log(newFechaI, newFechaF, newHoraI, newHoraF)
-    if (newFechaI && newFechaF && newHoraI && newHoraF){
-        horas_totales.value = totalHoras(newFechaI, newFechaF, newHoraI, newHoraF)
-        // console.log(totalHoras(newFechaI, newFechaF, newHoraI, newHoraF))
-        // totalHoras(newFechaI, newFechaF, newHoraI, newHoraF)
+watch(
+    () => [form.fecha_I, form.fecha_F, form.hora_I, form.hora_F],
+    (
+        [newFechaI, newFechaF, newHoraI, newHoraF],
+        [oldFechaI, oldFechaF, oldHoraI, oldHoraF]
+    ) => {
+        // console.log(newFechaI, newFechaF, newHoraI, newHoraF)
+        if (newFechaI && newFechaF && newHoraI && newHoraF) {
+            horas_totales.value = totalHoras(
+                newFechaI,
+                newFechaF,
+                newHoraI,
+                newHoraF
+            );
+            // console.log(totalHoras(newFechaI, newFechaF, newHoraI, newHoraF))
+            // totalHoras(newFechaI, newFechaF, newHoraI, newHoraF)
+        }
     }
-})
-
+);
 
 const submit = () => {
     Swal.fire({
-        title: 'Esta por generar una deteccion de necesidades.',
-        text: 'Esta acción se puede revertir, pero tendra que informar a la coordinación de formación docente.',
+        title: "Esta por generar una deteccion de necesidades.",
+        text: "Esta acción se puede revertir, pero tendra que informar a la coordinación de formación docente.",
         showCancelButton: true,
         showConfirmButton: true,
-        confirmButtonText: 'Confirmar',
-        cancelButtonText: 'Cancelar',
+        confirmButtonText: "Confirmar",
+        cancelButtonText: "Cancelar",
         icon: "info",
-        timerProgressBar: true
-    }).then(res => {
-        if (res.isConfirmed){
-            AlertLoading('Guardando la información...', 'Esto puede tardar unos minutos')
-            form.post(route('store.detecciones'), {
+        timerProgressBar: true,
+    }).then((res) => {
+        if (res.isConfirmed) {
+            AlertLoading(
+                "Guardando la información...",
+                "Esto puede tardar unos minutos"
+            );
+            form.post(route("store.detecciones"), {
                 onSuccess: () => {
                     form.reset();
                     dialogReset.value = true;
                     dialog.value = true;
-                    success_alert('Exito', 'Curso generado.')
+                    success_alert("Exito", "Curso generado.");
                 },
                 onError: () => {
-                    errorMsg('Atención', `${format_errors(props.errors)}`)
-                    message.value = ""
+                    errorMsg("Atención", `${format_errors(props.errors)}`);
+                    message.value = "";
                 },
-            })
+            });
         }
-    })
-}
+    });
+};
 const dialogReset = ref(false);
 // const dialog = ref(true);
 onMounted(() => {
-    window.Echo.private(`App.Models.User.${props.auth.user.id}`).notification((notification) => {
-        switch (notification.type){
-            case 'App\\Notifications\\NewDeteccionNotification':
-                props.auth.usernotifications++
-                break;
-            case 'App\\Notifications\\DeteccionEditadaNotification':
-                props.auth.usernotifications++
-                break;
-            case 'App\\Notifications\\AceptadoNotification':
-                props.auth.usernotifications++
-                break;
-            case 'App\\Notifications\\ObservacionNotification':
-                props.auth.usernotifications++
-                break;
+    window.Echo.private(`App.Models.User.${props.auth.user.id}`).notification(
+        (notification) => {
+            switch (notification.type) {
+                case "App\\Notifications\\NewDeteccionNotification":
+                    props.auth.usernotifications++;
+                    break;
+                case "App\\Notifications\\DeteccionEditadaNotification":
+                    props.auth.usernotifications++;
+                    break;
+                case "App\\Notifications\\AceptadoNotification":
+                    props.auth.usernotifications++;
+                    break;
+                case "App\\Notifications\\ObservacionNotification":
+                    props.auth.usernotifications++;
+                    break;
+            }
         }
-    })
-    if (!props.dates[0]){
+    );
+    if (!props.dates[0]) {
         Swal.fire({
             title: "La captura de deteccion de necesidades no esta habilitada.",
             text: "Debes regresar a la página anterior.",
             icon: "warning",
             allowOutsideClick: false,
             allowEscapeKey: false,
-            allowEnterKey:false,
+            allowEnterKey: false,
             showConfirmButton: false,
             showDenyButton: false,
             showCancelButton: false,
-        })
+        });
     }
 });
 
 const format_errors = (errors) => {
     for (const errorsKey in errors) {
-        message.value += errors[errorsKey]
+        message.value += errors[errorsKey];
     }
-    return message.value.split('.').join('. ');
-}
+    return message.value.split(".").join(". ");
+};
 
 const closeModal = () => {
-    dialog.value = false
-}
+    dialog.value = false;
+};
 </script>
 
 <template>
     <AuthenticatedLayout>
         <template #header>
-            <NavLink :href="route('detecciones.index')" as="button" type="button">
+            <NavLink
+                :href="route('detecciones.index')"
+                as="button"
+                type="button"
+            >
                 <v-btn icon color="blue-darken-1">
                     <v-icon>mdi-arrow-left</v-icon>
                 </v-btn>
             </NavLink>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight mt-4">Nueva Deteccion de Necesidades</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight mt-4">
+                Nueva Deteccion de Necesidades
+            </h2>
         </template>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                 <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                     <form @submit.prevent="submit">
-<!--                        <v-dialog v-model="dialog" width="500" persistent>-->
-<!--                            <v-card width="500">-->
-<!--                                <v-card-title class="text-center">Tipo de diagnostico que desea realizar</v-card-title>-->
-<!--                                <v-divider></v-divider>-->
-<!--                                <v-card-text>-->
-<!--                                    <v-container class="mt-6">-->
-<!--                                        <InputLabel for="tipo_solicitud" value="Tipo de solicitud" />-->
-<!--                                        <v-row align="center" justify="center" class="mt-2">-->
-<!--                                            <v-select variant="solo" :items="tipoSolicitud" item-title="text" item-value="value"-->
-<!--                                                      v-model="form.tipo">-->
+                        <!--                        <v-dialog v-model="dialog" width="500" persistent>-->
+                        <!--                            <v-card width="500">-->
+                        <!--                                <v-card-title class="text-center">Tipo de diagnostico que desea realizar</v-card-title>-->
+                        <!--                                <v-divider></v-divider>-->
+                        <!--                                <v-card-text>-->
+                        <!--                                    <v-container class="mt-6">-->
+                        <!--                                        <InputLabel for="tipo_solicitud" value="Tipo de solicitud" />-->
+                        <!--                                        <v-row align="center" justify="center" class="mt-2">-->
+                        <!--                                            <v-select variant="solo" :items="tipoSolicitud" item-title="text" item-value="value"-->
+                        <!--                                                      v-model="form.tipo">-->
 
-<!--                                            </v-select>-->
-<!--                                        </v-row>-->
-<!--                                    </v-container>-->
-<!--                                </v-card-text>-->
-<!--                                <v-divider></v-divider>-->
-<!--                                <div class="flex items-center mr-5 mb-7 justify-end gap-4">-->
-<!--                                    <NavLink :href="route('detecciones.index')" as="button" type="button">-->
-<!--                                        <v-btn color="error">-->
-<!--                                            Cancelar-->
-<!--                                        </v-btn>-->
-<!--                                    </NavLink>-->
-<!--                                    <PrimaryButton @click="dialog = false" :disabled="form.processing">Confirmar</PrimaryButton>-->
+                        <!--                                            </v-select>-->
+                        <!--                                        </v-row>-->
+                        <!--                                    </v-container>-->
+                        <!--                                </v-card-text>-->
+                        <!--                                <v-divider></v-divider>-->
+                        <!--                                <div class="flex items-center mr-5 mb-7 justify-end gap-4">-->
+                        <!--                                    <NavLink :href="route('detecciones.index')" as="button" type="button">-->
+                        <!--                                        <v-btn color="error">-->
+                        <!--                                            Cancelar-->
+                        <!--                                        </v-btn>-->
+                        <!--                                    </NavLink>-->
+                        <!--                                    <PrimaryButton @click="dialog = false" :disabled="form.processing">Confirmar</PrimaryButton>-->
 
-<!--                                    <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out">-->
-<!--                                        <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Confirmado.</p>-->
-<!--                                    </Transition>-->
-<!--                                </div>-->
-<!--                            </v-card>-->
-<!--                        </v-dialog>-->
+                        <!--                                    <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out">-->
+                        <!--                                        <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Confirmado.</p>-->
+                        <!--                                    </Transition>-->
+                        <!--                                </div>-->
+                        <!--                            </v-card>-->
+                        <!--                        </v-dialog>-->
                         <Modal :show="dialog">
                             <div class="grid grid-rows-1">
-                                <div class="flex justify-center items-center m-5">
-                                    <p class="text-xl ">Tipo de diagnostico que desea realizar</p>
+                                <div
+                                    class="flex justify-center items-center m-5"
+                                >
+                                    <p class="text-xl">
+                                        Tipo de diagnostico que desea realizar
+                                    </p>
                                 </div>
                                 <div class="grid grid-cols-1 p-10">
-                                    <InputLabel for="tipo_solicitud" value="Tipo de solicitud" />
-                                    <v-select variant="solo" :items="tipoSolicitud" item-title="text" item-value="value"
-                                              v-model="form.tipo">
-
+                                    <InputLabel
+                                        for="tipo_solicitud"
+                                        value="Tipo de solicitud"
+                                    />
+                                    <v-select
+                                        variant="solo"
+                                        :items="tipoSolicitud"
+                                        item-title="text"
+                                        item-value="value"
+                                        v-model="form.tipo"
+                                    >
                                     </v-select>
                                 </div>
                             </div>
-                            <div class="flex items-center mr-5 mb-7 justify-end gap-4">
-                                <NavLink :href="route('detecciones.index')" as="button" type="button">
-                                    <v-btn color="error">
-                                        Cancelar
-                                    </v-btn>
+                            <div
+                                class="flex items-center mr-5 mb-7 justify-end gap-4"
+                            >
+                                <NavLink
+                                    :href="route('detecciones.index')"
+                                    as="button"
+                                    type="button"
+                                >
+                                    <v-btn color="error"> Cancelar </v-btn>
                                 </NavLink>
-                                <PrimaryButton @click="dialog = false" :disabled="form.processing">Confirmar</PrimaryButton>
+                                <PrimaryButton
+                                    @click="dialog = false"
+                                    :disabled="form.processing"
+                                    >Confirmar</PrimaryButton
+                                >
 
-                                <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out">
-                                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Confirmado.</p>
+                                <Transition
+                                    enter-from-class="opacity-0"
+                                    leave-to-class="opacity-0"
+                                    class="transition ease-in-out"
+                                >
+                                    <p
+                                        v-if="form.recentlySuccessful"
+                                        class="text-sm text-gray-600"
+                                    >
+                                        Confirmado.
+                                    </p>
                                 </Transition>
                             </div>
                         </Modal>
@@ -350,108 +412,252 @@ const closeModal = () => {
                                         <template v-if="form.tipo === 1">
                                             <v-col cols="12" align-="center">
                                                 <v-row justify="center">
-                                                    <v-col align="start" cols="5">
-                                                        <InputLabel for="asignaturas"
-                                                                    value="Dimensión(es) en la(s) que se requiere Formación Docente" />
+                                                    <v-col
+                                                        align="start"
+                                                        cols="5"
+                                                    >
+                                                        <InputLabel
+                                                            for="asignaturas"
+                                                            value="Dimensión(es) en la(s) que se requiere Formación Docente"
+                                                        />
                                                     </v-col>
-                                                    <v-col align="end" cols="7" class="mb-0 pa-0">
-                                                        <div class="d-flex justify-start mb-5">
-                                                            <v-tooltip location="right">
-                                                                <template v-slot:activator="{ props }">
-                                                                    <v-btn icon color="blue-darken-1" v-bind="props" size="normal">
+                                                    <v-col
+                                                        align="end"
+                                                        cols="7"
+                                                        class="mb-0 pa-0"
+                                                    >
+                                                        <div
+                                                            class="d-flex justify-start mb-5"
+                                                        >
+                                                            <v-tooltip
+                                                                location="right"
+                                                            >
+                                                                <template
+                                                                    v-slot:activator="{
+                                                                        props,
+                                                                    }"
+                                                                >
+                                                                    <v-btn
+                                                                        icon
+                                                                        color="blue-darken-1"
+                                                                        v-bind="
+                                                                            props
+                                                                        "
+                                                                        size="normal"
+                                                                    >
                                                                         <v-icon>
                                                                             mdi-help
                                                                         </v-icon>
                                                                     </v-btn>
                                                                 </template>
-                                                                <span>Anotar la dimensión, resultado de la evaluación docente, en la que
-                                                        se requiere formación docente.</span>
+                                                                <span
+                                                                    >Anotar la
+                                                                    dimensión,
+                                                                    resultado de
+                                                                    la
+                                                                    evaluación
+                                                                    docente, en
+                                                                    la que se
+                                                                    requiere
+                                                                    formación
+                                                                    docente.</span
+                                                                >
                                                             </v-tooltip>
                                                         </div>
                                                     </v-col>
                                                 </v-row>
-                                                <v-text-field required v-model="form.AsignaturasFA" variant="solo">
-
+                                                <v-text-field
+                                                    required
+                                                    v-model="form.AsignaturasFA"
+                                                    variant="solo"
+                                                >
                                                 </v-text-field>
                                             </v-col>
                                             <v-col cols="12">
                                                 <v-row justify="center">
-                                                    <v-col align="start" cols="5">
-                                                        <InputLabel for="contenido"
-                                                                    value="Competencia(s) en la(s) que se requiere la Formación Docente" />
+                                                    <v-col
+                                                        align="start"
+                                                        cols="5"
+                                                    >
+                                                        <InputLabel
+                                                            for="contenido"
+                                                            value="Competencia(s) en la(s) que se requiere la Formación Docente"
+                                                        />
                                                     </v-col>
-                                                    <v-col align="start" cols="7" class="mb-0 pa-0">
-                                                        <div class="d-flex justify-start mb-5">
-                                                            <v-tooltip location="right">
-                                                                <template v-slot:activator="{ props }">
-                                                                    <v-btn icon v-bind="props" color="blue-darken-1" size="normal">
+                                                    <v-col
+                                                        align="start"
+                                                        cols="7"
+                                                        class="mb-0 pa-0"
+                                                    >
+                                                        <div
+                                                            class="d-flex justify-start mb-5"
+                                                        >
+                                                            <v-tooltip
+                                                                location="right"
+                                                            >
+                                                                <template
+                                                                    v-slot:activator="{
+                                                                        props,
+                                                                    }"
+                                                                >
+                                                                    <v-btn
+                                                                        icon
+                                                                        v-bind="
+                                                                            props
+                                                                        "
+                                                                        color="blue-darken-1"
+                                                                        size="normal"
+                                                                    >
                                                                         <v-icon>
                                                                             mdi-help
                                                                         </v-icon>
                                                                     </v-btn>
                                                                 </template>
-                                                                <span>Anotar las competencias en que requiere la formación
-                                                        docente</span>
+                                                                <span
+                                                                    >Anotar las
+                                                                    competencias
+                                                                    en que
+                                                                    requiere la
+                                                                    formación
+                                                                    docente</span
+                                                                >
                                                             </v-tooltip>
                                                         </div>
                                                     </v-col>
                                                 </v-row>
-                                                <v-textarea required v-model="form.ContenidoTFA" variant="solo">
-
+                                                <v-textarea
+                                                    required
+                                                    v-model="form.ContenidoTFA"
+                                                    variant="solo"
+                                                >
                                                 </v-textarea>
                                             </v-col>
                                         </template>
                                         <template v-if="form.tipo === 2">
-                                            <v-col cols="12" align-self="center">
+                                            <v-col
+                                                cols="12"
+                                                align-self="center"
+                                            >
                                                 <v-row justify="center">
-                                                    <v-col align="start" cols="5">
-                                                        <InputLabel for="asignaturas"
-                                                                    value="Asignatura(s) en la(s) que se requiere Actualización profesional" />
+                                                    <v-col
+                                                        align="start"
+                                                        cols="5"
+                                                    >
+                                                        <InputLabel
+                                                            for="asignaturas"
+                                                            value="Asignatura(s) en la(s) que se requiere Actualización profesional"
+                                                        />
                                                     </v-col>
-                                                    <v-col align="start" cols="7" class="mb-0 pa-0">
-                                                        <div class="d-flex justify-start mb-5">
-                                                            <v-tooltip location="right">
-                                                                <template v-slot:activator="{ props }">
-                                                                    <v-btn icon v-bind="props" color="blue-darken-1" size="normal">
+                                                    <v-col
+                                                        align="start"
+                                                        cols="7"
+                                                        class="mb-0 pa-0"
+                                                    >
+                                                        <div
+                                                            class="d-flex justify-start mb-5"
+                                                        >
+                                                            <v-tooltip
+                                                                location="right"
+                                                            >
+                                                                <template
+                                                                    v-slot:activator="{
+                                                                        props,
+                                                                    }"
+                                                                >
+                                                                    <v-btn
+                                                                        icon
+                                                                        v-bind="
+                                                                            props
+                                                                        "
+                                                                        color="blue-darken-1"
+                                                                        size="normal"
+                                                                    >
                                                                         <v-icon>
                                                                             mdi-help
                                                                         </v-icon>
                                                                     </v-btn>
                                                                 </template>
-                                                                <span>Anotar el nombre de la(s) asignatura(s) en la(s) que se requiere
-                                                        Actualización Profesional.</span>
+                                                                <span
+                                                                    >Anotar el
+                                                                    nombre de
+                                                                    la(s)
+                                                                    asignatura(s)
+                                                                    en la(s) que
+                                                                    se requiere
+                                                                    Actualización
+                                                                    Profesional.</span
+                                                                >
                                                             </v-tooltip>
                                                         </div>
                                                     </v-col>
                                                 </v-row>
-                                                <v-text-field required v-model="form.AsignaturasFA" variant="solo">
-
+                                                <v-text-field
+                                                    required
+                                                    v-model="form.AsignaturasFA"
+                                                    variant="solo"
+                                                >
                                                 </v-text-field>
                                             </v-col>
                                             <v-col cols="12">
                                                 <v-row justify="center">
-                                                    <v-col align="start" cols="10">
-                                                        <InputLabel for="contenidosTM"
-                                                                    value="Contenidos temáticos en que se requiere Actualización Profesional" />
+                                                    <v-col
+                                                        align="start"
+                                                        cols="10"
+                                                    >
+                                                        <InputLabel
+                                                            for="contenidosTM"
+                                                            value="Contenidos temáticos en que se requiere Actualización Profesional"
+                                                        />
                                                     </v-col>
-                                                    <v-col align="start" cols="2" class="mb-0 pa-0">
-                                                        <div class="d-flex justify-start mb-5">
-                                                            <v-tooltip location="right">
-                                                                <template v-slot:activator="{ props }">
-                                                                    <v-btn icon v-bind="props" color="blue-darken-1" size="normal">
+                                                    <v-col
+                                                        align="start"
+                                                        cols="2"
+                                                        class="mb-0 pa-0"
+                                                    >
+                                                        <div
+                                                            class="d-flex justify-start mb-5"
+                                                        >
+                                                            <v-tooltip
+                                                                location="right"
+                                                            >
+                                                                <template
+                                                                    v-slot:activator="{
+                                                                        props,
+                                                                    }"
+                                                                >
+                                                                    <v-btn
+                                                                        icon
+                                                                        v-bind="
+                                                                            props
+                                                                        "
+                                                                        color="blue-darken-1"
+                                                                        size="normal"
+                                                                    >
                                                                         <v-icon>
                                                                             mdi-help
                                                                         </v-icon>
                                                                     </v-btn>
                                                                 </template>
-                                                                <span>Anotar los contenidos temáticos de la asignatura que requiere la
-                                                        Actualización Profesional.</span>
+                                                                <span
+                                                                    >Anotar los
+                                                                    contenidos
+                                                                    temáticos de
+                                                                    la
+                                                                    asignatura
+                                                                    que requiere
+                                                                    la
+                                                                    Actualización
+                                                                    Profesional.</span
+                                                                >
                                                             </v-tooltip>
                                                         </div>
                                                     </v-col>
                                                 </v-row>
-                                                <v-textarea required v-model="form.ContenidoTFA" variant="solo">
-
+                                                <v-textarea
+                                                    required
+                                                    v-model="form.ContenidoTFA"
+                                                    variant="solo"
+                                                >
                                                 </v-textarea>
                                             </v-col>
                                         </template>
@@ -459,325 +665,742 @@ const closeModal = () => {
                                     <v-row justify="center">
                                         <v-col cols="12" class="mt-1">
                                             <v-row justify="center">
-                                                <v-col align="start" cols="10" class="">
-                                                    <template v-if="form.tipo === 1">
-                                                        <InputLabel for="numProfesores"
-                                                                    value="Número de profesores(as) que requieren Formación Docente" />
+                                                <v-col
+                                                    align="start"
+                                                    cols="10"
+                                                    class=""
+                                                >
+                                                    <template
+                                                        v-if="form.tipo === 1"
+                                                    >
+                                                        <InputLabel
+                                                            for="numProfesores"
+                                                            value="Número de profesores(as) que requieren Formación Docente"
+                                                        />
                                                     </template>
                                                     <template v-else>
-                                                        <InputLabel for="numProfesores"
-                                                                    value="Número de profesores(as) que requieren Actualización Profesional." />
+                                                        <InputLabel
+                                                            for="numProfesores"
+                                                            value="Número de profesores(as) que requieren Actualización Profesional."
+                                                        />
                                                     </template>
                                                 </v-col>
-                                                <v-col align="start" cols="2" class="mb-0 pa-0">
-                                                    <div class="d-flex justify-start mb-5">
-                                                        <v-tooltip location="right">
-                                                            <template v-slot:activator="{ props }">
-                                                                <v-btn icon v-bind="props" color="blue-darken-1" size="normal">
+                                                <v-col
+                                                    align="start"
+                                                    cols="2"
+                                                    class="mb-0 pa-0"
+                                                >
+                                                    <div
+                                                        class="d-flex justify-start mb-5"
+                                                    >
+                                                        <v-tooltip
+                                                            location="right"
+                                                        >
+                                                            <template
+                                                                v-slot:activator="{
+                                                                    props,
+                                                                }"
+                                                            >
+                                                                <v-btn
+                                                                    icon
+                                                                    v-bind="
+                                                                        props
+                                                                    "
+                                                                    color="blue-darken-1"
+                                                                    size="normal"
+                                                                >
                                                                     <v-icon>
                                                                         mdi-help
                                                                     </v-icon>
                                                                 </v-btn>
                                                             </template>
-                                                            <span>Indicar el número de profesores(as) que requieren Formación Docente o
-                                                    Actualización Profesional.</span>
+                                                            <span
+                                                                >Indicar el
+                                                                número de
+                                                                profesores(as)
+                                                                que requieren
+                                                                Formación
+                                                                Docente o
+                                                                Actualización
+                                                                Profesional.</span
+                                                            >
                                                         </v-tooltip>
                                                     </div>
                                                 </v-col>
                                             </v-row>
-                                            <v-text-field required v-model="form.Numprofesores" variant="solo">
-
+                                            <v-text-field
+                                                required
+                                                v-model="form.Numprofesores"
+                                                variant="solo"
+                                            >
                                             </v-text-field>
                                         </v-col>
                                         <v-col cols="12" class="">
                                             <v-row justify="center">
                                                 <v-col align="start" cols="11">
-                                                    <template v-if="form.tipo === 1">
-                                                        <InputLabel for="periodo"
-                                                                    value="Periodo en el que se requiere la Formación Docente (enero-junio o agosto-diciembre)" />
+                                                    <template
+                                                        v-if="form.tipo === 1"
+                                                    >
+                                                        <InputLabel
+                                                            for="periodo"
+                                                            value="Periodo en el que se requiere la Formación Docente (enero-junio o agosto-diciembre)"
+                                                        />
                                                     </template>
                                                     <template v-else>
-                                                        <InputLabel for="periodo"
-                                                                    value="Periodo en el que se requiere la Actualización Profesional (enero-junio o agosto-diciembre)" />
+                                                        <InputLabel
+                                                            for="periodo"
+                                                            value="Periodo en el que se requiere la Actualización Profesional (enero-junio o agosto-diciembre)"
+                                                        />
                                                     </template>
                                                 </v-col>
-                                                <v-col align="start" cols="1" class="mb-4">
-                                                    <div class="d-flex justify-start ">
-                                                        <v-tooltip location="left">
-                                                            <template v-slot:activator="{ props }">
-                                                                <v-btn icon v-bind="props" color="blue-darken-1" size="normal">
+                                                <v-col
+                                                    align="start"
+                                                    cols="1"
+                                                    class="mb-4"
+                                                >
+                                                    <div
+                                                        class="d-flex justify-start"
+                                                    >
+                                                        <v-tooltip
+                                                            location="left"
+                                                        >
+                                                            <template
+                                                                v-slot:activator="{
+                                                                    props,
+                                                                }"
+                                                            >
+                                                                <v-btn
+                                                                    icon
+                                                                    v-bind="
+                                                                        props
+                                                                    "
+                                                                    color="blue-darken-1"
+                                                                    size="normal"
+                                                                >
                                                                     <v-icon>
                                                                         mdi-help
                                                                     </v-icon>
                                                                 </v-btn>
                                                             </template>
-                                                            <span>Indicar el periodo en el que se requiere la formación docente o
-                                                    actualización profesiona (enero-junio o agosto-diciembre)</span>
+                                                            <span
+                                                                >Indicar el
+                                                                periodo en el
+                                                                que se requiere
+                                                                la formación
+                                                                docente o
+                                                                actualización
+                                                                profesiona
+                                                                (enero-junio o
+                                                                agosto-diciembre)</span
+                                                            >
                                                         </v-tooltip>
                                                     </div>
                                                 </v-col>
                                             </v-row>
-                                            <v-select required v-model="form.periodo" :items="period" item-title="text"
-                                                      item-value="value" variant="solo">
-
+                                            <v-select
+                                                required
+                                                v-model="form.periodo"
+                                                :items="period"
+                                                item-title="text"
+                                                item-value="value"
+                                                variant="solo"
+                                            >
                                             </v-select>
                                         </v-col>
                                         <v-col cols="12" md="6">
                                             <v-row justify="center">
                                                 <v-col align="start" cols="3">
-                                                    <InputLabel for="modalidad" value="Modalidad" />
+                                                    <InputLabel
+                                                        for="modalidad"
+                                                        value="Modalidad"
+                                                    />
                                                 </v-col>
-                                                <v-col align="start" cols="9" class="mb-0 pa-0">
-                                                    <div class="d-flex justify-start mb-5">
-                                                        <v-tooltip location="right">
-                                                            <template v-slot:activator="{ props }">
-                                                                <v-btn icon v-bind="props" color="blue-darken-1" size="normal">
+                                                <v-col
+                                                    align="start"
+                                                    cols="9"
+                                                    class="mb-0 pa-0"
+                                                >
+                                                    <div
+                                                        class="d-flex justify-start mb-5"
+                                                    >
+                                                        <v-tooltip
+                                                            location="right"
+                                                        >
+                                                            <template
+                                                                v-slot:activator="{
+                                                                    props,
+                                                                }"
+                                                            >
+                                                                <v-btn
+                                                                    icon
+                                                                    v-bind="
+                                                                        props
+                                                                    "
+                                                                    color="blue-darken-1"
+                                                                    size="normal"
+                                                                >
                                                                     <v-icon>
                                                                         mdi-help
                                                                     </v-icon>
                                                                 </v-btn>
                                                             </template>
-                                                            <span>La modalidad en la que se realizara el curso.</span>
+                                                            <span
+                                                                >La modalidad en
+                                                                la que se
+                                                                realizara el
+                                                                curso.</span
+                                                            >
                                                         </v-tooltip>
                                                     </div>
                                                 </v-col>
                                             </v-row>
-                                            <v-select variant="solo" required :items="modalidad" item-title="text" item-value="value"
-                                                      v-model="form.modalidad">
-
+                                            <v-select
+                                                variant="solo"
+                                                required
+                                                :items="modalidad"
+                                                item-title="text"
+                                                item-value="value"
+                                                v-model="form.modalidad"
+                                            >
                                             </v-select>
                                         </v-col>
                                         <v-col cols="12" md="6">
                                             <v-row justify="center">
                                                 <v-col align="start" cols="5">
-                                                    <InputLabel for="tipo_curso" value="Tipo de curso" />
+                                                    <InputLabel
+                                                        for="tipo_curso"
+                                                        value="Tipo de curso"
+                                                    />
                                                 </v-col>
-                                                <v-col align="start" cols="7" class="mb-0 pa-0">
-                                                    <div class="d-flex justify-start mb-5">
-                                                        <v-tooltip location="right">
-                                                            <template v-slot:activator="{ props }">
-                                                                <v-btn icon v-bind="props" color="blue-darken-1" size="normal">
+                                                <v-col
+                                                    align="start"
+                                                    cols="7"
+                                                    class="mb-0 pa-0"
+                                                >
+                                                    <div
+                                                        class="d-flex justify-start mb-5"
+                                                    >
+                                                        <v-tooltip
+                                                            location="right"
+                                                        >
+                                                            <template
+                                                                v-slot:activator="{
+                                                                    props,
+                                                                }"
+                                                            >
+                                                                <v-btn
+                                                                    icon
+                                                                    v-bind="
+                                                                        props
+                                                                    "
+                                                                    color="blue-darken-1"
+                                                                    size="normal"
+                                                                >
                                                                     <v-icon>
                                                                         mdi-help
                                                                     </v-icon>
                                                                 </v-btn>
                                                             </template>
-                                                            <span>El tipo de actividad a realizar.</span>
+                                                            <span
+                                                                >El tipo de
+                                                                actividad a
+                                                                realizar.</span
+                                                            >
                                                         </v-tooltip>
                                                     </div>
                                                 </v-col>
                                             </v-row>
-                                            <v-select required :items="tipoCurso" item-title="text" item-value="value"
-                                                      v-model="form.tipo_act" variant="solo">
-
+                                            <v-select
+                                                required
+                                                :items="tipoCurso"
+                                                item-title="text"
+                                                item-value="value"
+                                                v-model="form.tipo_act"
+                                                variant="solo"
+                                            >
                                             </v-select>
                                         </v-col>
                                         <v-col cols="12">
                                             <v-row justify="center">
                                                 <v-col align="start" cols="5">
-                                                    <InputLabel for="carrera" value="PARA LOS(AS) PROFESORES(AS) DE LA ACADEMIA DE" />
+                                                    <InputLabel
+                                                        for="carrera"
+                                                        value="PARA LOS(AS) PROFESORES(AS) DE LA ACADEMIA DE"
+                                                    />
                                                 </v-col>
-                                                <v-col align="start" cols="7" class="mb-0 pa-0">
-                                                    <div class="d-flex justify-start mb-5">
-                                                        <v-tooltip location="right">
-                                                            <template v-slot:activator="{ props }">
-                                                                <v-btn icon v-bind="props" color="blue-darken-1" size="normal">
+                                                <v-col
+                                                    align="start"
+                                                    cols="7"
+                                                    class="mb-0 pa-0"
+                                                >
+                                                    <div
+                                                        class="d-flex justify-start mb-5"
+                                                    >
+                                                        <v-tooltip
+                                                            location="right"
+                                                        >
+                                                            <template
+                                                                v-slot:activator="{
+                                                                    props,
+                                                                }"
+                                                            >
+                                                                <v-btn
+                                                                    icon
+                                                                    v-bind="
+                                                                        props
+                                                                    "
+                                                                    color="blue-darken-1"
+                                                                    size="normal"
+                                                                >
                                                                     <v-icon>
                                                                         mdi-help
                                                                     </v-icon>
                                                                 </v-btn>
                                                             </template>
-                                                            <span>Seleccionar el nombre de la academia correspondiente.</span>
+                                                            <span
+                                                                >Seleccionar el
+                                                                nombre de la
+                                                                academia
+                                                                correspondiente.</span
+                                                            >
                                                         </v-tooltip>
                                                     </div>
                                                 </v-col>
                                             </v-row>
-                                            <v-select required :items="props.carrera_filtro" item-title="nameCarrera" item-value="id"
-                                                      v-model="form.dirigido" variant="solo">
-
+                                            <v-select
+                                                required
+                                                :items="props.carrera_filtro"
+                                                item-title="nameCarrera"
+                                                item-value="id"
+                                                v-model="form.dirigido"
+                                                variant="solo"
+                                            >
                                             </v-select>
                                         </v-col>
                                         <v-col cols="12">
                                             <v-col align="start" cols="4">
-                                                <InputLabel for="facilitador"
-                                                            value="Facilitador(a) que impartirá el curso/taller" />
+                                                <InputLabel
+                                                    for="facilitador"
+                                                    value="Facilitador(a) que impartirá el curso/taller"
+                                                />
                                             </v-col>
-                                            <v-col align="start" cols="4" class="mb-0 pa-0">
-                                                <div class="d-flex justify-start mb-5">
+                                            <v-col
+                                                align="start"
+                                                cols="4"
+                                                class="mb-0 pa-0"
+                                            >
+                                                <div
+                                                    class="d-flex justify-start mb-5"
+                                                >
                                                     <v-tooltip location="right">
-                                                        <template v-slot:activator="{ props }">
-                                                            <v-btn icon v-bind="props" color="blue-darken-1" size="normal">
+                                                        <template
+                                                            v-slot:activator="{
+                                                                props,
+                                                            }"
+                                                        >
+                                                            <v-btn
+                                                                icon
+                                                                v-bind="props"
+                                                                color="blue-darken-1"
+                                                                size="normal"
+                                                            >
                                                                 <v-icon>
                                                                     mdi-help
                                                                 </v-icon>
                                                             </v-btn>
                                                         </template>
-                                                        <span>Anotar el nombre del facilitador (a) que impartirá el
-                                                    curso/taller.</span>
+                                                        <span
+                                                            >Anotar el nombre
+                                                            del facilitador (a)
+                                                            que impartirá el
+                                                            curso/taller.</span
+                                                        >
                                                     </v-tooltip>
                                                 </div>
                                             </v-col>
                                             <v-col cols="4">
-                                                <primary-button @click="dialogDocente = true">Crear Docente</primary-button>
-
-                                                <create-docente-a
-                                                :auth="props.auth"
-                                                :carrera="props.carrera"
-                                                :departamento="props.departamento"
-                                                :posgrado="props.posgrado"
-                                                :puesto="props.puesto"
-                                                :tipo_plaza="props.tipo_plaza"
-                                                v-model="dialogDocente"
-                                                @update:modelValue="dialogDocente = $event"
-                                                @docente-add="submitDocente"
+                                                <primary-button
+                                                    @click="
+                                                        dialogDocente = true
+                                                    "
+                                                    >Crear
+                                                    Docente</primary-button
                                                 >
 
+                                                <create-docente-a
+                                                    :auth="props.auth"
+                                                    :carrera="props.carrera"
+                                                    :departamento="
+                                                        props.departamento
+                                                    "
+                                                    :posgrado="props.posgrado"
+                                                    :puesto="props.puesto"
+                                                    :tipo_plaza="
+                                                        props.tipo_plaza
+                                                    "
+                                                    v-model="dialogDocente"
+                                                    @update:modelValue="
+                                                        dialogDocente = $event
+                                                    "
+                                                    @docente-add="submitDocente"
+                                                >
                                                 </create-docente-a>
                                             </v-col>
-                                            <v-autocomplete :counter="3" multiple :items="props.base_docente" item-title="nombre_completo" item-value="id"
-                                                            v-model="form.facilitadores" variant="solo" :rules="maxCount" class="mt-4">
-
+                                            <v-autocomplete
+                                                :counter="3"
+                                                multiple
+                                                :items="props.base_docente"
+                                                item-title="nombre_completo"
+                                                item-value="id"
+                                                v-model="form.facilitadores"
+                                                variant="solo"
+                                                :rules="maxCount"
+                                                class="mt-4"
+                                            >
                                             </v-autocomplete>
                                         </v-col>
                                         <v-col align-self="center">
                                             <v-row justify="center">
                                                 <v-col align="start" cols="5">
-                                                    <InputLabel for="facilitador_externo"
-                                                                value="Facilitador(a) externo que impartirá el curso/taller" />
+                                                    <InputLabel
+                                                        for="facilitador_externo"
+                                                        value="Facilitador(a) externo que impartirá el curso/taller"
+                                                    />
                                                 </v-col>
-                                                <v-col align="start" cols="7" class="mb-0 pa-0">
-                                                    <div class="d-flex justify-start mb-5">
-                                                        <v-tooltip location="top">
-                                                            <template v-slot:activator="{ props }">
-                                                                <v-btn icon v-bind="props" color="blue-darken-1" size="normal">
+                                                <v-col
+                                                    align="start"
+                                                    cols="7"
+                                                    class="mb-0 pa-0"
+                                                >
+                                                    <div
+                                                        class="d-flex justify-start mb-5"
+                                                    >
+                                                        <v-tooltip
+                                                            location="top"
+                                                        >
+                                                            <template
+                                                                v-slot:activator="{
+                                                                    props,
+                                                                }"
+                                                            >
+                                                                <v-btn
+                                                                    icon
+                                                                    v-bind="
+                                                                        props
+                                                                    "
+                                                                    color="blue-darken-1"
+                                                                    size="normal"
+                                                                >
                                                                     <v-icon>
                                                                         mdi-help
                                                                     </v-icon>
                                                                 </v-btn>
                                                             </template>
-                                                            <span>En caso de que el facilitador sea externo. Poner el nombre completo de la empresa, en caso de ser una persona externa anotar el nombre completo</span>
+                                                            <span
+                                                                >En caso de que
+                                                                el facilitador
+                                                                sea externo.
+                                                                Poner el nombre
+                                                                completo de la
+                                                                empresa, en caso
+                                                                de ser una
+                                                                persona externa
+                                                                anotar el nombre
+                                                                completo</span
+                                                            >
                                                         </v-tooltip>
                                                     </div>
                                                 </v-col>
                                             </v-row>
-                                            <v-text-field v-model="form.facilitador_externo"></v-text-field>
+                                            <v-text-field
+                                                v-model="
+                                                    form.facilitador_externo
+                                                "
+                                            ></v-text-field>
                                         </v-col>
                                         <v-col cols="12">
                                             <v-row justify="center">
                                                 <v-col align="start" cols="5">
-                                                    <InputLabel for="nombreCurso"
-                                                                value="Nombre del curso, taller, conferencias, etc." />
+                                                    <InputLabel
+                                                        for="nombreCurso"
+                                                        value="Nombre del curso, taller, conferencias, etc."
+                                                    />
                                                 </v-col>
-                                                <v-col align="start" cols="7" class="mb-0 pa-0">
-                                                    <div class="d-flex justify-start mb-5">
-                                                        <template v-if="form.tipo === 1">
-                                                            <v-tooltip location="bottom">
-                                                                <template v-slot:activator="{ props }">
-                                                                    <v-btn icon v-bind="props" color="blue-darken-1" size="normal">
+                                                <v-col
+                                                    align="start"
+                                                    cols="7"
+                                                    class="mb-0 pa-0"
+                                                >
+                                                    <div
+                                                        class="d-flex justify-start mb-5"
+                                                    >
+                                                        <template
+                                                            v-if="
+                                                                form.tipo === 1
+                                                            "
+                                                        >
+                                                            <v-tooltip
+                                                                location="bottom"
+                                                            >
+                                                                <template
+                                                                    v-slot:activator="{
+                                                                        props,
+                                                                    }"
+                                                                >
+                                                                    <v-btn
+                                                                        icon
+                                                                        v-bind="
+                                                                            props
+                                                                        "
+                                                                        color="blue-darken-1"
+                                                                        size="normal"
+                                                                    >
                                                                         <v-icon>
                                                                             mdi-help
                                                                         </v-icon>
                                                                     </v-btn>
                                                                 </template>
-                                                                <span>Anotar el nombre del curso, taller, conferencias, etc., que se
-                                                        llevarán a cabo para la Formación Docente del (de la) profesor(a) en
-                                                        las dimensiones de la Evaluación Docente.</span>
+                                                                <span
+                                                                    >Anotar el
+                                                                    nombre del
+                                                                    curso,
+                                                                    taller,
+                                                                    conferencias,
+                                                                    etc., que se
+                                                                    llevarán a
+                                                                    cabo para la
+                                                                    Formación
+                                                                    Docente del
+                                                                    (de la)
+                                                                    profesor(a)
+                                                                    en las
+                                                                    dimensiones
+                                                                    de la
+                                                                    Evaluación
+                                                                    Docente.</span
+                                                                >
                                                             </v-tooltip>
                                                         </template>
                                                         <template v-else>
-                                                            <v-tooltip location="bottom">
-                                                                <template v-slot:activator="{ props }">
-                                                                    <v-btn icon v-bind="props" size="normal" color="blue-darken-1">
+                                                            <v-tooltip
+                                                                location="bottom"
+                                                            >
+                                                                <template
+                                                                    v-slot:activator="{
+                                                                        props,
+                                                                    }"
+                                                                >
+                                                                    <v-btn
+                                                                        icon
+                                                                        v-bind="
+                                                                            props
+                                                                        "
+                                                                        size="normal"
+                                                                        color="blue-darken-1"
+                                                                    >
                                                                         <v-icon>
                                                                             mdi-help
                                                                         </v-icon>
                                                                     </v-btn>
                                                                 </template>
-                                                                <span>Anotar el nombre del curso, taller, conferencias, etc., que se
-                                                        llevarán a cabo para la actualización profesional del (de la)
-                                                        profesor(a) en la(s) asignatura(s) que se requiere</span>
+                                                                <span
+                                                                    >Anotar el
+                                                                    nombre del
+                                                                    curso,
+                                                                    taller,
+                                                                    conferencias,
+                                                                    etc., que se
+                                                                    llevarán a
+                                                                    cabo para la
+                                                                    actualización
+                                                                    profesional
+                                                                    del (de la)
+                                                                    profesor(a)
+                                                                    en la(s)
+                                                                    asignatura(s)
+                                                                    que se
+                                                                    requiere</span
+                                                                >
                                                             </v-tooltip>
                                                         </template>
                                                     </div>
                                                 </v-col>
                                             </v-row>
-                                            <v-text-field required v-model="form.nombreCT">
-
+                                            <v-text-field
+                                                required
+                                                v-model="form.nombreCT"
+                                            >
                                             </v-text-field>
                                         </v-col>
                                         <v-col cols="12">
                                             <v-row justify="center">
                                                 <v-col align="start" cols="8">
-                                                    <h4>Elegir las fechas en que se
-                                                        realizará la actividad
-                                                        o evento</h4>
+                                                    <h4>
+                                                        Elegir las fechas en que
+                                                        se realizará la
+                                                        actividad o evento
+                                                    </h4>
                                                 </v-col>
-                                                <v-col align="start" cols="4" class="mb-0 pa-0">
-                                                    <div class="d-flex justify-start mb-5">
-                                                        <v-tooltip location="right">
-                                                            <template v-slot:activator="{ props }">
-                                                                <v-btn icon v-bind="props" size="normal" color="blue-darken-1">
+                                                <v-col
+                                                    align="start"
+                                                    cols="4"
+                                                    class="mb-0 pa-0"
+                                                >
+                                                    <div
+                                                        class="d-flex justify-start mb-5"
+                                                    >
+                                                        <v-tooltip
+                                                            location="right"
+                                                        >
+                                                            <template
+                                                                v-slot:activator="{
+                                                                    props,
+                                                                }"
+                                                            >
+                                                                <v-btn
+                                                                    icon
+                                                                    v-bind="
+                                                                        props
+                                                                    "
+                                                                    size="normal"
+                                                                    color="blue-darken-1"
+                                                                >
                                                                     <v-icon>
                                                                         mdi-help
                                                                     </v-icon>
                                                                 </v-btn>
                                                             </template>
-                                                            <span>Seleccionar la fecha en que se realizará la actividad o evento</span>
+                                                            <span
+                                                                >Seleccionar la
+                                                                fecha en que se
+                                                                realizará la
+                                                                actividad o
+                                                                evento</span
+                                                            >
                                                         </v-tooltip>
                                                     </div>
                                                 </v-col>
                                             </v-row>
                                             <v-row justify="center">
                                                 <v-col cols="12" md="6">
-                                                    <v-text-field label="Inicio" required type="date" v-model="form.fecha_I" />
+                                                    <v-text-field
+                                                        label="Inicio"
+                                                        required
+                                                        type="date"
+                                                        v-model="form.fecha_I"
+                                                    />
                                                 </v-col>
                                                 <v-col cols="12" md="6">
-                                                    <v-text-field label="Termino" required type="date" v-model="form.fecha_F" />
+                                                    <v-text-field
+                                                        label="Termino"
+                                                        required
+                                                        type="date"
+                                                        v-model="form.fecha_F"
+                                                    />
                                                 </v-col>
                                             </v-row>
                                         </v-col>
                                         <v-col cols="12">
                                             <v-row justify="center">
                                                 <v-col align="start" cols="12">
-                                                    <h4>Elegir los horarios en que
-                                                        se realizará la
-                                                        actividad o
-                                                        evento</h4>
-                                                    <div class="d-flex justify-start mb-0">
-                                                        <v-tooltip location="right">
-                                                            <template v-slot:activator="{ props }">
-                                                                <v-btn icon v-bind="props" size="normal" color="blue-darken-1">
+                                                    <h4>
+                                                        Elegir los horarios en
+                                                        que se realizará la
+                                                        actividad o evento
+                                                    </h4>
+                                                    <div
+                                                        class="d-flex justify-start mb-0"
+                                                    >
+                                                        <v-tooltip
+                                                            location="right"
+                                                        >
+                                                            <template
+                                                                v-slot:activator="{
+                                                                    props,
+                                                                }"
+                                                            >
+                                                                <v-btn
+                                                                    icon
+                                                                    v-bind="
+                                                                        props
+                                                                    "
+                                                                    size="normal"
+                                                                    color="blue-darken-1"
+                                                                >
                                                                     <v-icon>
                                                                         mdi-help
                                                                     </v-icon>
                                                                 </v-btn>
                                                             </template>
-                                                            <span>Indicar el horario en que se realizará la actividad o evento</span>
+                                                            <span
+                                                                >Indicar el
+                                                                horario en que
+                                                                se realizará la
+                                                                actividad o
+                                                                evento</span
+                                                            >
                                                         </v-tooltip>
                                                     </div>
                                                 </v-col>
                                             </v-row>
                                             <v-row justify="center">
-                                                <v-col cols="12" md="6" align="center" class="">
-                                                    <v-text-field label="Inicio" required type="time" v-model="form.hora_I" />
+                                                <v-col
+                                                    cols="12"
+                                                    md="6"
+                                                    align="center"
+                                                    class=""
+                                                >
+                                                    <v-text-field
+                                                        label="Inicio"
+                                                        required
+                                                        type="time"
+                                                        v-model="form.hora_I"
+                                                    />
                                                 </v-col>
                                                 <v-col cols="12" md="6">
                                                     <!--                                        <InputLabel for="time" valuet="kd"/>-->
-                                                    <v-text-field label="Termino" class="" required type="time" v-model="form.hora_F" />
+                                                    <v-text-field
+                                                        label="Termino"
+                                                        class=""
+                                                        required
+                                                        type="time"
+                                                        v-model="form.hora_F"
+                                                    />
                                                 </v-col>
                                             </v-row>
                                         </v-col>
                                         <div class="grid grid-rows-1">
                                             <div class="flex justify-center">
                                                 <div class="grid grid-cols-1">
-                                                    <template v-if="horas_totales < 30">
-                                                        <v-chip variant="flat" color="error" prepend-icon="mdi-cancel">
-                                                            El curso es menor a 30 horas
+                                                    <template
+                                                        v-if="
+                                                            horas_totales < 30
+                                                        "
+                                                    >
+                                                        <v-chip
+                                                            variant="flat"
+                                                            color="error"
+                                                            prepend-icon="mdi-cancel"
+                                                        >
+                                                            El curso es menor a
+                                                            30 horas
                                                         </v-chip>
                                                     </template>
-                                                    <template v-else-if="horas_totales >= 30">
-                                                        <v-chip variant="flat" color="success" prepend-icon="mdi-check-circle">
-                                                            El curso es de {{horas_totales}} horas
+                                                    <template
+                                                        v-else-if="
+                                                            horas_totales >= 30
+                                                        "
+                                                    >
+                                                        <v-chip
+                                                            variant="flat"
+                                                            color="success"
+                                                            prepend-icon="mdi-check-circle"
+                                                        >
+                                                            El curso es de
+                                                            {{
+                                                                horas_totales
+                                                            }}
+                                                            horas
                                                         </v-chip>
                                                     </template>
                                                 </div>
@@ -786,42 +1409,88 @@ const closeModal = () => {
                                         <v-col align-self="center" cols="12">
                                             <v-row justify="center">
                                                 <v-col align="start" cols="5">
-                                                    <InputLabel for="objetivo" value="Objetivo de la actividad o evento" />
+                                                    <InputLabel
+                                                        for="objetivo"
+                                                        value="Objetivo de la actividad o evento"
+                                                    />
                                                 </v-col>
-                                                <v-col align="start" cols="7" class="mb-5 pa-0">
-                                                    <div class="d-flex justify-end mb-0">
-                                                        <v-tooltip location="right">
-                                                            <template v-slot:activator="{ props }">
-                                                                <v-btn icon v-bind="props" size="normal" color="blue-darken-1">
+                                                <v-col
+                                                    align="start"
+                                                    cols="7"
+                                                    class="mb-5 pa-0"
+                                                >
+                                                    <div
+                                                        class="d-flex justify-end mb-0"
+                                                    >
+                                                        <v-tooltip
+                                                            location="right"
+                                                        >
+                                                            <template
+                                                                v-slot:activator="{
+                                                                    props,
+                                                                }"
+                                                            >
+                                                                <v-btn
+                                                                    icon
+                                                                    v-bind="
+                                                                        props
+                                                                    "
+                                                                    size="normal"
+                                                                    color="blue-darken-1"
+                                                                >
                                                                     <v-icon>
                                                                         mdi-help
                                                                     </v-icon>
                                                                 </v-btn>
                                                             </template>
-                                                            <span>Anotar el objetivo de la actividad o evento. </span>
+                                                            <span
+                                                                >Anotar el
+                                                                objetivo de la
+                                                                actividad o
+                                                                evento.
+                                                            </span>
                                                         </v-tooltip>
                                                     </div>
                                                 </v-col>
                                             </v-row>
-                                            <v-text-field required v-model="form.objetivo">
-
+                                            <v-text-field
+                                                required
+                                                v-model="form.objetivo"
+                                            >
                                             </v-text-field>
                                         </v-col>
                                     </v-row>
                                 </v-container>
                                 <div class="flex items-center gap-4 mr-15">
-                                    <v-btn type="submit" color="blue-darken-1" icon="mdi-content-save-all" size="x-large" class="floating-btn">
-
+                                    <v-btn
+                                        type="submit"
+                                        color="blue-darken-1"
+                                        icon="mdi-content-save-all"
+                                        size="x-large"
+                                        class="floating-btn"
+                                    >
                                     </v-btn>
 
-                                    <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out">
-                                        <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Guardado.</p>
+                                    <Transition
+                                        enter-from-class="opacity-0"
+                                        leave-to-class="opacity-0"
+                                        class="transition ease-in-out"
+                                    >
+                                        <p
+                                            v-if="form.recentlySuccessful"
+                                            class="text-sm text-gray-600"
+                                        >
+                                            Guardado.
+                                        </p>
                                     </Transition>
                                 </div>
                             </template>
                         </v-row>
                     </form>
-                    <ResetForm v-model="dialogReset" @update:modelValue="dialogReset = $event"></ResetForm>
+                    <ResetForm
+                        v-model="dialogReset"
+                        @update:modelValue="dialogReset = $event"
+                    ></ResetForm>
                 </div>
             </div>
         </div>
