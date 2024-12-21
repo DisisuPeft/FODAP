@@ -214,11 +214,7 @@ onMounted(() => {
                                     Perfil
                                 </NavLink>
                                 <template
-                                    v-if="
-                                        user.role === 1 ||
-                                        user.role === 2 ||
-                                        user.role === 5
-                                    "
+                                    v-if="user.role === 1 || user.role === 2"
                                 >
                                     <NavLink
                                         :href="route('parametros.edit')"

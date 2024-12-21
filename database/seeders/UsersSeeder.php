@@ -15,8 +15,8 @@ class UsersSeeder extends Seeder
      */
     public function run(): void
     {
-        // DB::table('users')->insert([
-        //     ['email' => 'dda_tgutierrez@tecnm.mx', 'password' => Hash::make('desarrollo123'), 'departamento_id' => 2, 'role' => 1, 'docente_id' => 1],
+        DB::table('users')->insert([
+            ['email' => 'jefedesarrollo@tecnm.mx', 'password' => Hash::make('desarrollo123'), 'departamento_id' => 2, 'role' => 1, 'docente_id' => 1],
         //     ['email' => 'eleyeca@tuxtla.tecnm.mx', 'password' => Hash::make('eleyeca123'), 'departamento_id' => 3, 'role' => 3, 'docente_id' => 2],
         //     ['email' => 'industrial@tuxtla.tecnm.mx', 'password' => Hash::make('indus123'), 'departamento_id' => 4, 'role' => 3, 'docente_id' => 3],
         //     ['email' => 'mecanica@tuxtla.tecnm.mx', 'password' => Hash::make('mecanica123'), 'departamento_id' => 5, 'role' => 3,  'docente_id' => 4],
@@ -27,16 +27,16 @@ class UsersSeeder extends Seeder
         //     ['email' => 'cbas_tgutierrez@tecnm.mx', 'password' => Hash::make('cbas123'), 'departamento_id' => 1,'role' => 3,  'docente_id' => 9],
         //     ['email' => 'cformacion@tuxtla.tecnm.mx', 'password' => Hash::make('cformacion123'), 'departamento_id' => 2,'role' => 2,  'docente_id' => 10],
         //     ['email' => 'l17270705@tuxtla.tecnm.mx', 'password' => Hash::make('exalumnotecnm123'), 'departamento_id' => 7,'role' => 4,  'docente_id' => 36],
-        // ]);
-
-        $user = User::create([
-            'email' => 'admin@tuxtla.tecnm.mx',
-            'password' => Hash::make('admin123'),
-            'role' => 5
         ]);
 
-        $user->save();
+        // $user = User::create([
+        //     'email' => 'admin@tuxtla.tecnm.mx',
+        //     'password' => Hash::make('admin123'),
+        //     'role' => 5
+        // ]);
 
-        $user->assignRole('Super Admin');
+        // $user->save();
+
+        // $user->assignRole('Super Admin');
     }
 }

@@ -21,9 +21,9 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             UsersSeeder::class,
             PosgradoSeeder::class,
-            RolHasModelSeeder::class,
             DocenteSeeder::class,
             CursoSeeder::class,
+            RolHasModelSeeder::class,
         ]);
     }
 }

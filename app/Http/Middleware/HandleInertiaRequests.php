@@ -64,7 +64,7 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'message' => fn () => $request->session()->get('message')
             ],
-            'can_install' => Installer::can_install(),
+            // 'can_install' => Installer::can_install(),
             'dates' => GestionParametrosController::if_enable_deteccion(),
         ]);
     }
