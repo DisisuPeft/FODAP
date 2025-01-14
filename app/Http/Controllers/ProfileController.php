@@ -77,7 +77,7 @@ class ProfileController extends Controller
             $user = User::find($id);
             DB::beginTransaction();
             if ($user){
-                $user->fill($request->input('email'));
+                $user->email = $request->input('email');
                 DB::commit();
                 return Redirect::route('edit.user', ['id' => $id]);
             }else{
