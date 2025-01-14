@@ -20,7 +20,7 @@ const props = defineProps({
     cursos: Array,
     auth: Object,
 });
-console.log(props.cursos);
+// console.log(props.cursos);
 const form = useForm({
     id_docente: props.auth.user.docente_id,
 });
