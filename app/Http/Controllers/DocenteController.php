@@ -41,7 +41,7 @@ class DocenteController extends Controller
 //            ->orderBy('id', 'desc')
 //            ->get();
 
-        $cursos = DeteccionNecesidades::with(['carrera', 'deteccion_facilitador', 'docente_inscrito', 'lugar'])
+        $cursos = DeteccionNecesidades::with(['carrera', 'deteccion_facilitador', 'docente_inscrito', 'lugar', 'departamento'])
             ->where(function ($query) {
                 $query->where('estado', '=', 0)
                     ->orWhere('estado', '=', 1);
