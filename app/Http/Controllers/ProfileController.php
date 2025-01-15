@@ -67,6 +67,7 @@ class ProfileController extends Controller
 
     public function update_email(Request $request, $id, $from): RedirectResponse
     {
+        dd($id, $from);
         $validator = Validator::make($request->all(), [
             'email' => ['email', 'max:255', 'unique:users'],
         ], [
@@ -78,6 +79,7 @@ class ProfileController extends Controller
             DB::beginTransaction();
             if ($user){
                 $user->email = $request->input('email');
+                $user->save();
                 DB::commit();
                 if ($from == "docentes"){
                     // edit.docentes
