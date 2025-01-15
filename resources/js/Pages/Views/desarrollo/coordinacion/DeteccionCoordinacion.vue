@@ -204,11 +204,92 @@ const fullYears = computed(() => {
                     >Generar PDF</v-btn
                 >
                 <Modal :show="pdf_dialog" @close="closeModal">
-                    <div class="grid grid-rows-1 p-5 m-5">
+                    <div class="p-6 rounded-lg max-w-md mx-auto">
+                        <h2 class="text-2xl font-bold text-gray-700 mb-6">
+                            Generar PDF
+                        </h2>
+                        <form @submit.prevent="pdfDeteccion" class="space-y-6">
+                            <div class="space-y-4">
+                                <div class="form-group">
+                                    <label
+                                        for="carrera"
+                                        class="block text-sm font-medium text-gray-700 mb-2"
+                                    >
+                                        Carrera a la que va dirigida:
+                                    </label>
+                                    <select
+                                        id="level"
+                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-xl"
+                                        v-model="form.carrera"
+                                    >
+                                        <option></option>
+                                        <option
+                                            v-for="c in props.carrera"
+                                            :value="c.id"
+                                            :key="c.id"
+                                        >
+                                            {{ c.nameCarrera }}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label
+                                        for="periodo"
+                                        class="block text-sm font-medium text-gray-700 mb-2"
+                                    >
+                                        Periodo:
+                                    </label>
+                                    <v-select
+                                        v-model="form.periodo"
+                                        :items="periodos"
+                                        item-title="name"
+                                        item-value="id"
+                                        variant="outlined"
+                                        class="rounded-md"
+                                    ></v-select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label
+                                        for="anio"
+                                        class="block text-sm font-medium text-gray-700 mb-2"
+                                    >
+                                        Año:
+                                    </label>
+                                    <v-select
+                                        v-model="form.anio"
+                                        :items="fullYears"
+                                        item-title="name"
+                                        item-value="id"
+                                        variant="outlined"
+                                        class="rounded-md"
+                                    ></v-select>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between mt-8">
+                                <v-btn
+                                    color="error"
+                                    @click="pdf_dialog = false"
+                                    class="px-4 py-2 rounded-md transition-colors duration-200 ease-in-out hover:bg-red-600"
+                                >
+                                    Cancelar
+                                </v-btn>
+                                <v-btn
+                                    type="submit"
+                                    color="success"
+                                    prepend-icon="mdi-file-pdf-box"
+                                    class="px-4 py-2 rounded-md transition-colors duration-200 ease-in-out hover:bg-green-600"
+                                >
+                                    Generar
+                                </v-btn>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- <div class="grid grid-rows-1 p-5 m-5">
                         <div class="flex justify-center">
-                            <!--                                <div class="grid grid-rows-3">-->
                             <div class="grid grid-cols-1 gap-4">
-                                <!--                                        <div class="flex justify-center">-->
                                 <label for="carrera" class=""
                                     >Carrera a la que va dirigida:
                                 </label>
@@ -228,7 +309,6 @@ const fullYears = computed(() => {
                                         </option>
                                     </select>
                                 </div>
-                                <!--                                        </div>-->
                                 <label for="periodo" class="">Periodo: </label>
                                 <div class="pt-5">
                                     <select
@@ -264,7 +344,6 @@ const fullYears = computed(() => {
                                     </select>
                                 </div>
                             </div>
-                            <!--                                </div>-->
                         </div>
                     </div>
                     <div class="grid grid-rows-1 p-10">
@@ -289,7 +368,7 @@ const fullYears = computed(() => {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </Modal>
             </v-row>
         </v-container>
