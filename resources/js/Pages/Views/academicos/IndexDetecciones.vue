@@ -204,7 +204,7 @@ const format_errors = (errors) => {
                     </v-btn>
                     <Modal :show="pdf_dialog" @close="closeModal">
                         <div class="p-6 rounded-lg shadow-xl max-w-md mx-auto">
-                            <h2 class="text-2xl font-bold text-white mb-6">
+                            <h2 class="text-2xl font-bold text-gray-700 mb-6">
                                 Generar PDF
                             </h2>
                             <form
@@ -215,7 +215,7 @@ const format_errors = (errors) => {
                                     <div class="form-group">
                                         <label
                                             for="carrera"
-                                            class="block text-sm font-medium text-gray-300 mb-2"
+                                            class="block text-sm font-medium text-gray-700 mb-2"
                                         >
                                             Carrera a la que va dirigida:
                                         </label>
@@ -225,14 +225,14 @@ const format_errors = (errors) => {
                                             item-title="nameCarrera"
                                             item-value="id"
                                             variant="outlined"
-                                            class="bg-gray-800 rounded-md"
+                                            class="rounded-md"
                                         ></v-select>
                                     </div>
 
                                     <div class="form-group">
                                         <label
                                             for="periodo"
-                                            class="block text-sm font-medium text-gray-300 mb-2"
+                                            class="block text-sm font-medium text-gray-700 mb-2"
                                         >
                                             Periodo:
                                         </label>
@@ -242,14 +242,14 @@ const format_errors = (errors) => {
                                             item-title="name"
                                             item-value="id"
                                             variant="outlined"
-                                            class="bg-gray-800 rounded-md"
+                                            class="rounded-md"
                                         ></v-select>
                                     </div>
 
                                     <div class="form-group">
                                         <label
                                             for="anio"
-                                            class="block text-sm font-medium text-gray-300 mb-2"
+                                            class="block text-sm font-medium text-gray-700 mb-2"
                                         >
                                             Año:
                                         </label>
@@ -259,7 +259,7 @@ const format_errors = (errors) => {
                                             item-title="name"
                                             item-value="id"
                                             variant="outlined"
-                                            class="bg-gray-800 rounded-md"
+                                            class="rounded-md"
                                         ></v-select>
                                     </div>
                                 </div>
