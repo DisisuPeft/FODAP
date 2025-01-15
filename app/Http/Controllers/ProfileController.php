@@ -67,7 +67,7 @@ class ProfileController extends Controller
 
     public function update_email(Request $request, $id, $from): RedirectResponse
     {
-        dd($id, $from);
+        // dd($id, $from);
         $validator = Validator::make($request->all(), [
             'email' => ['email', 'max:255', 'unique:users'],
         ], [
