@@ -1,8 +1,8 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import {Head, useForm} from "@inertiajs/vue3";
+import { Head, useForm } from "@inertiajs/vue3";
 import NavLink from "@/Components/NavLink.vue";
-import {computed, onMounted, ref} from "vue";
+import { computed, onMounted, ref } from "vue";
 import DeteccionDialog from "@/Pages/Views/dialogs/DeteccionDialogPDF.vue";
 import { FODAPStore } from "@/store/server.js";
 import { Deteccion } from "@/store/Deteccion.js";
@@ -10,7 +10,12 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import Loading from "@/Components/Loading.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Modal from "@/Components/Modal.vue";
-import {AlertLoading, errorMsg, notify, success_alert} from "@/jsfiels/alertas.js";
+import {
+    AlertLoading,
+    errorMsg,
+    notify,
+    success_alert,
+} from "@/jsfiels/alertas.js";
 
 const store = FODAPStore();
 const detecciones_store = Deteccion();
@@ -30,7 +35,6 @@ const message = ref("");
 const search = ref();
 const loading = ref(false);
 const show = ref(false);
-
 
 onMounted(() => {
     window.Echo.private(`App.Models.User.${props.auth.user.id}`).notification(
@@ -64,13 +68,21 @@ onMounted(() => {
     window.Echo.private("deteccion-observacion").listen(
         "ObservacionEvent",
         (event) => {
-            notify('Atención', 'info', 'Los recursos han cambiado, ACTUALIZA LA PAGINA')
+            notify(
+                "Atención",
+                "info",
+                "Los recursos han cambiado, ACTUALIZA LA PAGINA"
+            );
         }
     );
     window.Echo.private("delete-deteccion").listen(
         "DeleteDeteccionEvent",
         (event) => {
-            notify('Atención', 'info', 'Los recursos han cambiado, ACTUALIZA LA PAGINA')
+            notify(
+                "Atención",
+                "info",
+                "Los recursos han cambiado, ACTUALIZA LA PAGINA"
+            );
         }
     );
 
@@ -85,7 +97,7 @@ onMounted(() => {
 });
 
 const closeModal = () => {
-    pdf_dialog.value = false
+    pdf_dialog.value = false;
 };
 
 const form = useForm({
@@ -109,7 +121,7 @@ const fullYears = computed(() => {
 });
 
 const pdfDeteccion = () => {
-    AlertLoading('Generando documento...', 'Esto puede tardar unos minutos');
+    AlertLoading("Generando documento...", "Esto puede tardar unos minutos");
     // loading.value = true
     axios
         .get("/pdf/deteccion", {
@@ -117,17 +129,17 @@ const pdfDeteccion = () => {
                 anio: form.anio,
                 carrera: form.carrera,
                 periodo: form.periodo,
-                tipo_documento: "Deteccion de necesidades"
+                tipo_documento: "Deteccion de necesidades",
             },
         })
         .then((res) => {
             // cursos.value = res.data.cursos
-            if (res.data.message) {
+            if (res.data.status === 402 || 404) {
                 message.value = res.data.message;
-                loading.value = false
-                pdf_dialog.value = false
-                notify('Atención', 'info', `${message.value}.`)
-            } else {
+                loading.value = false;
+                pdf_dialog.value = false;
+                notify("Atención", "info", `${message.value}.`);
+            } else if (res.data.status === 200) {
                 const url = "/storage/Deteccion.pdf";
                 const link = document.createElement("a");
                 link.href = url;
@@ -136,24 +148,27 @@ const pdfDeteccion = () => {
                 link.click();
                 loading.value = false;
                 form.reset();
-                pdf_dialog.value = false
-                success_alert('Exito', 'El documento se descargo.')
+                pdf_dialog.value = false;
+                success_alert("Exito", "El documento se descargo.");
             }
         })
         .catch((error) => {
-            pdf_dialog.value = false
-            loading.value = false
-            errorMsg('Atención', `${format_errors(error.response?.data.errors)}`)
-            message.value = ""
+            pdf_dialog.value = false;
+            loading.value = false;
+            errorMsg(
+                "Atención",
+                `${format_errors(error.response?.data.errors)}`
+            );
+            message.value = "";
         });
 };
 
 const format_errors = (errors) => {
     for (const errorsKey in errors) {
-        message.value += errors[errorsKey]
+        message.value += errors[errorsKey];
     }
-    return message.value.split('.').join('. ');
-}
+    return message.value.split(".").join(". ");
+};
 </script>
 
 <template>
@@ -195,61 +210,55 @@ const format_errors = (errors) => {
                         Generar PDF
                     </v-btn>
                     <Modal :show="pdf_dialog" @close="closeModal">
-                        <div class="grid grid-rows-1 p-10 m-5">
-                            <div class="flex justify-center">
-<!--                                <div class="grid grid-rows-3">-->
-                                    <div class="grid grid-cols-1 gap-4">
-<!--                                        <div class="flex justify-center">-->
-                                            <label
-                                                for="carrera"
-                                                class=""
-                                            >Carrera a la que va dirigida:
-                                            </label>
-                                            <div class="pt-5">
-                                                <v-select
-                                                    v-model="form.carrera"
-                                                    :items="props.carrera"
-                                                    item-title="nameCarrera"
-                                                    item-value="id"
-                                                    variant="solo"
-                                                ></v-select>
-                                            </div>
-<!--                                        </div>-->
-                                        <label
-                                            for="periodo"
-                                            class=""
-                                        >Periodo:
-                                        </label>
-                                        <div class="pt-5">
-                                            <v-select
-                                                v-model="form.periodo"
-                                                :items="periodos"
-                                                item-title="name"
-                                                item-value="id"
-                                                variant="solo"
-                                            ></v-select>
-                                        </div>
-                                        <label
-                                            for="anio"
-                                            class=""
-                                        >Año:
-                                        </label>
-                                        <div class="pt-5">
-                                            <v-select
-                                                v-model="form.anio"
-                                                :items="fullYears"
-                                                item-title="name"
-                                                item-value="id"
-                                                variant="solo"
-                                            ></v-select>
-                                        </div>
+                        <div class="grid grid-rows-1 p-5 m-5">
+                            <div class="flex justify-center w-full">
+                                <!--                                <div class="grid grid-rows-3">-->
+                                <div class="grid grid-cols-1 gap-4">
+                                    <!--                                        <div class="flex justify-center">-->
+                                    <label for="carrera" class=""
+                                        >Carrera a la que va dirigida:
+                                    </label>
+                                    <div class="pt-5">
+                                        <v-select
+                                            v-model="form.carrera"
+                                            :items="props.carrera"
+                                            item-title="nameCarrera"
+                                            item-value="id"
+                                            variant="solo"
+                                        ></v-select>
                                     </div>
-<!--                                </div>-->
+                                    <!--                                        </div>-->
+                                    <label for="periodo" class=""
+                                        >Periodo:
+                                    </label>
+                                    <div class="pt-5">
+                                        <v-select
+                                            v-model="form.periodo"
+                                            :items="periodos"
+                                            item-title="name"
+                                            item-value="id"
+                                            variant="solo"
+                                        ></v-select>
+                                    </div>
+                                    <label for="anio" class="">Año: </label>
+                                    <div class="pt-5">
+                                        <v-select
+                                            v-model="form.anio"
+                                            :items="fullYears"
+                                            item-title="name"
+                                            item-value="id"
+                                            variant="solo"
+                                        ></v-select>
+                                    </div>
+                                </div>
+                                <!--                                </div>-->
                             </div>
                         </div>
                         <div class="grid grid-rows-1 p-10">
                             <div class="flex justify-center">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div
+                                    class="grid grid-cols-1 md:grid-cols-2 gap-4"
+                                >
                                     <div class="flex justify-center">
                                         <v-btn
                                             color="error"
@@ -308,12 +317,12 @@ const format_errors = (errors) => {
         </div>
 
         <!--        dialog-->
-<!--        <DeteccionDialog-->
-<!--            :carreras="props.carrera"-->
-<!--            v-model:modelValue="pdf_dialog"-->
-<!--            @update:modelValue="modal"-->
-<!--            @form:deteccion="pdfDeteccion"-->
-<!--        ></DeteccionDialog>-->
+        <!--        <DeteccionDialog-->
+        <!--            :carreras="props.carrera"-->
+        <!--            v-model:modelValue="pdf_dialog"-->
+        <!--            @update:modelValue="modal"-->
+        <!--            @form:deteccion="pdfDeteccion"-->
+        <!--        ></DeteccionDialog>-->
 
         <template v-if="props.detecciones.length !== 0">
             <!--Tabla-->

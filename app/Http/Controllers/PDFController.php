@@ -76,7 +76,7 @@ class PDFController extends Controller
         if (count($cursos) == 0) {
             return response()->json([
                 'message' => 'No se encontro ningun dato con ese criterio de busqueda'
-            ]);
+            ], 404);
         } else {
             $pdf = Pdf::loadView('pdf.deteccion', compact('cursos', 'subdireccion', 'presidente', 'key'))->output();
             $path = "Deteccion.pdf";
@@ -85,14 +85,12 @@ class PDFController extends Controller
             if (Storage::disk('public')->exists($path)){
                 return response()->json([
                     'message' => 'Documento generado.',
-                    'status' => 200
                 ]);
             }else{
 //                return ["No se almaceno el archivo de manera correcta, intente generarlo nuevamente. Si el problema persiste se debe revisar el codigo.", "error"];
                 return response()->json([
                     'message' => 'No se almaceno el archivo de manera correcta, intente generarlo nuevamente. Si el problema persiste se debe revisar el codigo.',
-                    'status' => 500,
-                ]);
+                ], 402);
             }
         }
     }
