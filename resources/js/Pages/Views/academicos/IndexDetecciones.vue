@@ -134,8 +134,8 @@ const pdfDeteccion = () => {
         })
         .then((res) => {
             // cursos.value = res.data.cursos
-            console.log(res);
             if (res.data.status === 402 || 404) {
+                console.log(res);
                 message.value = res.data.message;
                 loading.value = false;
                 pdf_dialog.value = false;
