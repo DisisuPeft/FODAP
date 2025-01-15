@@ -203,9 +203,7 @@ const format_errors = (errors) => {
                         Generar PDF
                     </v-btn>
                     <Modal :show="pdf_dialog" @close="closeModal">
-                        <div
-                            class="bg-gray-900 p-6 rounded-lg shadow-xl max-w-md mx-auto"
-                        >
+                        <div class="p-6 rounded-lg shadow-xl max-w-md mx-auto">
                             <h2 class="text-2xl font-bold text-white mb-6">
                                 Generar PDF
                             </h2>
