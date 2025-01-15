@@ -85,6 +85,7 @@ class PDFController extends Controller
             if (Storage::disk('public')->exists($path)){
                 return response()->json([
                     'message' => 'Documento generado.',
+                    'path' => Storage::disk('public')->path('Deteccion.pdf')
                 ]);
             }else{
 //                return ["No se almaceno el archivo de manera correcta, intente generarlo nuevamente. Si el problema persiste se debe revisar el codigo.", "error"];
