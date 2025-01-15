@@ -83,7 +83,7 @@ class ProfileController extends Controller
                 DB::commit();
                 if ($from == "docentes"){
                     // edit.docentes
-                    return Redirect::route('edit.docentes', ['id' => $id]);
+                    return Redirect::route('edit.docentes', ['id' => $user->docente_id]);
                 }else if($from == "config"){
                     return Redirect::route('edit.user', ['id' => $id]);
                 }
