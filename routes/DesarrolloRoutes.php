@@ -82,7 +82,7 @@ Route::middleware(['auth', 'role:Jefe del Departamento de Desarrollo Academico|C
     Route::post('/permiso/{id}', [GestionParametrosController::class, 'set_permission'])->name('permiso.edit');
     Route::post('/revocar/permiso/{id}', [GestionParametrosController::class, 'revoke_permissions'])->name('permiso.revoke');
     Route::post('/email/edit/{id}', [GestionParametrosController::class, 'edit_email'])->name('editar.email');
-
+    Route::patch('/profile/user/{id}/{from}', [ProfileController::class, 'update_email'])->name('profile.email.update');
 
     //    crear o actualizar subdireccion
     Route::post('/crear/subdireccion', [GestionParametrosController::class, 'create_subdireccion'])->name('create.sub');

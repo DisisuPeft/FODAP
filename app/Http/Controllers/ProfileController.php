@@ -65,7 +65,7 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit');
     }
 
-    public function update_email(Request $request, $id): RedirectResponse
+    public function update_email(Request $request, $id, $from): RedirectResponse
     {
         $validator = Validator::make($request->all(), [
             'email' => ['email', 'max:255', 'unique:users'],
@@ -79,7 +79,12 @@ class ProfileController extends Controller
             if ($user){
                 $user->email = $request->input('email');
                 DB::commit();
-                return Redirect::route('edit.user', ['id' => $id]);
+                if ($from == "docentes"){
+                    // edit.docentes
+                    return Redirect::route('edit.docentes', ['id' => $id]);
+                }else if($from == "config"){
+                    return Redirect::route('edit.user', ['id' => $id]);
+                }
             }else{
                 return back()->withErrors('No se encontro al usuario');
             }

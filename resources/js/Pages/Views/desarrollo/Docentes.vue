@@ -11,7 +11,7 @@ import CustomSnackBar from "@/Components/CustomSnackBar.vue";
 import { router } from "@inertiajs/vue3";
 import { el } from "vuetify/locale";
 import Swal from "sweetalert2";
-import {AlertLoading, errorMsg, success_alert} from "@/jsfiels/alertas.js";
+import { AlertLoading, errorMsg, success_alert } from "@/jsfiels/alertas.js";
 
 const props = defineProps({
     auth: Object,
@@ -53,66 +53,72 @@ const header = [
 ];
 
 async function submitDocente(form) {
-        dialog.value = false
-        Swal.fire({
-            title: '¿Ingreso la información correcta?',
-            text: 'Esta acción se puede revertir',
-            showCancelButton: true,
-            showConfirmButton: true,
-            confirmButtonText: 'Confirmar',
-            cancelButtonText: 'Cancelar',
-            icon: "info",
-            timerProgressBar: true
-        }).then(res => {
-            if (res.isConfirmed){
-                AlertLoading('Guardando la información...', 'Esto puede tardar unos minutos')
-                form.post(route("store.docentes", "desarrollo"), {
-                    onSuccess: () => {
-                        form.reset();
-                        dialog.value = false;
-                        success_alert('Exito', 'El docente se creo.')
-                    },
-                    onError: () => {
-                        dialog.value = false
-                        errorMsg('Atención', `${format_errors(props.errors)}`)
-                        message.value = ""
-                    },
-                });
-            }
-        })
-}
-async function DeleteDocente(id) {
-    eliminar.value = false
+    dialog.value = false;
     Swal.fire({
-        title: 'Esta por eliminar el docente.',
-        text: 'Esta acción no se puede revertir',
+        title: "¿Ingreso la información correcta?",
+        text: "Esta acción se puede revertir",
         showCancelButton: true,
         showConfirmButton: true,
-        confirmButtonText: 'Confirmar',
-        cancelButtonText: 'Cancelar',
+        confirmButtonText: "Confirmar",
+        cancelButtonText: "Cancelar",
         icon: "info",
-        timerProgressBar: true
-    }).then(res => {
-        if (res.isConfirmed){
-            AlertLoading('Guardando la información...', 'Esto puede tardar unos minutos')
-            router.delete(route("delete.docentesDa", id), {
+        timerProgressBar: true,
+    }).then((res) => {
+        if (res.isConfirmed) {
+            AlertLoading(
+                "Guardando la información...",
+                "Esto puede tardar unos minutos"
+            );
+            form.post(route("store.docentes", "desarrollo"), {
                 onSuccess: () => {
-                    eliminar.value = false;
-                    success_alert('Exito', 'El docente se elimino.')
-                    message.value = ""
+                    form.reset();
+                    dialog.value = false;
+                    success_alert("Exito", "El docente se creo.");
                 },
                 onError: () => {
-                    eliminar.value = false;
-                    errorMsg('Atención', `${format_errors(props.errors)}`)
-                    message.value = ""
+                    dialog.value = false;
+                    errorMsg("Atención", `${format_errors(props.errors)}`);
+                    message.value = "";
                 },
             });
         }
-    })
+    });
+}
+async function DeleteDocente(id) {
+    eliminar.value = false;
+    Swal.fire({
+        title: "Esta por eliminar el docente.",
+        text: "Esta acción no se puede revertir",
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: "Confirmar",
+        cancelButtonText: "Cancelar",
+        icon: "info",
+        timerProgressBar: true,
+    }).then((res) => {
+        if (res.isConfirmed) {
+            AlertLoading(
+                "Guardando la información...",
+                "Esto puede tardar unos minutos"
+            );
+            router.delete(route("delete.docentesDa", id), {
+                onSuccess: () => {
+                    eliminar.value = false;
+                    success_alert("Exito", "El docente se elimino.");
+                    message.value = "";
+                },
+                onError: () => {
+                    eliminar.value = false;
+                    errorMsg("Atención", `${format_errors(props.errors)}`);
+                    message.value = "";
+                },
+            });
+        }
+    });
 }
 
 function DropOut(id) {
-    eliminar.value = false
+    eliminar.value = false;
     docente_id.value = id;
     eliminar.value = true;
 }
@@ -140,7 +146,7 @@ onMounted(() => {
 
 const filter = computed(() => {
     let docente = search.value.trim().toLowerCase();
-    console.log(docente)
+    // console.log(docente)
     // Si no hay valor en el input, retorna todos los docentes
     if (!docente) {
         return props.docentes;
@@ -154,10 +160,10 @@ const filter = computed(() => {
 
 const format_errors = (errors) => {
     for (const errorsKey in errors) {
-        message.value += errors[errorsKey]
+        message.value += errors[errorsKey];
     }
-    return message.value.split('.').join('. ');
-}
+    return message.value.split(".").join(". ");
+};
 </script>
 
 <template>
