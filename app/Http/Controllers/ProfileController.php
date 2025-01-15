@@ -67,31 +67,42 @@ class ProfileController extends Controller
 
     public function update_email(Request $request, $id, $from): RedirectResponse
     {
-        // dd($id, $from);
-        $validator = Validator::make($request->all(), [
-            'email' => ['email', 'max:255', 'unique:users'],
-        ], [
-            'email.email' => 'No es valido el correo institucional',
-            'email.unique' => 'El correo ya se encuentra registrado, no requiere actualizarce',
-        ]);
-        if (!$validator->fails()) {
-            $user = User::find($id);
-            DB::beginTransaction();
-            if ($user){
-                $user->email = $request->input('email');
-                $user->save();
-                DB::commit();
-                if ($from == "docentes"){
-                    // edit.docentes
-                    return Redirect::route('edit.docentes', ['id' => $user->docente_id]);
-                }else if($from == "config"){
-                    return Redirect::route('edit.user', ['id' => $id]);
-                }
-            }else{
-                return back()->withErrors('No se encontro al usuario');
+        try {
+            // Validación
+            $validator = Validator::make($request->all(), [
+                'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $id],
+            ], [
+                'email.email' => 'No es válido el correo institucional',
+                'email.unique' => 'El correo ya se encuentra registrado',
+                'email.required' => 'El correo es requerido',
+            ]);
+
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
             }
-        }else{
-            return Redirect::back()->withErrors($validator);
+
+            DB::beginTransaction();
+            
+            $user = User::findOrFail($id);
+            $user->email = $request->input('email');
+            $user->save();
+            
+            DB::commit();
+
+            // Redirección según el origen
+            if ($from == "docentes") {
+                return redirect()->route('edit.docentes', ['id' => $user->docente_id])
+                            ->with('success', 'Correo actualizado correctamente');
+            } else {
+                return redirect()->route('edit.user', ['id' => $id])
+                            ->with('success', 'Correo actualizado correctamente');
+            }
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                            ->withErrors('Error al actualizar el correo: ' . $e->getMessage())
+                            ->withInput();
         }
     }
 
