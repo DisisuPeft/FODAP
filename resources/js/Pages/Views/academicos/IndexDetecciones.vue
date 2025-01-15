@@ -203,74 +203,87 @@ const format_errors = (errors) => {
                         Generar PDF
                     </v-btn>
                     <Modal :show="pdf_dialog" @close="closeModal">
-                        <div class="grid grid-rows-1 p-5 m-5">
-                            <div class="flex justify-center w-full">
-                                <!--                                <div class="grid grid-rows-3">-->
-                                <div class="grid grid-cols-1 gap-4">
-                                    <!--                                        <div class="flex justify-center">-->
-                                    <label for="carrera" class=""
-                                        >Carrera a la que va dirigida:
-                                    </label>
-                                    <div class="pt-5">
+                        <div
+                            class="bg-gray-900 p-6 rounded-lg shadow-xl max-w-md mx-auto"
+                        >
+                            <h2 class="text-2xl font-bold text-white mb-6">
+                                Generar PDF
+                            </h2>
+                            <form
+                                @submit.prevent="pdfDeteccion"
+                                class="space-y-6"
+                            >
+                                <div class="space-y-4">
+                                    <div class="form-group">
+                                        <label
+                                            for="carrera"
+                                            class="block text-sm font-medium text-gray-300 mb-2"
+                                        >
+                                            Carrera a la que va dirigida:
+                                        </label>
                                         <v-select
                                             v-model="form.carrera"
                                             :items="props.carrera"
                                             item-title="nameCarrera"
                                             item-value="id"
-                                            variant="solo"
+                                            variant="outlined"
+                                            class="bg-gray-800 rounded-md"
                                         ></v-select>
                                     </div>
-                                    <!--                                        </div>-->
-                                    <label for="periodo" class=""
-                                        >Periodo:
-                                    </label>
-                                    <div class="pt-5">
+
+                                    <div class="form-group">
+                                        <label
+                                            for="periodo"
+                                            class="block text-sm font-medium text-gray-300 mb-2"
+                                        >
+                                            Periodo:
+                                        </label>
                                         <v-select
                                             v-model="form.periodo"
                                             :items="periodos"
                                             item-title="name"
                                             item-value="id"
-                                            variant="solo"
+                                            variant="outlined"
+                                            class="bg-gray-800 rounded-md"
                                         ></v-select>
                                     </div>
-                                    <label for="anio" class="">Año: </label>
-                                    <div class="pt-5">
+
+                                    <div class="form-group">
+                                        <label
+                                            for="anio"
+                                            class="block text-sm font-medium text-gray-300 mb-2"
+                                        >
+                                            Año:
+                                        </label>
                                         <v-select
                                             v-model="form.anio"
                                             :items="fullYears"
                                             item-title="name"
                                             item-value="id"
-                                            variant="solo"
+                                            variant="outlined"
+                                            class="bg-gray-800 rounded-md"
                                         ></v-select>
                                     </div>
                                 </div>
-                                <!--                                </div>-->
-                            </div>
-                        </div>
-                        <div class="grid grid-rows-1 p-10">
-                            <div class="flex justify-center">
-                                <div
-                                    class="grid grid-cols-1 md:grid-cols-2 gap-4"
-                                >
-                                    <div class="flex justify-center">
-                                        <v-btn
-                                            color="error"
-                                            @click="pdf_dialog = false"
-                                        >
-                                            Cancelar
-                                        </v-btn>
-                                    </div>
-                                    <div class="flex justify-center">
-                                        <v-btn
-                                            @click="pdfDeteccion"
-                                            color="success"
-                                            prepend-icon="mdi-file-pdf-box"
-                                        >
-                                            Generar
-                                        </v-btn>
-                                    </div>
+
+                                <div class="flex justify-between mt-8">
+                                    <v-btn
+                                        color="error"
+                                        @click="pdf_dialog = false"
+                                        class="px-4 py-2 rounded-md transition-colors duration-200 ease-in-out hover:bg-red-600"
+                                    >
+                                        Cancelar
+                                    </v-btn>
+                                    <v-btn
+                                        type="submit"
+                                        color="success"
+                                        prepend-icon="mdi-file-pdf-box"
+                                        class="px-4 py-2 rounded-md transition-colors duration-200 ease-in-out hover:bg-green-600"
+                                    >
+                                        Generar
+                                    </v-btn>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </Modal>
                 </div>
