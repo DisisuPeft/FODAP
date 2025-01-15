@@ -134,24 +134,16 @@ const pdfDeteccion = () => {
         })
         .then((res) => {
             // cursos.value = res.data.cursos
-            if (res.data.status === 402 || 404) {
-                console.log(res);
-                message.value = res.data.message;
-                loading.value = false;
-                pdf_dialog.value = false;
-                notify("Atención", "info", `${message.value}.`);
-            } else if (res.data.status === 200) {
-                const url = "/storage/Deteccion.pdf";
-                const link = document.createElement("a");
-                link.href = url;
-                link.setAttribute("download", "deteccion.pdf");
-                document.body.appendChild(link);
-                link.click();
-                loading.value = false;
-                form.reset();
-                pdf_dialog.value = false;
-                success_alert("Exito", "El documento se descargo.");
-            }
+            const url = "/storage/Deteccion.pdf";
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "deteccion.pdf");
+            document.body.appendChild(link);
+            link.click();
+            loading.value = false;
+            form.reset();
+            pdf_dialog.value = false;
+            success_alert("Exito", "El documento se descargo.");
         })
         .catch((error) => {
             pdf_dialog.value = false;
