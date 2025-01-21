@@ -182,7 +182,7 @@ class AcademicosController extends Controller
                 ->select('docente.*', 'calificaciones.calificacion', 'inscripcion.id AS inscripcion')
                 ->get();
 
-            event(new InscripcionEvent($syncDeteccion));
+            // event(new InscripcionEvent($syncDeteccion));
 
             return redirect()->route('show.inscritos.academicos', ['id' => $deteccion->id]);
         } else {
