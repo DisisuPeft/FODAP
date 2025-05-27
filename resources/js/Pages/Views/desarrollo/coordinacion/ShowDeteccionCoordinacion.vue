@@ -17,7 +17,7 @@ const props = defineProps({
     deteccion: Object,
     auth: Object,
 });
-
+// console.log(props.deteccion.tipo_FDoAP === 1);
 const dialog = ref(false);
 const message = ref("");
 // const formatFechaF = computed(() => {
@@ -263,7 +263,10 @@ onMounted(() => {
                                 <div class="p-5">
                                     <div class="flow-root ...">
                                         <template
-                                            v-if="props.curso.tipo_FDoAP === 1"
+                                            v-if="
+                                                props?.deteccion?.tipo_FDoAP ===
+                                                1
+                                            "
                                         >
                                             <strong
                                                 >Dimensión(es) en la(s) que se
@@ -272,7 +275,8 @@ onMounted(() => {
                                         </template>
                                         <template
                                             v-else-if="
-                                                props.curso.tipo_FDoAP === 2
+                                                props?.deteccion?.tipo_FDoAP ===
+                                                2
                                             "
                                         >
                                             <strong
@@ -288,7 +292,10 @@ onMounted(() => {
                                     </div>
                                     <div class="flow-root ... pt-7">
                                         <template
-                                            v-if="props.curso.tipo_FDoAP === 1"
+                                            v-if="
+                                                props?.deteccion?.tipo_FDoAP ===
+                                                1
+                                            "
                                         >
                                             <strong
                                                 >Competencia(s) en la(s) que se
@@ -297,7 +304,8 @@ onMounted(() => {
                                         </template>
                                         <template
                                             v-else-if="
-                                                props.curso.tipo_FDoAP === 2
+                                                props?.deteccion?.tipo_FDoAP ===
+                                                2
                                             "
                                         >
                                             <strong
