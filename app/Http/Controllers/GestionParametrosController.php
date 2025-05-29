@@ -43,7 +43,7 @@ class   GestionParametrosController extends Controller
 {
     public function edit(Request $request)
     {
-        $users =  User::with('docente', 'departamento', 'permissions')->get();
+        $users =  User::where('id', '!=', auth()->user()->id)->with('docente', 'departamento', 'permissions')->get();
         $lugar = Lugar::with('curso')->get();
         $departamento = Departamento::with('jefe_docente')->get();
         $carrera = Carrera::with('departamento', 'presidente_academia')->get();

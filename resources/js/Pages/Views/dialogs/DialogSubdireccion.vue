@@ -17,7 +17,7 @@ const props = defineProps({
     modelValue: Boolean,
     errors: {},
 });
-console.log(props.sub);
+// console.log(props.sub);
 const emit = defineEmits(["update:modelValue"]);
 const format_errors = (errors) => {
     for (const errorsKey in errors) {
