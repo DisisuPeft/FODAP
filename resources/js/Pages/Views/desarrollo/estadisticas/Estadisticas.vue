@@ -1,15 +1,13 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { computed, onMounted, ref } from "vue";
-import SecondaryButton from "@/Components/SecondaryButton.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import { Link, router } from "@inertiajs/vue3";
+import { computed, ref } from "vue";
+import { router } from "@inertiajs/vue3";
 import axios from "axios";
 import { useForm } from "@inertiajs/vue3";
-import InputLabel from "@/Components/InputLabel.vue";
+// import InputLabel from "@/Components/InputLabel.vue";
 import Loading from "@/Components/Loading.vue";
-import CustomSnackBar from "@/Components/CustomSnackBar.vue";
-import { errorMsg, notify, success_alert } from "@/jsfiels/alertas.js";
+// import CustomSnackBar from "@/Components/CustomSnackBar.vue";
+import { errorMsg, success_alert } from "@/jsfiels/alertas.js";
 import Modal from "@/Components/Modal.vue";
 
 const props = defineProps({
