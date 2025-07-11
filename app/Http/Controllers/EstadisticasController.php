@@ -59,6 +59,7 @@ class EstadisticasController extends Controller
     {
 //        $anio = date('Y');
 //        dd($payload);
+// dd($request);
         $cursos_taller = DeteccionNecesidades::with('inscritos')
             ->whereYear('fecha_F', '=', $payload->year)
             ->where('estado', '=', 2)
@@ -124,15 +125,14 @@ class EstadisticasController extends Controller
 
     public function docente_genero_consulta($request){
         $n = [];
+
         $deteccion = new DeteccionNecesidades();
         $docentes = $deteccion->docentes_sexo($request);
-//        dd($docentes);
         foreach ($docentes as $docente) {
             if ($docente->sexo == null){
                 $n [] = $docente;
             }
         }
-
         return $n;
     }
 
